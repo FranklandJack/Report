@@ -1,11 +1,12 @@
 \contentsline {section}{\numberline {1}Introduction}{1}{section.1}
 \contentsline {section}{\numberline {2}Background}{1}{section.2}
-\contentsline {section}{\numberline {3}Methods}{1}{section.3}
-\contentsline {section}{\numberline {4}Results and Discussion}{2}{section.4}
+\contentsline {subsection}{\numberline {2.1}Quantum Mechanics}{1}{subsection.2.1}
+\contentsline {section}{\numberline {3}Methods}{3}{section.3}
+\contentsline {section}{\numberline {4}Results and Discussion}{4}{section.4}
 \contentsline {section}{\numberline {5}Conclusion}{4}{section.5}
-\contentsline {section}{\numberline {6}References}{4}{section.6}
-\contentsline {subsection}{\numberline {6.1}Tips on avoiding unwitting plagiarism}{4}{subsection.6.1}
-\contentsline {section}{Appendices}{7}{section*.6}
-\contentsline {section}{\numberline {A}\LaTeX \ hints and tips}{7}{appendix.A}
-\contentsline {section}{\numberline {B}\LaTeX \ vs pdf\LaTeX }{10}{appendix.B}
-\contentsline {section}{\numberline {C}BibTeX}{10}{appendix.C}
+\contentsline {section}{\numberline {6}References}{5}{section.6}
+\contentsline {subsection}{\numberline {6.1}Tips on avoiding unwitting plagiarism}{6}{subsection.6.1}
+\contentsline {section}{Appendices}{8}{section*.8}
+\contentsline {section}{\numberline {A}\LaTeX \ hints and tips}{8}{appendix.A}
+\contentsline {section}{\numberline {B}\LaTeX \ vs pdf\LaTeX }{11}{appendix.B}
+\contentsline {section}{\numberline {C}BibTeX}{11}{appendix.C}

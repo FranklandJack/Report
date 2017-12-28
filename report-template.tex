@@ -35,13 +35,16 @@
 % two lines
 \usepackage{hyperref}  % This enables hyperlinks but leaves them in black, which is best for printing
 %\usepackage[colorlinks=true]{hyperref} % This colours the hyperlinks, which is better for screen reading
+% For Bra-Ket notation.
+\usepackage{braket}
+
 
 \begin{document}
 
-\title{A Template for MPhys Project Reports} % Place your project title in here
-\author{R. A. Blythe} % Put your name here
-\supervisor{Professor J. Bloggs} % Place your principal supervisor here
-%\supervisor{Dr A. Smith} % If you have additional supervisors, list them with separate \supervisor commands
+\title{Accelerated Dynamics in HMC Simulations of Lattice Field Theory} % Place your project title in here
+\author{Jack Frankland} % Put your name here
+\supervisor{Dr Brian Pendleton} % Place your principal supervisor here
+\supervisor{Dr Roger Horsley} % If you have additional supervisors, list them with separate \supervisor commands
 %\date{1st January 2018} % Today's date will appear on the title page by default, but if you want to tie this to a particular date, you can do so here
 
 % Insert your abstract below
@@ -93,15 +96,72 @@ As a guide, this section should be intelligible to other MPhys students doing pr
 
 \section{Background}
 
-Here you would expand on the general background to the project. This might include important observations, experiments or conceptual developments in the field. You may also wish to discuss related approaches that have been taken to solve the problem that your project concerns. Make sure you describe your understanding of the relevant literature in your own words, and include references to the relevant sources. One way to manage this is to enter your references into a {\tt BibTeX} file, as this will automatically number and format your references in a standardised way  (see Appendix~\ref{sec:bibtex} for details).  This allows easy numbered referencing of references. 
+\subsection{Quantum Mechanics}
 
-The most appropriate sources at the MPhys level will be papers in scientific journals \cite{jr:ashkin} and conference proceedings \cite{seger}, as well as textbooks covering intermediate or advanced level material \cite{ob:bornwolf}. If you are building on the work of former MPhys \cite{mphys:renton} or PhD \cite{phd:blythe} students, you might need to cite their theses/reports as well. For more general background, readable articles in popular science journals \cite{jr:dholakia}, and  standard textbooks \cite{ob:hechtoptics} may be included.
-
-As a general rule, you may expect your reader to be conversant with Pre-Honours level physics and the core of Junior Honours. So you wouldn't need to give a source for Newton's laws or Schr\"odinger's equation, and very standard results, like the energy levels of the quantum mechanical harmonic oscillator,
+In quantum mechanics we are often interested in calculating the path integral:
 \begin{equation}
-E = \left( n + \frac{1}{2} \right) \hbar \omega \;,
+	\label{eq:PathIntegral}
+	\braket{x_b,t_b|x_a,t_a} = \int {\cal D} x\left(t\right) \exp{\left(\frac{i}{\hbar} S_M\left[x\left(t\right)\right]\right)}.
 \end{equation}
-can be quoted (although you should explain what the symbols mean!). However, anything more esoteric should be given a reference.
+
+$\braket{x_b,t_b|x_a,t_a}$ is the transition amplitude for a particle in position eigenstate (in the Heisenberg picture) $\ket{x_a,t_a}$ to move to position eigenstate $\ket{x_b,t_b}$; this gives us the probability amplitude of a particle at $x_a$ at time $t_a$ to move to position $x_b$ at time $t_b$. The term on the right of equation \ref{eq:PathIntegral} is known as the ``Fenyman path integral''. The measure $\int {\cal D} x\left(t\right)$ is an integral over all paths between $x_a$ and $x_b$. $S_M\left[x\left(t\right)\right]$ is the Minkowski action of a particle on the path $x\left(t\right)$ and is defined by:
+\begin{equation}
+	\label{eq:MinkowskiAction}
+	S_M\left[x\left(t\right)\right] = \int_{t_a}^{t_b} dt \left[\frac{1}{2}m\left(\frac{dx}{dt}\right)^2 - V(x)\right],
+\end{equation}
+where $x\left(t_a\right) = x_a$ and $x\left(t_b\right) = x_b$ are the boundary conditions.
+
+Due to the oscillating integrand in equation \ref{eq:PathIntegral}, it is not clear the integral will converge, and the integral measure needs to be defined before we proceed. In order to do this we follow the steps in \cite{creutz_freedman_1981} to get equation \ref{eq:PathIntegral} into a form we can work with. 
+
+The first step is to discretise time as in figure \ref{fig:TimeLattice}.
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.5]{TimeLattice.png}
+	\caption{Discretising time into a lattice of spacing $\epsilon$. Diagram taken from \cite{creutz_freedman_1981}}
+	\label{fig:TimeLattice}
+\end{figure}
+Then for each time site on the lattice $t_i$ we have a position $x_i = x\left(t_i\right) \forall i \in \left[0,N\right]$. In our notation for the labelling of the position eigenstates in equation \ref{eq:PathIntegral} we also have $x_b=x_N=x\left(t_N\right)$ and $x_a=x_0=x\left(t_0\right)$ in order to match with figure \ref{fig:TimeLattice}. $ \epsilon $ is the spacing between lattice sites and so $\epsilon = \frac{t_b-t_a}{N} = t_{i+1}-t_i$ and for $k \in \left[0,N\right], t_k = t_a + k \epsilon $. In order to discretise the action in equation \ref{eq:MinkowskiAction} we approximate the derivative by a forward difference and the integral as a Rieman sum, taking the lattice spacing as our small parameter:
+\begin{equation}
+	\label{eq:DiscreteMinkowskiAction}
+	S_{M}\left\{x_i\right\} = \sum_{i=0}^{N-1} \epsilon \left[\frac{1}{2}m\left(\frac{x_{i+1}-x_{i}}{\epsilon}\right)^{2} - V\left(x_i\right)\right].
+\end{equation}
+
+Since $\forall i \in \left[1,N-1\right], -\infty < x_i < \infty$ we may define the measure in equation \ref{eq:PathIntegral} as:
+\begin{equation}
+	\label{eq:IntegralMeasure}
+	\int_{x_a}^{x_b} {\cal D} x = \lim_N{\rightarrow \infty} A_{N}\prod_{n=1}^{N-1}\int_{-\infty}^{\infty}dx_n,
+\end{equation}
+where $A_N = \left(\nu \left(\epsilon\right)\right)^{N}$ and $\nu \left(\epsilon\right)$ is a normalisation factor on each discrete interval. So that for our discrete time lattice, the path integral is given by:
+\begin{equation}
+	\label{eq:DiscretePathIntegral}
+	\braket{x_b,t_b|x_a,t_a} \sim \int^{+\infty}_{-\infty}\prod_{i=1}^{N-1}dx_i \exp{\left(\frac{i}{\hbar}S\left\{x_i\right\}\right)}.
+\end{equation}
+In the limit that $N\rightarrow \infty$ (or equivelantly $\epsilon \rightarrow 0$) we recover equation \ref{eq:PathIntegral} from equation \ref{eq:DiscretePathIntegral} exactly. 
+
+In order to work with the discrete path integral in equation \ref{eq:DiscretePathIntegral} we have one final step. We make a ``Wick rotation'' into imaginary time; this is done via the substitution:
+\begin{equation}
+	\label{eq:WickRotation}
+	t = i\tau.
+\end{equation}
+Defining $a=i\epsilon$ we now have a lattice in imaginary time, of lattice spacing $a$, substituting a into equation \ref{eq:DiscreteMinkowskiAction}:
+\begin{equation}
+	\label{eq:DiscreteEuclideanAction}
+	S_M\left\{x_i\right\} = \sum_{i=0}^{N-1} \epsilon \left[\frac{1}{2}m\left(\frac{x_{i+1}-x_{i}}{\epsilon}\right)^2 + V(x_i)\right] = iS_E\left\{x_i\right\}.
+\end{equation}
+The quantity $S\left\{x_i\right\}$ is the discretized ``Euclidean'' action; it has this name because the effect of the Wick transformation is that it turns the Mikowski metric $\left(ds_{M}\right)$ into the Euclidean metric $\left(ds_{E}\right)$ on the coordinates $\left(x,y,z,\tau\right)$ and visa-versa:
+\begin{equation}
+	\label{eq:MetricTransform}
+	 ds_{M}^{2}= -\left(dt\right)^2 + \left(dx\right)^2 + \left(dy\right)^2 + \left(dz\right)^2 = \left(d\tau\right)^2 + \left(dx\right)^2 + \left(dy\right)^2 + \left(dz\right)^2 = ds_{E}^{2}.
+\end{equation}
+This is a very useful result since upon substitution into the discrete path integral in equation \ref{eq:DiscretePathIntegral} we find:
+\begin{equation}
+	\label{eq:DiscreteEuclideanPathIntegral}
+	\braket{x_b,t_b|x_a,t_a} \sim \int^{+\infty}_{-\infty}\prod_{i=1}^{N-1}dx_i \exp{\left(\frac{-1}{\hbar}S_{E}\left\{x_i\right\}\right)}.
+\end{equation}
+This is known as the discrete euclidean path integral and it far better defined since the ``integrand'' is now exponentially suppressed. We are now able to make a connection to statistical mechanics that enables us to compute the values we want in later sections. We have the standard result from statistical physics that for a system with $N-1$ degrees of freedom labelled by $x_i$ for $i \in \left[0,N-1\right]$ then the partition function is given by:
+\begin{equation}
+	\label{eq:PartitionFunction}
+	Z \sim \int
 
 
 \section{Methods}
@@ -194,7 +254,7 @@ For more schematic figures (e.g., a flow chart illustrating a simulation algorit
 
 % This command includes the reference list. You will need to compile two or three times (perhaps BiBTeXing after
 % the first time) to get the references in synch with the text.
-\bibliography{ref}
+\bibliography{ref,Report}
 
 % This command switches to appendices. The page count ends here.
 % NOTE: the material contained in appendices will NOT count towards the assessment of your report.
@@ -327,7 +387,6 @@ The process by which \LaTeX\ builds the reference list is a bit complicated. If 
 This first time you run \texttt{pdflatex}, it works out all the references you have cited (along with other items you have labelled for crossreferencing, and what should go in the table of contents) and puts all this information into a file called \texttt{ProjectReport.aux}. The bibliography itself needs to be constructed using this information from the \textit{ref.bib} file, which you do by running \texttt{bibtex}. (The bibliography itself lands in a file called \texttt{ProjectReport.bbl}). When you next run \texttt{pdflatex} command, the bibliography is appended to your document---but until this happens \LaTeX\ doesn't know which number each reference should have. This information will by now be in the \texttt{ProjectReport.aux} file, so when you next run \texttt{pdflatex} the correct numbers will be inserted. If you are really unlucky, the formatting of the document will have caused some changes to the document that will necessitate another run of \texttt{pdflatex}. Pay attention to the messages that appear when you compile, and make sure that the message `There were undefined references' does not appear (you might need to scroll up a bit to check for this).
 
 If you don't change any references, then it will generally be sufficient to run \texttt{pdflatex} once to compile the document.  Before submission, I would run the entirety of the sequence above to avoid any last-minute cross-referencing errors, with one more run of \texttt{pdflatex} for luck.
-
 
 
 \end{document}
