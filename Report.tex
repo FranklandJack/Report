@@ -1,0 +1,404 @@
+%
+% The standard LaTeX article class is close to what is needed for an MPhys project report
+\documentclass[12pt]{article}
+
+% The following package makes the necessary tweaks to comply with the formatting requirements.
+% It also provides a standardised title page, and will warn you if the main text is too long.
+\usepackage{mphysproject}
+%
+%% DO NOT GO CHANGING THE FONT SIZE OR MARGINS! If your main text doesn't fit within 50 pages,
+%% you will have to cut stuff out.
+%
+%% REMEMBER: The target length is around 35 pages
+%
+
+% The formatting of the document can be enhanced by loading extra packages.
+%
+% An essential package is `graphicx', which is loaded by the mphysproject package so you don't
+% need to load this yourself. This allows you to include figures using the \includegraphics command.
+% To get more information about a package, type texdoc <package> on the Unix command line,
+% substituting <package> with the name of the package, e.g., texdoc graphicx
+%
+% For a wider variety of mathematical environments, symbols and formatting options:
+%\usepackage{amsmath,amssymb}
+%
+% If you want to use colour in the text
+%\usepackage{color}
+%
+% If you want to put figures side by side with separate captions
+%\usepackage{subfigure}
+%
+% If you happen to dislike the standard TeX fonts
+%\usepackage{times}
+%
+% If you include any URLs in your text and/or want to make cross-references clickable, include one of the following
+% two lines
+\usepackage{hyperref}  % This enables hyperlinks but leaves them in black, which is best for printing
+%\usepackage[colorlinks=true]{hyperref} % This colours the hyperlinks, which is better for screen reading
+% For Bra-Ket notation.
+\usepackage{braket}
+% For pictures
+\usepackage{tikz}
+% For maths symbols
+\usepackage{amsfonts}
+% For colon equals
+\usepackage{mathtools}
+
+\begin{document}
+
+\title{Accelerated Dynamics in HMC Simulations of Lattice Field Theory} % Place your project title in here
+\author{Jack Frankland} % Put your name here
+\supervisor{Dr Brian Pendleton} % Place your principal supervisor here
+\supervisor{Dr Roger Horsley} % If you have additional supervisors, list them with separate \supervisor commands
+%\date{1st January 2018} % Today's date will appear on the title page by default, but if you want to tie this to a particular date, you can do so here
+
+% Insert your abstract below
+\begin{abstract}
+	
+\end{abstract}
+
+% This command is essential to make the title page appear
+\maketitle
+
+% This command introduces the Personal Statement
+\personalstatement
+
+
+
+% If you have anyone that needs to be acknowledged (e.g., anyone who provided assistance with your project work,
+% provided data etc) please do so here. Delete this (or comment it out) if you have no-one to acknowledge.
+\acknowledgments
+
+
+
+% This command inserts a table of contents, and sets things up for the main text of your report.
+% The page count starts from here. DO NOT DELETE OR DISABLE THIS COMMAND!
+\maintext
+
+
+\section{Introduction}
+
+\section{Background}
+
+\subsection{Quantum Mechanics}
+
+In quantum mechanics we are often interested in calculating the path integral:
+\begin{equation}
+	\label{eq:PathIntegral}
+	\braket{x_b,t_b|x_a,t_a} = \int {\cal D} x\left(t\right) \exp{\left(\frac{i}{\hbar} S_M\left[x\left(t\right)\right]\right)}.
+\end{equation}
+
+$\braket{x_b,t_b|x_a,t_a}$ is the transition amplitude for a particle in position eigenstate (in the Heisenberg picture) $\ket{x_a,t_a}$ to move to position eigenstate $\ket{x_b,t_b}$; this gives us the probability amplitude of a particle at $x_a$ at time $t_a$ to move to position $x_b$ at time $t_b$. The term on the right of equation \ref{eq:PathIntegral} is known as the ``Fenyman path integral''. The measure $\int {\cal D} x\left(t\right)$ is an integral over all paths between $x_a$ and $x_b$. $S_M\left[x\left(t\right)\right]$ is the Minkowski action of a particle on the path $x\left(t\right)$ and is defined by:
+\begin{equation}
+	\label{eq:MinkowskiAction}
+	S_M\left[x\left(t\right)\right] = \int_{t_a}^{t_b} dt \left[\frac{1}{2}m\left(\frac{dx}{dt}\right)^2 - V(x)\right],
+\end{equation}
+where $x\left(t_a\right) = x_a$ and $x\left(t_b\right) = x_b$ are the boundary conditions.
+
+Due to the oscillating integrand in equation \ref{eq:PathIntegral}, it is not clear the integral will converge, and the integral measure needs to be defined before we proceed. In order to do this we follow the steps in \cite{creutz_freedman_1981} to get equation \ref{eq:PathIntegral} into a form we can work with. 
+
+The first step is to discretise time as in figure \ref{fig:TimeLattice}.
+\begin{figure}
+	\centering
+	\begin{tikzpicture}
+		
+		\foreach \y in {0,...,13}{ \draw [help lines, dashed] (0,\y) -- (13,\y); }
+		\draw [ultra thick] [-] (0,13) -- coordinate (y axis mid) (0,0);
+		\draw [ultra thick] [-] (0,0) -- coordinate (x axis mid) (13,0);
+		\foreach \x in {0,2,...,13}
+     		\draw (\x,3pt) -- (\x,-3pt);
+    	\foreach \y in {0,...,13}
+     		\draw (3pt,\y) -- (-3pt,\y);
+		\node [left] at (0,0) {$t_{0}$};
+		\node [left] at (0,1) {$t_{1}$};
+		\node [left] at (0,2) {$t_{2}$};
+		\node [left] at (0,3) {$t_{3}$};
+		\node [left] at (0,4) {$t_{4}$};
+		\node [left] at (0,5) {$t_{5}$};
+		\node [left] at (0,6) {$t_{6}$};
+		\node [left] at (0,7) {$t_{7}$};
+		\node [left] at (0,8) {$.$};
+		\node [left] at (0,9) {$.$};
+		\node [left] at (0,10) {$.$};
+		\node [left] at (0,11) {$t_{N-3}$};
+		\node [left] at (0,12) {$t_{N-2}$};
+		\node [left] at (0,13) {$t_{N-2}$};
+		\node[below=0.8cm] at (x axis mid) {position $x$};
+		\node[rotate=90, above=0.8cm] at (y axis mid) {time $t$};
+		\draw [thick] [<->] (13,7) -- (13,8) ;
+		\node [below=0.5cm] [right] at (13,8) {$\epsilon$};
+		\draw [thick] (1.5,0) -- (2.1,1);
+		\draw [thick] (2.1,1) -- (3.2,2);
+		\draw [thick] (3.2,2) -- (4.5,3);
+		\draw [thick] (4.5,3) -- (4.1,4);
+		\draw [thick] (4.1,4) -- (4.0,5);
+		\draw [thick] (4.0,5) -- (4.3,6);
+		\draw [thick] (4.3,6) -- (5.5,7);
+		\draw [thick] (5.5,7) -- (5.9,8);
+		\draw [thick] (5.9,8) -- (5.5,9);
+		\draw [thick] (5.5,9) -- (6.2,10);
+		\draw [thick] (6.2,10) -- (7.5,11);
+		\draw [thick] (7.5,11) -- (7.3,12);
+		\draw [thick] (7.3,12) -- (7.9,13);
+
+
+	\end{tikzpicture}
+	\caption{Discretising time into a lattice of spacing $\epsilon$. Diagram taken and redrawn from \cite{creutz_freedman_1981}}.
+	\label{fig:TimeLattice}
+\end{figure}
+Then for each time site on the lattice $t_i$ we have a position $x_i = x\left(t_i\right) \forall i \in \left[0,N\right]$. In our notation for the labelling of the position eigenstates in equation \ref{eq:PathIntegral} we also have $x_b=x_N=x\left(t_N\right)$ and $x_a=x_0=x\left(t_0\right)$ in order to match with figure \ref{fig:TimeLattice}. $ \epsilon $ is the spacing between lattice sites and so $\epsilon = \frac{t_b-t_a}{N} = t_{i+1}-t_i$ and for $k \in \left[0,N\right], t_k = t_a + k \epsilon $. In order to discretise the action in equation \ref{eq:MinkowskiAction} we approximate the derivative by a forward difference and the integral as a Rieman sum, taking the lattice spacing as our small parameter:
+\begin{equation}
+	\label{eq:DiscreteMinkowskiAction}
+	S_{M}\left\{x_i\right\} = \sum_{i=0}^{N-1} \epsilon \left[\frac{1}{2}m\left(\frac{x_{i+1}-x_{i}}{\epsilon}\right)^{2} - V\left(x_i\right)\right].
+\end{equation}
+Since $\forall i \in \left[1,N-1\right], -\infty < x_i < \infty$ we may define the measure in equation \ref{eq:PathIntegral} as:
+\begin{equation}
+	\label{eq:IntegralMeasure}
+	\int_{x_a}^{x_b} {\cal D} x = \lim_{N\rightarrow \infty} A_{N}\prod_{n=1}^{N-1}\int_{-\infty}^{\infty}dx_n,
+\end{equation}
+where $A_N = \left(\nu \left(\epsilon\right)\right)^{N}$ and $\nu \left(\epsilon\right)$ is a normalisation factor on each discrete interval. So that for our discrete time lattice, the path integral is given by:
+\begin{equation}
+	\label{eq:DiscretePathIntegral}
+	\braket{x_b,t_b|x_a,t_a} \sim \int^{+\infty}_{-\infty}\prod_{i=1}^{N-1}dx_i \exp{\left(\frac{i}{\hbar}S\left\{x_i\right\}\right)}.
+\end{equation}
+In the limit that $N\rightarrow \infty$ (or equivelantly $\epsilon \rightarrow 0$) we recover equation \ref{eq:PathIntegral} from equation \ref{eq:DiscretePathIntegral} exactly. 
+
+In order to work with the discrete path integral in equation \ref{eq:DiscretePathIntegral} we have one final step. We make a ``Wick rotation'' into imaginary time; this is done via the substitution:
+\begin{equation}
+	\label{eq:WickRotation}
+	t = i\tau.
+\end{equation}
+Defining $a=i\epsilon$ we now have a lattice in imaginary time, of lattice spacing $a$, substituting a into equation \ref{eq:DiscreteMinkowskiAction}:
+\begin{equation}
+	\label{eq:DiscreteEuclideanAction}
+	S_M\left\{x_i\right\} = \sum_{i=0}^{N-1} \epsilon \left[\frac{1}{2}m\left(\frac{x_{i+1}-x_{i}}{\epsilon}\right)^2 + V(x_i)\right] = iS_E\left\{x_i\right\}.
+\end{equation}
+The quantity $S_{E}\left\{x_i\right\}$ is the discretized ``Euclidean'' action; it has this name because the effect of the Wick transformation is that it turns the Mikowski metric $\left(ds_{M}\right)$ into the Euclidean metric $\left(ds_{E}\right)$ on the coordinates $\left(x,y,z,\tau\right)$ and visa-versa:
+\begin{equation}
+	\label{eq:MetricTransform}
+	 ds_{M}^{2}= -dt^2 + dx^2 + dy^2 + dz^2 = d\tau^2 + dx^2 + dy^2 + dz^2 = ds_{E}^{2}.
+\end{equation}
+This is a very useful result since upon substitution into the discrete path integral in equation \ref{eq:DiscretePathIntegral} we find:
+\begin{equation}
+	\label{eq:DiscreteEuclideanPathIntegral}
+	\braket{x_b,t_b|x_a,t_a} \sim \int^{+\infty}_{-\infty}\prod_{i=1}^{N-1}dx_i \exp{\left(-\frac{1}{\hbar}S_{E}\left\{x_i\right\}\right)}.
+\end{equation}
+This is known as the discrete euclidean path integral and it far better defined since the ``integrand'' is now exponentially suppressed. We are now able to make a connection to statistical mechanics that enables us to compute the values we want in later sections. We have the standard result from statistical physics that for a system with $N-1$ degrees of freedom labelled by $x_i$ for $i \in \left[0,N-1\right]$ then the partition function is given by:
+\begin{equation}
+	\label{eq:PartitionFunction}
+	Z \sim \int_{-\infty}^{+\infty}\prod_{i=1}^{N-1}dx_{i}\exp{\left(-\beta H\left({x_i}\right)\right)},
+\end{equation}
+with $\beta=\frac{1}{k_{B}T}$ where $T$ is the system temperature and $k_{B}$ is the Boltzman constant. Comparing equation \ref{eq:DiscreteEuclideanPathIntegral} to equation \ref{eq:PartitionFunction} we can see that the discretized Euclidean path integral is a partition function on a system with $N-1$ degrees of freedom, provided that we take:
+\begin{equation}
+	\label{ActionToHamiltonian}
+	S\left(\left\{x_{i}\right\}\right) = H\left(\left\{x_{i}\right\}\right),
+\end{equation}
+and in units where $k_{B} = 1$:
+\begin{equation}
+	\label{PlankToBoltzman}
+	\hbar = T.
+\end{equation}
+We then have a Boltzmann factor given by $\exp{\left(-\frac{1}{\hbar}S\left\{x_{i}\right\}\right)}$. So in summary we now have a classical interpretation of our quantum calculation of the path integral. Our lattice is essentially a one dimensional crystal of size $N-1$ at temperature $T$ with a continuous variable $x_i$ at each crystal site, and its Hamiltonian is given by $S\left(\left\{x_i\right\}\right)$.
+
+It is interesting to note that in quantum mechanics, due to the uncertainty principle $\sigma_x\sigma_p \geq \frac{\hbar}{2}$, $\hbar$ provides a measure of quantum fluctuations in our system. As $\bar \rightarrow 0$ we recover classical physics and in this limit the only path in the path integral that contriubtes to the transition amplitude is the classical one. On the other hand, in statistical mechanics $T$ provides a measure of statistical fluctations in our system, and in the limit that $T \rightarrow 0$ these fluctations go to zero. Hence taking the limit that $\hbar \rightarrow 0$ and $T \rightarrow 0$ we see statistical mechanics on a (real) crystal lattice is equivelant quantum mechanics in imaginary time.
+
+\section{Methods}
+
+\section{Results and Discussion}
+
+
+\section{Conclusion}
+
+
+% This command tells LaTeX how to format your references in the biblography. The standard plain formatting, with
+% references appearing in the order they are cited, is absolutely fine for our needs.
+\bibliographystyle{unsrt}
+
+% This command includes the reference list. You will need to compile two or three times (perhaps BiBTeXing after
+% the first time) to get the references in synch with the text.
+\bibliography{Report}
+
+% This command switches to appendices. The page count ends here.
+% NOTE: the material contained in appendices will NOT count towards the assessment of your report.
+% Consequently the main text should be self-contained.
+\appendix
+
+\section{Derivation of the discrete path integral for quantum harmonic oscillator}
+Here we follow the derivation given in \cite{creutz_freedman_1981} for the exact result of the path integral for discrete theory and a particle of mass $m=1$. Since in \cite{creutz_freedman_1981} the derivation has several typographical mistakes and jumps in the algebra that make it difficult to follow for the reader, we have choosen to reproduce it with corrections and alterations.
+
+For a quantum harmonic oscillator of mass $m=1$, the discrete Euclidean path integral is given in equation \ref{eq:DiscreteEuclideanPathIntegral} as:
+\begin{equation}
+	\label{eq:DiscreteEuclideanPathIntegral2}
+	\braket{x_b,t_b|x_a,t_a} \sim \int^{+\infty}_{-\infty}\prod_{i=1}^{N-1}dx_i \exp{\left(-\sum^{N-1}_{j=0} a \left[\frac{1}{2}\left(\frac{x_{j+1}-x_j}{a}\right)^2+\frac{1}{2}\mu^2x_{j}^2\right]\right)}.
+\end{equation}
+We begin by defining an operator $T$ such that its matrix elements in the Schrodinger picture are given by:
+\begin{equation}
+	\label{eq:TMatrixElements}
+	\bra{x'}\hat{T}\ket{x} = \exp{\left(-\frac{1}{2a}\left(x'-x\right)^2-\frac{\mu^2a}{4}\left(x^2+x'^2\right)\right)}.
+\end{equation}
+Then we can use the completeness relation that:
+\begin{equation}
+	\label{eq:CompletenessRelation}
+	\hat{1} = \int_{-\infty}^{\infty}\ket{x}\bra{x}.
+\end{equation}
+By inserting $N-1$ copies of this relation into the expression (one inbetween each pair of $\hat{T}$s):
+\begin{equation}
+	\label{eq:TraceT}
+	Tr\left(\hat{T}^{N}\right),
+\end{equation}
+and using the defintion of the matrix elements in equation \ref{eq:TMatrixElements}, we recover the path integral in equation \ref{eq:DiscreteEuclideanPathIntegral2}, that is:
+\begin{equation}
+	\label{eq:PathIntegralAsTrace}
+	\braket{x_b,t_b|x_a,t_a} \sim Tr\left(\hat{T}^N\right).
+\end{equation}
+Here we take the trace over the physical Hilbert space, so that for any operator $\hat{A}$ in the Schrodinger eigenbasis, the trace is:
+\begin{equation}
+	\label{eq:Trace}
+	Tr\left(\hat{A}\right) = \int_{-\infty}^{\infty}dx\bra{x}\hat{A}\ket{x},
+\end{equation}
+which is of course basis independent.
+
+The next step is to make the ansatz that:
+\begin{equation}
+	\label{eq:TAnsatz}
+	\hat{T} = \int_{-\infty}^{\infty} d\omega e^{\frac{-\mu^2a}{4}\hat{x}^2}e^{-i\hat{p}\omega}e^{-1\frac{1}{2a}\omega^2}e^{\frac{-\mu^2a}{4}\hat{x^2}},
+\end{equation}
+then, using that canonical momentum generates translations on position, that is:
+\begin{equation}
+	\label{eq:MomentumTranslation}
+	e^{-i\hat{p}\Delta}\ket{x} = \ket{x+\Delta}
+\end{equation}
+which can easily be shown by Fourier transforming the position eigen basis into momentum space, acting with the momentum operator in the exponential then Fourier transforming back into position space; we can calculate the matrix element $\bra{x'}T\ket{x}$ and recover equation \ref{eq:TMatrixElements}. We observe that the integral over $\omega$ in equation \ref{eq:TAnsatz} is Gaussian; we may use the standard result:
+\begin{equation}
+	\label{eq:GaussianIntegral}
+	\int_{-\infty}^{+\infty}dx e^{-\alpha x^2 + i\beta x} = \sqrt{\frac{\pi}{\alpha}}e^{-\frac{\beta^2}{4a}},
+\end{equation}
+this result follows from completing the square on x, analytically continuing the integral over $x$ into the complex plane and creating a rectangular contour in the lower half plane, then applying residue theory, it is valid provided $\alpha \in \mathbb{R}_{>0}$ and $\beta \in \mathbb{R}$. Applying the identity in equation \ref{eq:GaussianIntegral} to equation \ref{eq:TAnsatz} gives:
+\begin{equation}
+	\label{eq:TClosedForm}
+	\hat{T} = \sqrt{2\pi a} e^{-\frac{-\mu^2a}{4}\hat{x}^2}e^{-\frac{a}{2}\hat{p}^2}e^{-\frac{\mu^2a}{4}\hat{x}^2}.
+\end{equation}
+Notice at this stage in our derivation we could apply the Baker-Cambell-Hausdorff formula to combine the exponentials; dropping $\mathcal{O}\left(a^2\right)$ would then give the harmonic oscillator Hamiltonian exponentiated. Since this system is exactly solvable in the discrete case, we will avoid doing this and keep all terms. 
+
+The canconical commutation relation of quantum mechanics gives:
+\begin{equation}
+	\label{eq:QMCCM}
+	\left[\hat{x},\hat{p}\right] = i\hbar,
+\end{equation}
+which can be  along with the identities that for operators $\hat{A}$ and $\hat{B}$:
+\begin{equation}
+	\label{eq:ComutationNIdentity1}
+	\left[\hat{A},\hat{B}^n\right] = n\hat{B}^{n-1}\left[\hat{A},\hat{B}\right]
+\end{equation}
+and
+\begin{equation}
+	\label{eq:ComutationNIdentity2}
+	\left[\hat{A}^n,\hat{B}\right] = n\hat{A}^{n-1}\left[\hat{A},\hat{B}\right],
+\end{equation}
+if $\left[\hat{A},\left[\hat{A},\hat{B}\right]\right] = \left[\hat{B},\left[\hat{A},\hat{B}\right]\right] = 0 $, to show that:
+\begin{equation}
+	FILL
+\end{equation}
+and
+\begin{equation}
+	FILL.
+\end{equation}
+Using identities FILL and FILL we can easily show that:
+\begin{equation}
+	\label{eq:XT}
+	\hat{x}\hat{T} = \hat{T}\left[\left(1+\frac{a^2\mu^2}{2}\right)\hat{x} - ia\hat{p}\right],
+\end{equation}
+and
+\begin{equation}
+	\label{eq:PT}
+	\hat{p}\hat{T} = \hat{T}\left[\left(1+\frac{a^2\mu^2}{2}\right)\hat{p}+ia\mu^2\left(1+\frac{a^2\mu^2}{4}\right)\hat{x}\right].
+\end{equation}
+Iterating equations \label{eq:XT} and \label{eq:PT} a second time gives:
+\begin{equation}
+	\label{eq:ComPXT}
+	\left[\hat{p}^2+\mu^2\left(1+\frac{a^2\mu^2}{4}\right)\hat{x^2},\hat{T}\right] = 0.
+\end{equation}
+Defining a new angular frequency parameter $\omega$ by:
+\begin{equation}
+	\label{eq:omega}
+	\omega^2 = \mu^2\left(1+\frac{a^2\mu^2}{4}\right),
+\end{equation}
+then from equation \ref{eq:ComPXT} we have that $\hat{T}$ commutes with the simple harmonic oscillator Hamiltonian:
+\begin{equation}
+	\label{eq:OmegaHamiltonian}
+	\hat{H} = \frac{1}{2}\hat{p}^2+\frac{1}{2}\omega^2\hat{x}^2.
+\end{equation}
+Since $\hat{H}$ and $\hat{T}$ commute we know $\hat{T}$ is diagonalized by the eigenstates of $\hat{H}$. 
+
+The Hamiltonian is in the form of a harmonic oscillator with angular frequency $\omega$, therefore we may define the corresponding ladder operators:
+\begin{equation}
+	\label{eq:HarmonicCreation}
+	\hat{a}^\dagger = \frac{1}{\sqrt{\omega}}\left(\hat{p}+i\omega\hat{x}\right)
+\end{equation}
+and
+\begin{equation}
+	\label{eq:HarmonicAnhilation}
+	\hat{a} = \frac{1}{\sqrt{\omega}}\left(\hat{p}-i\omega\hat{x}\right)
+\end{equation}
+which allows us to write:
+\begin{equation}
+	\label{HamiltonianLadder}
+	\hat{H} = \left(\hat{a}^\dagger\hat{a}+\frac{1}{2}\right)\omega
+\end{equation}
+The eigenstates of $\hat{H}$ satisfy the standard relations:
+\begin{equation}
+	\label{LadderOnZero}
+	\hat{a}\ket{0} = 0,
+\end{equation}
+\begin{equation}
+	\label{LadderNOnZero}
+	\left(\hat{a}^\dagger\right)^n\ket{0} = \ket{n},
+\end{equation}
+and
+\begin{equation}
+	\label{InnernProduct}
+	\braket{n|n}=n!.
+\end{equation}
+
+Using the identities of equations \ref{eq:XT} and \ref{eq:PT} we can show that:
+\begin{equation}
+	\label{eq:AT}
+	\hat{a}\hat{T} = \hat{T}\hat{a}\left( 1 + \frac{a^2\mu^2}{2} - a\mu\left( 1 + \frac{a^2\mu^2}{4}\right)^\frac{1}{2} \right).
+\end{equation}
+Since the eigenstates of $\hat{H}$ given as $\ket{n}$ diagonalise $\hat{T}$, for $\lambda_i$ the eigenvalues of $\hat{T}$:
+\begin{equation}
+	\label{eq:TEigenstates}
+	\hat{T}\ket{n} = \lambda_n \ket{n}.
+\end{equation}
+We can then use that $\hat{a}\ket{n} = \sqrt{n}\ket{n-1}$ and equation \ref{eq:AT} to show the ratio:
+\begin{equation}
+	\label{eq:EigenRatio}
+	\frac{\lambda_n}{\lambda_{n-1}} = 1 + \frac{a^2\mu^2}{2} - a\mu\left( 1 + \frac{a^2\mu^2}{4}\right)^{\frac{1}{2}} \coloneqq R
+\end{equation}
+We may therefore conclude that:
+\begin{equation}
+	\label{eq:TWithK}
+	\hat{T} = \sqrt{2\pi a}KR^{\frac{\hat{H}}{\omega}},
+\end{equation}
+for some normalisation constant $K$. We may then calculate $K$ by first taking the trace of $\hat{T}$ over the energy eigenbasis $\ket{n}$:
+\begin{equation}
+	\label{eq:TraceTN}
+	\frac{1}{\sqrt{2\pi a}} Tr{\left(\hat{T}\right)} = K \sum_{n=0}^{n=\infty} R^{n+\frac{1}{2}} = \frac{K}{a\mu},
+\end{equation}
+where we have used that $\hat{H}\ket{n} = E_n\ket{n} = \left(n+\frac{1}{2}\right)\omega$ for the harmonic oscillator in units where $\hbar=1$, and in order to compute the sum we have used that $|R| < 1$. We then take the trace of $\hat{T}$ over the position eigenbasis:
+\begin{equation}
+	\label{eq:TraceTX}
+	\frac{1}{\sqrt{2\pi a}} Tr{\left(\hat{T}\right)} = \frac{1}{2\pi}\int_{-\infty}^{+\infty}dx\int_{-\infty}^{+\infty}dp e^{\frac{-\mu^2ax^2}{2}}e^{-\frac{ap^2}{2}} = \frac{1}{\mu a},
+\end{equation}
+where this time in order to take the trace of $\hat{T}$ we have taken the trace of equation \ref{eq:TClosedForm} and Fourier transformed the $\ket{x}$ in the expression into momentum space. Since the trace of an operator is a basis independent quantity we may compare equations \ref{eq:TraceTN} and \ref{eq:TraceTX} which gives $K=1$ so that:
+\begin{equation}
+	\label{eq:TFinalForm}
+	T = \sqrt{2\pi a} R^{\frac{\hat{H}}{\omega}}.
+\end{equation}
+We may now explicitly compute the trace expression for the discrete path integral given in equation \ref{eq:TraceT} using the result for $\hat{T}$ in equation \ref{eq:TFinalForm}. We again take the trace over the energy eigenstates and use the fact that $|R|<1$ to compute the resulting sum, this gives:
+\begin{equation}
+	\label{eq:DiscretePathIntegral}
+	\braket{x_b,t_b|x_a,t_a} = \left(2\pi aR\right)^{\frac{N}{2}}\frac{1}{1-R^N}.
+\end{equation}
+
+\end{document}
