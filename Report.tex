@@ -43,6 +43,8 @@
 \usepackage{amsfonts}
 % For colon equals
 \usepackage{mathtools}
+% For adding todo notes
+\usepackage{todonotes}
 
 \begin{document}
 
@@ -97,7 +99,7 @@ where $x\left(t_a\right) = x_a$ and $x\left(t_b\right) = x_b$ are the boundary c
 
 Due to the oscillating integrand in equation \ref{eq:PathIntegral}, it is not clear the integral will converge, and the integral measure needs to be defined before we proceed. In order to do this we follow the steps in \cite{creutz_freedman_1981} to get equation \ref{eq:PathIntegral} into a form we can work with. 
 
-The first step is to discretise time as in figure \ref{fig:TimeLattice}.
+The first step is to discretise time \todo{SHOULD I DO WICK TRANSFORMATION FIRST?} as in figure \ref{fig:TimeLattice}.
 \begin{figure}
 	\centering
 	\begin{tikzpicture}
@@ -124,7 +126,7 @@ The first step is to discretise time as in figure \ref{fig:TimeLattice}.
 		\node [left] at (0,12) {$t_{N-2}$};
 		\node [left] at (0,13) {$t_{N-2}$};
 		\node[below=0.8cm] at (x axis mid) {position $x$};
-		\node[rotate=90, above=0.8cm] at (y axis mid) {time $t$};
+		\node[left=0.8cm] at (y axis mid) {time $t$};
 		\draw [thick] [<->] (13,7) -- (13,8) ;
 		\node [below=0.5cm] [right] at (13,8) {$\epsilon$};
 		\draw [thick] (1.5,0) -- (2.1,1);
@@ -146,20 +148,20 @@ The first step is to discretise time as in figure \ref{fig:TimeLattice}.
 	\caption{Discretising time into a lattice of spacing $\epsilon$. Diagram taken and redrawn from \cite{creutz_freedman_1981}}.
 	\label{fig:TimeLattice}
 \end{figure}
-Then for each time site on the lattice $t_i$ we have a position $x_i = x\left(t_i\right) \forall i \in \left[0,N\right]$. In our notation for the labelling of the position eigenstates in equation \ref{eq:PathIntegral} we also have $x_b=x_N=x\left(t_N\right)$ and $x_a=x_0=x\left(t_0\right)$ in order to match with figure \ref{fig:TimeLattice}. $ \epsilon $ is the spacing between lattice sites and so $\epsilon = \frac{t_b-t_a}{N} = t_{i+1}-t_i$ and for $k \in \left[0,N\right], t_k = t_a + k \epsilon $. In order to discretise the action in equation \ref{eq:MinkowskiAction} we approximate the derivative by a forward difference and the integral as a Rieman sum, taking the lattice spacing as our small parameter:
+Then for each time site on the lattice $t_i$ we have a position $x_i = x\left(t_i\right) \forall i \in \left[0,N\right]$. In our notation for the labelling of the position eigenstates in equation \ref{eq:PathIntegral} we also have $x_b=x_N=x\left(t_N\right)$ and $x_a=x_0=x\left(t_0\right)$ in order to match with figure \ref{fig:TimeLattice}. $ \epsilon $ is the spacing between lattice sites and so $\epsilon = \frac{t_b-t_a}{N} = t_{i+1}-t_i$ and for $k \in \left[0,N\right], t_k = t_a + k \epsilon $. In order to discretise the action in equation \ref{eq:MinkowskiAction} we approximate the derivative by a forward difference and the integral as a Rieman sum, taking the lattice spacing as our small parameter:\todo{CHECK INDEXING IS CORRECT}
 \begin{equation}
 	\label{eq:DiscreteMinkowskiAction}
 	S_{M}\left\{x_i\right\} = \sum_{i=0}^{N-1} \epsilon \left[\frac{1}{2}m\left(\frac{x_{i+1}-x_{i}}{\epsilon}\right)^{2} - V\left(x_i\right)\right].
 \end{equation}
-Since $\forall i \in \left[1,N-1\right], -\infty < x_i < \infty$ we may define the measure in equation \ref{eq:PathIntegral} as:
+Since $\forall i \in \left[1,N-1\right], -\infty < x_i < \infty$ we may define the measure in equation \ref{eq:PathIntegral} as:\todo{WHY IS THIS TRUE? CRUETZ-FREEDMAN DERIVATION ISN'T CLEAR}
 \begin{equation}
 	\label{eq:IntegralMeasure}
 	\int_{x_a}^{x_b} {\cal D} x = \lim_{N\rightarrow \infty} A_{N}\prod_{n=1}^{N-1}\int_{-\infty}^{\infty}dx_n,
 \end{equation}
-where $A_N = \left(\nu \left(\epsilon\right)\right)^{N}$ and $\nu \left(\epsilon\right)$ is a normalisation factor on each discrete interval. So that for our discrete time lattice, the path integral is given by:
+where $A_N = \left(\nu \left(\epsilon\right)\right)^{N}$ and $\nu \left(\epsilon\right)$ is a normalisation factor on each discrete interval. So that for our discrete time lattice, the path integral is given by\todo{SHOULD THE INDEXES ON THE PRODUCT BE FROM ZERO TO N?}:
 \begin{equation}
 	\label{eq:DiscretePathIntegral}
-	\braket{x_b,t_b|x_a,t_a} \sim \int^{+\infty}_{-\infty}\prod_{i=1}^{N-1}dx_i \exp{\left(\frac{i}{\hbar}S\left\{x_i\right\}\right)}.
+	\braket{x_b,t_b|x_a,t_a} \sim \int^{+\infty}_{-\infty}\prod_{i=1}^{N-1}dx_i \exp{\left(\frac{i}{\hbar}S_M\left\{x_i\right\}\right)}.
 \end{equation}
 In the limit that $N\rightarrow \infty$ (or equivelantly $\epsilon \rightarrow 0$) we recover equation \ref{eq:PathIntegral} from equation \ref{eq:DiscretePathIntegral} exactly. 
 
@@ -168,12 +170,12 @@ In order to work with the discrete path integral in equation \ref{eq:DiscretePat
 	\label{eq:WickRotation}
 	t = i\tau.
 \end{equation}
-Defining $a=i\epsilon$ we now have a lattice in imaginary time, of lattice spacing $a$, substituting a into equation \ref{eq:DiscreteMinkowskiAction}:
+Applying this to the discretized theory developed above by defining $a=i\epsilon$, we now have a lattice in imaginary time, of lattice spacing $a$, substituting $a$ into equation \ref{eq:DiscreteMinkowskiAction}:
 \begin{equation}
 	\label{eq:DiscreteEuclideanAction}
 	S_M\left\{x_i\right\} = \sum_{i=0}^{N-1} \epsilon \left[\frac{1}{2}m\left(\frac{x_{i+1}-x_{i}}{\epsilon}\right)^2 + V(x_i)\right] = iS_E\left\{x_i\right\}.
 \end{equation}
-The quantity $S_{E}\left\{x_i\right\}$ is the discretized ``Euclidean'' action; it has this name because the effect of the Wick transformation is that it turns the Mikowski metric $\left(ds_{M}\right)$ into the Euclidean metric $\left(ds_{E}\right)$ on the coordinates $\left(x,y,z,\tau\right)$ and visa-versa:
+The quantity $S_{E}\left\{x_i\right\}$ is the discretized ``Euclidean'' action; it has this name because the effect of the Wick transformation is that it turns the Mikowski metric $ds_{M}$ on the coordinates $\left(x,y,z,t\right)$ into the Euclidean metric $ds_{E}$ on the coordinates $\left(x,y,z,\tau\right)$ and visa-versa:
 \begin{equation}
 	\label{eq:MetricTransform}
 	 ds_{M}^{2}= -dt^2 + dx^2 + dy^2 + dz^2 = d\tau^2 + dx^2 + dy^2 + dz^2 = ds_{E}^{2}.
@@ -183,7 +185,7 @@ This is a very useful result since upon substitution into the discrete path inte
 	\label{eq:DiscreteEuclideanPathIntegral}
 	\braket{x_b,t_b|x_a,t_a} \sim \int^{+\infty}_{-\infty}\prod_{i=1}^{N-1}dx_i \exp{\left(-\frac{1}{\hbar}S_{E}\left\{x_i\right\}\right)}.
 \end{equation}
-This is known as the discrete euclidean path integral and it far better defined since the ``integrand'' is now exponentially suppressed. We are now able to make a connection to statistical mechanics that enables us to compute the values we want in later sections. We have the standard result from statistical physics that for a system with $N-1$ degrees of freedom labelled by $x_i$ for $i \in \left[0,N-1\right]$ then the partition function is given by:
+This is known as the discrete euclidean path integral and it far better defined since the integrand is now exponentially suppressed. We are now able to make a connection to statistical mechanics that enables us to compute the values we want in later sections. We have the standard result from statistical physics that for a system with $N-1$ degrees of freedom labelled by $x_i$ for $i \in \left[0,N-1\right]$ then the partition function is given by:
 \begin{equation}
 	\label{eq:PartitionFunction}
 	Z \sim \int_{-\infty}^{+\infty}\prod_{i=1}^{N-1}dx_{i}\exp{\left(-\beta H\left({x_i}\right)\right)},
@@ -200,11 +202,16 @@ and in units where $k_{B} = 1$:
 \end{equation}
 We then have a Boltzmann factor given by $\exp{\left(-\frac{1}{\hbar}S\left\{x_{i}\right\}\right)}$. So in summary we now have a classical interpretation of our quantum calculation of the path integral. Our lattice is essentially a one dimensional crystal of size $N-1$ at temperature $T$ with a continuous variable $x_i$ at each crystal site, and its Hamiltonian is given by $S\left(\left\{x_i\right\}\right)$.
 
-It is interesting to note that in quantum mechanics, due to the uncertainty principle $\sigma_x\sigma_p \geq \frac{\hbar}{2}$, $\hbar$ provides a measure of quantum fluctuations in our system. As $\bar \rightarrow 0$ we recover classical physics and in this limit the only path in the path integral that contriubtes to the transition amplitude is the classical one. On the other hand, in statistical mechanics $T$ provides a measure of statistical fluctations in our system, and in the limit that $T \rightarrow 0$ these fluctations go to zero. Hence taking the limit that $\hbar \rightarrow 0$ and $T \rightarrow 0$ we see statistical mechanics on a (real) crystal lattice is equivelant quantum mechanics in imaginary time.
+It is interesting to note that in quantum mechanics, due to the uncertainty principle $\sigma_x\sigma_p \geq \frac{\hbar}{2}$, $\hbar$ provides a measure of quantum fluctuations in our system. As $\hbar \rightarrow 0$ we recover classical physics and in this limit the only path in the path integral that contriubtes to the transition amplitude is the classical one. On the other hand, in statistical mechanics $T$ provides a measure of statistical fluctations in our system, and in the limit that $T \rightarrow 0$ these fluctations go to zero. Hence taking the limit that $\hbar \rightarrow 0$ and $T \rightarrow 0$ we see statistical mechanics on a (real) crystal lattice is equivelant quantum mechanics in imaginary time.
+
+From now on we will use $Z$ to refer to the RHS of equation \ref{eq:DiscreteEuclideanPathIntegral}.
 
 \section{Methods}
 
 \section{Results and Discussion}
+\subsection{Quantum Harmonic Oscillator}
+
+\subsection{Quantum Anharmonic Oscillator}
 
 
 \section{Conclusion}
@@ -226,10 +233,10 @@ It is interesting to note that in quantum mechanics, due to the uncertainty prin
 \section{Derivation of the discrete path integral for quantum harmonic oscillator}
 Here we follow the derivation given in \cite{creutz_freedman_1981} for the exact result of the path integral for discrete theory and a particle of mass $m=1$. Since in \cite{creutz_freedman_1981} the derivation has several typographical mistakes and jumps in the algebra that make it difficult to follow for the reader, we have choosen to reproduce it with corrections and alterations.
 
-For a quantum harmonic oscillator of mass $m=1$, the discrete Euclidean path integral is given in equation \ref{eq:DiscreteEuclideanPathIntegral} as:
+For a quantum harmonic oscillator of mass $m=1$, the discrete Euclidean path integral is given in equation \ref{eq:DiscreteEuclideanPathIntegral} as\todo{FIX INDEXING}:
 \begin{equation}
 	\label{eq:DiscreteEuclideanPathIntegral2}
-	\braket{x_b,t_b|x_a,t_a} \sim \int^{+\infty}_{-\infty}\prod_{i=1}^{N-1}dx_i \exp{\left(-\sum^{N-1}_{j=0} a \left[\frac{1}{2}\left(\frac{x_{j+1}-x_j}{a}\right)^2+\frac{1}{2}\mu^2x_{j}^2\right]\right)}.
+	Z = \int^{+\infty}_{-\infty}\prod_{i=1}^{N-1}dx_i \exp{\left(-\sum^{N-1}_{j=0} a \left[\frac{1}{2}\left(\frac{x_{j+1}-x_j}{a}\right)^2+\frac{1}{2}\mu^2x_{j}^2\right]\right)}.
 \end{equation}
 We begin by defining an operator $T$ such that its matrix elements in the Schrodinger picture are given by:
 \begin{equation}
@@ -249,7 +256,7 @@ By inserting $N-1$ copies of this relation into the expression (one inbetween ea
 and using the defintion of the matrix elements in equation \ref{eq:TMatrixElements}, we recover the path integral in equation \ref{eq:DiscreteEuclideanPathIntegral2}, that is:
 \begin{equation}
 	\label{eq:PathIntegralAsTrace}
-	\braket{x_b,t_b|x_a,t_a} \sim Tr\left(\hat{T}^N\right).
+	Z = \sim Tr\left(\hat{T}^N\right).
 \end{equation}
 Here we take the trace over the physical Hilbert space, so that for any operator $\hat{A}$ in the Schrodinger eigenbasis, the trace is:
 \begin{equation}
@@ -375,7 +382,7 @@ We can then use that $\hat{a}\ket{n} = \sqrt{n}\ket{n-1}$ and equation \ref{eq:A
 	\label{eq:EigenRatio}
 	\frac{\lambda_n}{\lambda_{n-1}} = 1 + \frac{a^2\mu^2}{2} - a\mu\left( 1 + \frac{a^2\mu^2}{4}\right)^{\frac{1}{2}} \coloneqq R
 \end{equation}
-We may therefore conclude that:
+We may therefore conclude that \todo{FIND OUT WHY THIS IS TRUE}:
 \begin{equation}
 	\label{eq:TWithK}
 	\hat{T} = \sqrt{2\pi a}KR^{\frac{\hat{H}}{\omega}},
@@ -385,7 +392,12 @@ for some normalisation constant $K$. We may then calculate $K$ by first taking t
 	\label{eq:TraceTN}
 	\frac{1}{\sqrt{2\pi a}} Tr{\left(\hat{T}\right)} = K \sum_{n=0}^{n=\infty} R^{n+\frac{1}{2}} = \frac{K}{a\mu},
 \end{equation}
-where we have used that $\hat{H}\ket{n} = E_n\ket{n} = \left(n+\frac{1}{2}\right)\omega$ for the harmonic oscillator in units where $\hbar=1$, and in order to compute the sum we have used that $|R| < 1$. We then take the trace of $\hat{T}$ over the position eigenbasis:
+where we have used that $\hat{H}\ket{n} = E_n\ket{n} = \left(n+\frac{1}{2}\right)\omega$ for the harmonic oscillator in units where $\hbar=1$, and in order to compute the sum we have used that $|R| < 1$. The trace over the energy eigen basis is given by:
+\begin{equation}
+	\label{eq:EnergyTrace}
+	Tr\left(\hat{A}\right) = \sum_{n=0}^{N}\bra{n}\hat{A}\ket{n}
+\end{equation}
+We then take the trace of $\hat{T}$ over the position eigenbasis according to equation \ref{eq:Trace}:
 \begin{equation}
 	\label{eq:TraceTX}
 	\frac{1}{\sqrt{2\pi a}} Tr{\left(\hat{T}\right)} = \frac{1}{2\pi}\int_{-\infty}^{+\infty}dx\int_{-\infty}^{+\infty}dp e^{\frac{-\mu^2ax^2}{2}}e^{-\frac{ap^2}{2}} = \frac{1}{\mu a},
@@ -398,7 +410,24 @@ where this time in order to take the trace of $\hat{T}$ we have taken the trace 
 We may now explicitly compute the trace expression for the discrete path integral given in equation \ref{eq:TraceT} using the result for $\hat{T}$ in equation \ref{eq:TFinalForm}. We again take the trace over the energy eigenstates and use the fact that $|R|<1$ to compute the resulting sum, this gives:
 \begin{equation}
 	\label{eq:DiscretePathIntegral}
-	\braket{x_b,t_b|x_a,t_a} = \left(2\pi aR\right)^{\frac{N}{2}}\frac{1}{1-R^N}.
+	Z = \left(2\pi aR\right)^{\frac{N}{2}}\frac{1}{1-R^N}.
+\end{equation}
+This is the exact expression for the discrete path integral of a quantun harmonic oscillator of mass $m=1$, angular frequency $\mu$ on an imagainary time lattice of $N-1$ sites with lattice spacing $a$.
+
+The correlation functions are given by:\todo{FIND OUT WHY THIS IS TRUE}
+\begin{equation}
+	\label{eq:DiscreteCorrelationFunctions}
+	\braket{x_ix_{i+j}} = \frac{1}{Z}Tr\left(\hat{x}\hat{T}^j\hat{x}\hat{T}^{N-j}\right) = \frac{1}{2\omega\left(1-R^{n}\right)}\left(R^{j}+R^{N-j}\right).
+\end{equation}
+Taking $j=0$, equation \ref{eq:DiscreteCorrelationFunctions} becomes:
+\begin{equation}
+	\label{eq:XSquaredExpectation}
+	\braket{x^2} = \frac{1}{2\mu\left(1+\frac{a^2\mu^2}{4}\right)^\frac{1}{2}}\left(\frac{1+R^N}{1-R^N}\right).
+\end{equation}
+We have shown in above that the discrete theory for the harmonic oscillator leads to a quantum system with the Hamiltonian given in equation \ref{eq:OmegaHamiltonian}. This is the Hamiltonian of a quantum harmonic oscillator of angular frequency $\omega$ rather than $\mu$ and hence we employ the standard result from quantum theory that for a a quantum harmonic oscillator of angular frequency $\omega$ the ground state wave function is given by: \todo{CHECK THIS LOGIC IS CORRECT}
+\begin{equation}
+	\label{eq:DiscreteGroundStateWaveFunction2}
+	\psi(x) =\left(\frac{\omega}{\pi}\right)^\frac{1}{4}\exp\left(-\frac{1}{2}\omega x^2\right)
 \end{equation}
 
 \end{document}

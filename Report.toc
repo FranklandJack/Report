@@ -3,6 +3,8 @@
 \contentsline {subsection}{\numberline {2.1}Quantum Mechanics}{1}{subsection.2.1}
 \contentsline {section}{\numberline {3}Methods}{4}{section.3}
 \contentsline {section}{\numberline {4}Results and Discussion}{4}{section.4}
+\contentsline {subsection}{\numberline {4.1}Quantum Harmonic Oscillator}{4}{subsection.4.1}
+\contentsline {subsection}{\numberline {4.2}Quantum Anharmonic Oscillator}{4}{subsection.4.2}
 \contentsline {section}{\numberline {5}Conclusion}{4}{section.5}
-\contentsline {section}{Appendices}{5}{section*.5}
+\contentsline {section}{Appendices}{5}{section*.9}
 \contentsline {section}{\numberline {A}Derivation of the discrete path integral for quantum harmonic oscillator}{5}{appendix.A}
