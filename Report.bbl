@@ -5,4 +5,36 @@ M~Creutz and B~Freedman.
 \newblock A statistical approach to quantum mechanics.
 \newblock {\em Annals of Physics}, 132(2):427--462, 1981.
 
+\bibitem{neal_2011}
+Radford Neal.
+\newblock Mcmc using hamiltonian dynamics.
+\newblock {\em Chapman \& Hall/CRC Handbooks of Modern Statistical Methods
+  Handbook of Markov Chain Monte Carlo}, Oct 2011.
+
+\bibitem{goldstein_poole_safko_2014}
+Herbert Goldstein, Charles~P. Poole, and John Safko.
+\newblock {\em Classical mechanics}.
+\newblock Pearson, 2014.
+
+\bibitem{beskos_pillai_roberts_sanz-serna_stuart_2013}
+Alexandros Beskos, Natesh Pillai, Gareth Roberts, Jesus-Maria Sanz-Serna, and
+  Andrew Stuart.
+\newblock Optimal tuning of the hybrid monte carlo algorithm.
+\newblock {\em Bernoulli}, 19(5A):1501--1534, 2013.
+
+\bibitem{binney_skinner_2015}
+James Binney and David~Benjamin. Skinner.
+\newblock {\em The physics of quantum mechanics}.
+\newblock Oxford University Press, 2015.
+
+\bibitem{fock_1930}
+V.~Fock.
+\newblock Bemerkung zum virialsatz.
+\newblock {\em Zeitschrift f�r Physik}, 63(11-12):855--858, 1930.
+
+\bibitem{blankenbecler_degrand_sugar_1980}
+R.~Blankenbecler, T.~Degrand, and R.~L. Sugar.
+\newblock Moment method for eigenvalues and expectation values.
+\newblock {\em Physical Review D}, 21(4):1055--1061, 1980.
+
 \end{thebibliography}

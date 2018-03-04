@@ -1,0 +1,47 @@
+MPhys Report Plan/Content/Structure:
+Jack Frankland s1404032
+
+Report Contents:
+
+1. Introduction:             - Motivation for project.
+                             - Outline of report and conclusions/results.
+
+2. Background:               - Path integral formulation of QM.
+                             - Discretisation of path integral / wick transformation.
+                             - Connection to partition function/statistical mechanics.
+
+                             - Figures: 1. Diagram for paths in the path integral.
+                                        2. Discretised path integral / lattice diagram.
+
+3. Methods:                  - Review of Monte-Carlo methods / how they work / detailed balance. 
+                             - Hybrid Monte-Carlo: - Review of Hamiltonian dynamics, leapfrog, preservation of volume in PS.
+                                                   - How to sample from a Hamiltonian using partition function, fictitious momenta.
+                                                   - Steps of HMC algorithm.
+                                                   - Show detailed balance satisfied.
+
+4. Results/Discussions:      - Apply HMC algorithm to quantum mechanical systems bringing together sections 2 and 3. 
+                             - Baby/test case QHO: - Ground and first excited state energies. (figures)
+                                                   - <X^2> vs lattice spacing. (figures)
+                                                   - Wavefunction. (figures)
+                                                   - Make comparison to exact results for discrete theory.
+
+                             - Repeat for QAO: - No analytic results.
+                                               - Demonstrate problem of sampling from isolated modes in the probability distribution.
+
+                             - Tempering Dynamics: - Explain what tempering dynamics is / how it works.
+                                                   - Show volume in PS still preserved => detailed balance therefore valid modification.
+                                                   - Show results of whether or not it worked for QHO (doesn't look like it will atm).
+                                                   - (If it doesn't work try and find out why and discuss that here?)
+
+5. General Conclusion:       - Discussion of results of HMC simulation.
+                             - Results of HMC simulation + tempering / did it work / if it did work is it a justifiable improvement.
+
+Appendicies: - Calculation of various analytic results for QHO
+             - Quantum Virial Theorem.
+
+
+
+(QHO = quantum harmonic oscillator)
+(AQO = quantum anharmonic oscillator)
+ 
+

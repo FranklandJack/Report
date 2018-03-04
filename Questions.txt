@@ -1,0 +1,9 @@
+Questions for Friday 2nd March.
+
+1. Is the reference provided for acceptance rate applicable to our simulation?
+
+2. How detailed should the explanation of Monte-Carlo be, do I need to explain it fully (i.e. method for computing multi-dimensional integrals with low error stochastically)? or can I just say it is a method for computing expectation values according to a probability distribution? Do I need to explain Markov chains?
+
+3. Is my proof that leap frog preserves volume acceptable and is it too detailed? 
+
+4. How is the value of <f(x)> related to <x,t|f(x)|x,t> related to <0|f(x)|0>, i.e. how do we know we are making measurements of the ground state, and how do we know they correspond to observable values in q.m?
