@@ -1,15 +1,74 @@
-\begin{thebibliography}{1}
+\begin{thebibliography}{10}
 
-\bibitem{creutz_freedman_1981}
-M~Creutz and B~Freedman.
-\newblock A statistical approach to quantum mechanics.
-\newblock {\em Annals of Physics}, 132(2):427--462, 1981.
+\bibitem{duane_kennedy_pendleton_roweth_1987}
+Simon Duane, A.d. Kennedy, Brian~J. Pendleton, and Duncan Roweth.
+\newblock Hybrid monte carlo.
+\newblock {\em Physics Letters B}, 195(2):216--222, 1987.
+
+\bibitem{metropolis_rosenbluth_rosenbluth_teller_teller_1953}
+Nicholas Metropolis, Arianna~W. Rosenbluth, Marshall~N. Rosenbluth, Augusta~H.
+  Teller, and Edward Teller.
+\newblock Equation of state calculations by fast computing machines.
+\newblock {\em The Journal of Chemical Physics}, 21(6), Jun 1953.
+
+\bibitem{neal_1996_a}
+Radford~M. Neal.
+\newblock Bayesian learning for neural networks.
+\newblock {\em Lecture Notes in Statistics}, 1996.
+
+\bibitem{ishwaran_1999}
+Hemant Ishwaran.
+\newblock Applications of hybrid monte carlo to bayesian generalized linear
+  models: Quasicomplete separation and neural networks.
+\newblock {\em Journal of Computational and Graphical Statistics}, 8(4):779,
+  1999.
+
+\bibitem{schmidt_2009}
+Mikkel~N. Schmidt.
+\newblock Function factorization using warped gaussian processes.
+\newblock {\em Proceedings of the 26th Annual International Conference on
+  Machine Learning - ICML 09}, 2009.
+
+\bibitem{neal_1996_b}
+Radford~M. Neal.
+\newblock Sampling from multimodal distributions using tempered transitions.
+\newblock {\em Statistics and Computing}, 6(4):353--366, 1996.
 
 \bibitem{neal_2011}
 Radford Neal.
 \newblock Mcmc using hamiltonian dynamics.
 \newblock {\em Chapman \& Hall/CRC Handbooks of Modern Statistical Methods
   Handbook of Markov Chain Monte Carlo}, Oct 2011.
+
+\bibitem{bietenholz_2016}
+Wolfgang Bietenholz.
+\newblock Hadron physics from lattice qcd.
+\newblock {\em International Journal of Modern Physics E}, 25(07):1642008,
+  2016.
+
+\bibitem{creutz_freedman_1981}
+M~Creutz and B~Freedman.
+\newblock A statistical approach to quantum mechanics.
+\newblock {\em Annals of Physics}, 132(2):427--462, 1981.
+
+\bibitem{westbroek_king_vvedensky_durr_2017}
+Marise J.~E. Westbroek, Peter~R. King, Dimitri~D. Vvedensky, and Stephan Durr.
+\newblock User's guide to monte carlo methods for evaluating path integrals,
+  Dec 2017.
+
+\bibitem{rodgers_raes}
+Ronnnie Rodgers and Laura Raes.
+\newblock Monte carlo simulations of harmonic and anharmonic oscillators in
+  discrete euclidean time, 2014.
+
+\bibitem{slapik_serenone}
+Aleksandra Slapik and William Serenone.
+\newblock Lattice monte carlo study of the harmonic oscillator in ..., 2012.
+
+\bibitem{blankenbecler_degrand_sugar_1980}
+R.~Blankenbecler, T.~Degrand, and R.~L. Sugar.
+\newblock Moment method for eigenvalues and expectation values.
+\newblock {\em Physical Review D}, 21(4):1055--1061, 1980.
 
 \bibitem{goldstein_poole_safko_2014}
 Herbert Goldstein, Charles~P. Poole, and John Safko.
@@ -22,6 +81,25 @@ Alexandros Beskos, Natesh Pillai, Gareth Roberts, Jesus-Maria Sanz-Serna, and
 \newblock Optimal tuning of the hybrid monte carlo algorithm.
 \newblock {\em Bernoulli}, 19(5A):1501--1534, 2013.
 
+\bibitem{bou-rabee_sanz-serna_2017}
+Nawaf Bou-Rabee and Jes{\'u}s~Mar{\'\i}a Sanz-Serna.
+\newblock Randomized hamiltonian monte carlo.
+\newblock {\em The Annals of Applied Probability}, 27(4):2159--2194, 2017.
+
+\bibitem{durmus_moulines_saksman}
+Alain Durmus, Eric Moulines, and Eero Saksman.
+\newblock On the convergence of hamiltonian monte carlo, 2017.
+
+\bibitem{livingstone_betancourt_byrne_girolami}
+Samuel Livingstone, Michael Betancourt, Simon Byrne, and Mark Girolami.
+\newblock On the geometric ergodicity of hamiltonian monte carlo, 2016.
+
+\bibitem{gattringer_lang_2013}
+Christof Gattringer and Christian~B. Lang.
+\newblock {\em Quantum Chromodynamics on the Lattice An Introductory
+  Presentation}.
+\newblock Springer Berlin, 2013.
+
 \bibitem{binney_skinner_2015}
 James Binney and David~Benjamin. Skinner.
 \newblock {\em The physics of quantum mechanics}.
@@ -31,10 +109,5 @@ James Binney and David~Benjamin. Skinner.
 V.~Fock.
 \newblock Bemerkung zum virialsatz.
 \newblock {\em Zeitschrift f�r Physik}, 63(11-12):855--858, 1930.
-
-\bibitem{blankenbecler_degrand_sugar_1980}
-R.~Blankenbecler, T.~Degrand, and R.~L. Sugar.
-\newblock Moment method for eigenvalues and expectation values.
-\newblock {\em Physical Review D}, 21(4):1055--1061, 1980.
 
 \end{thebibliography}

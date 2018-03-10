@@ -88,13 +88,20 @@
 % The page count starts from here. DO NOT DELETE OR DISABLE THIS COMMAND!
 \maintext
 \section{Introduction}
+ The Hybrid Monte-Carlo (HMC) algorithm (also referred to as Hamiltonian Monte-Carlo) was originally developed by Duane, Kennedy, Pendleton and Roweth in the 1987 paper ``Hybrid Monte-Carlo'' \cite{duane_kennedy_pendleton_roweth_1987} for the purposes of numerical simulation of lattice field theory. HMC is an example of a Markov Chain Monte Carlo (MCMC) method where states are proposed via a Markov chain in order to produce samples distributed according to some probability distribution, these samples can then be used to estimate the expectation value of some function of the samples under the probability distribution. Although MCMC was original introduced by Metropolis et al. in the the classic 1953 paper ``Equation of State Calculations by Fast Computing Machines''\cite{metropolis_rosenbluth_rosenbluth_teller_teller_1953}, HMC makes improvements on the Metropolis algorithm by using Hamiltonian dynamics to propose new states in the Markov chain. The idea is that we consider the variables of interest as \textit{position} and introduce auxiliary \textit{momentum} variables which we can use to define a Hamiltonian and evolve the system in computer time via a leapfrog integration method to propose new states. We alternate between drawing the momentum variables from a Gaussian distributions and performing a metropolis update where the new state state is proposed via the Hamiltonian dynamics. The advantage of the HMC method is that the proposed state can have a high probability of acceptance and be distant from the current state, it therefore avoids the problems of slow state exploration that results from using random-walk proposals such as in the original Metropolis algorithm \cite{metropolis_rosenbluth_rosenbluth_teller_teller_1953}. Although popular amongst the lattice field theory community the HMC method has also been used in Statistical applications \cite{neal_1996_a} \cite{ishwaran_1999} \cite{schmidt_2009} such as neural network models. However, our application of HMC will be to quantum mechanical systems and in particular the case of quantum harmonic and anharmonic oscillators.
+
+ Standard HMC can have difficulty sampling from the different areas of a probability distribution if those areas are separated by a region of low probability (isolated modes). An example of this in quantum mechanics is that of a 1 dimensional double well potential, where the probability of finding a particle in either well is high, whilst finding it in the region between the wells is low. If we are interested in generating samples for say the position of the particle using an HMC algorithm, then for a deep enough well there will be an asymmetry in the number of samples recorded in each well. This is due to the energy cost associated with moving between the wells, and so the Hamiltonian dynamics in the HMC simulation will tend to propose an new state in the well the current state is in, leading to the asymmetry in the recorded samples. The aim of this project is to write an HMC simulation of the anharmonic oscillator and introduce a tempering parameter as proposed in \cite{neal_1996_b} and \cite{neal_2011} into the dynamics to investigate whether this increases the frequency at which samples move between the two wells. In terms of our simulation the benefit of successful tempering would be more accurate estimations of observed quantities such as position and energy expectation values. However, in terms of a broader goal, successful tempering results in HMC simulations of simple quantum mechanical systems, may suggest it has potential applications in lattice field theory where isolated modes are a more serious problem. In certain field theories, including QCD, the states we wish to construct via our Markov chain are in distinct topological sectors, which are labelled by a topological charge. For small lattice spacings moving between these sectors can take a very long time, since they are separated by a region of high Euclidean action and so the transitions are statistically suppressed \cite{bietenholz_2016}. It is therefore possible that tempered dynamics will have applications to theories such as lattice QCD where isolated modes arise as regions of distinct topological charge.
+
+ In this report we follow the work of Creutz and Freedman \cite{creutz_freedman_1981} who constructed a MCMC simulation of the harmonic and anharmonic oscillators, however we will use HMC where they used the metropolis algorithm. Reproducing the results in \cite{creutz_freedman_1981} using the Metropolis algorithm is a popular choice for undergraduate projects \cite{westbroek_king_vvedensky_durr_2017} \cite{rodgers_raes} \cite{slapik_serenone} which provide a useful comparison for our simulation which uses a different algorithm. We begin the report by following the steps taken in \cite{creutz_freedman_1981} where we introduce and define the path integral of quantum mechanics and show that for a discrete lattice in Euclidean time the path integral can be considered as a canonical partition function. This connection between quantum mechanics and statistical physics is what will enable us to apply Monte-Carlo methods and we will see that the quantum expectation values in the ground state correspond to classical expectation values of the statistical system with a canonical distribution. We will then briefly review the topic of Monte-Carlo methods and explain how they can be used to approximate expectation values for functions of random variables under some probability distribution via a Markov chain as well as defining detailed balance and ergodicity which are conditions required for the Monte-Carlo simulation to be valid. Before introducing the HMC algorithm we very briefly review Hamiltonian dynamics, explain how Hamilton's equations can be integrated numerically via the leapfrog method and show that as well as being reversible, the leapfrog method preserves volume on the phase space of position and momentum coordinates, which we we will see is necessary for detailed balance to hold. Having provided the necessary background we are then able to define the steps of the HMC algorithm and explain how it can be used to sample from a canonical distribution by defining axillary momenta coordinates and a Hamiltonian. In this section we will also discuss the issue of ergodicity and show that HMC obeys detailed balance. The results section begins by applying the HMC algorithm to the canonical distribution function for the quantum system. We examine the results of our simulation for the harmonic oscillator where we are able to compare with numerical and exact results for the discrete theory in \cite{creutz_freedman_1981},\cite{westbroek_king_vvedensky_durr_2017}, \cite{rodgers_raes} and \cite{slapik_serenone}. The simple system of the harmonic oscillator provides a good testing ground for our simulation where we can easily compare our results to theory. Moving on to the anharmonic oscillator we are able to apply our simulation to a system that does not have an analytic solution. For the case of the anharmonic oscillator we are able to compare our results to those acquired through alternative methods \cite{blankenbecler_degrand_sugar_1980} and simulations \cite{rodgers_raes} however we will observe in this section that the HMC simulation begins to fail in the case of the isolated modes in the double well potential, in particular the system has difficulty tunnelling between the two modes. At this point we will examine the effects of introducing a tempering parameter into the simulation, with the hope that it will increase the tunnel rate. We will show that volume preservation still holds for tempered dynamics, which is necessary if it is still to obey detailed balance.
+
+
 \section{Background}
     \subsection{Quantum Mechanics}
         \label{sec:QuantumMechanics}
         In quantum mechanics we are often interested in calculating the path integral:
         \begin{equation}
             \label{eq:PathIntegral}
-            \braket{x_b,t_b|x_a,t_a} = \int {\cal D} x\left(t\right) \exp{\left(\frac{i}{\hbar} S_M\left[x\left(t\right)\right]\right)},
+            \braket{x_b,t_b|x_a,t_a} = \int_{x_a}^{x_bv} {\cal D} x\left(t\right) \exp{\left(\frac{i}{\hbar} S_M\left[x\left(t\right)\right]\right)},
         \end{equation}
         where we will use the notation:
         \begin{align}
@@ -217,11 +224,6 @@
         \end{equation}
         In the limit that $N\rightarrow \infty$ (or equivalently $\epsilon \rightarrow 0$) we recover (up to normalisation) equation \ref{eq:PathIntegral} from equation \ref{eq:DiscretePathIntegral} exactly. 
 
-        We will impose periodic boundary conditions by identifying the first and last lattice sites (i.e. take $x_b=x_a$) and then integrate over that site, which can be quantified through: 
-        \begin{align}
-            Z & = \int dx_a \int dx_b \delta\left(x_b-x_a\right)Z_{ba} \\
-              & \sim \int^{+\infty}_{-\infty}\prod_{i=0}^{N-1}dx_i \exp{\left(\frac{i}{\hbar}S_M\left\{x_i\right\}\right)}.
-        \end{align}
 
         In order to work with the discrete path integral we have one final step. We make a \textit{Wick rotation} into imaginary time; this is done via the substitution:
         \begin{equation}
@@ -249,20 +251,24 @@
         Equation \ref{eq:DiscreteEuclideanAction2} is a very useful result since upon substitution into the discrete path integral we find:
         \begin{equation}
             \label{eq:DiscreteEuclideanPathIntegral}
-            Z \sim \int^{+\infty}_{-\infty}\prod_{i=0}^{N-1}dx_i \exp{\left(-\frac{1}{\hbar}S_{E}\left(\left\{x_i\right\}\right)\right)}
+            Z_{ba} \sim \int^{+\infty}_{-\infty}\prod_{i=1}^{N-1}dx_i \exp{\left(-\frac{1}{\hbar}S_{E}\left(\left\{x_i\right\}\right)\right)}
         \end{equation}
-        which is known as the discrete euclidean path integral and will converge since the integrand is now exponentially suppressed. We have the standard result from statistical physics that for a system with a fixed number $N$ of continuous degrees of freedom labelled by $x_i$ for $i=0,1,\dots N-1$ then the canonical partition function is given by:
+        which is known as the discrete euclidean path integral and will converge since the integrand is now exponentially suppressed. We will impose periodic boundary conditions by identifying the first and last lattice sites (i.e. take $x_b=x_a$) and then integrate over that site, which can be quantified through: 
+        \begin{align}
+            \label{eq:partWithBoundaryConditions}
+            Z & = \int dx_a \int dx_b \delta\left(x_b-x_a\right)Z_{ba}.
+        \end{align}
+        We have the standard result from statistical physics that for a system with a fixed number $N$ of continuous degrees of freedom labelled by $x_i$ for $i=0,1,\dots N-1$ then the canonical partition function is given by:
         \begin{equation}
             \label{eq:PartitionFunction}
             \mathcal{Z} \sim \int_{-\infty}^{+\infty}\prod_{i=0}^{N-1}dx_{i}\exp{\left(-\beta H\left(\left\{x_i\right\}\right)\right)},
         \end{equation}
-        with $\beta=\frac{1}{k_{B}T}$ where $T$ is the system temperature and $k_{B}$ is the Boltzmann constant. Comparing equation \ref{eq:DiscreteEuclideanPathIntegral} to equation \ref{eq:PartitionFunction} we can see that the discretise Euclidean path integral is a classical canonical partition function on a system with $N$ degrees of freedom, provided that we take:
+        with $\beta=\frac{1}{k_{B}T}$ where $T$ is the system temperature and $k_{B}$ is the Boltzmann constant. Comparing equation \ref{eq:partWithBoundaryConditions} to equation \ref{eq:PartitionFunction} we can see that the discretised Euclidean path integral is a classical canonical partition function on a system with $N$ degrees of freedom, provided that we take:
         \begin{equation}
             \label{ActionToHamiltonian}
-            \frac{1}{\hbar}S_{E}\left(\left\{x_{i}\right\}\right) = \beta H\left(\left\{x_{i}\right\}\right).
+            \frac{1}{\hbar}S_{E}\left(\left\{x_{i}\right\}\right) = \beta H\left(\left\{x_{i}\right\}\right),
         \end{equation}
-        
-        We then have a Boltzmann factor given by $\exp{\left(-\frac{1}{\hbar}S_{E}\left(\left\{x_{i}\right\}\right)\right)}$. So in summary we now have a classical interpretation of our quantum calculation of the path integral; our lattice is essentially a one dimensional crystal of size $N$ at temperature $T$ with a continuous variable $x_i$ at each crystal site, and its Hamiltonian is given by $S_E\left(\left\{x_i\right\}\right)$.
+        and impose periodic boundary conditions. We then have a Boltzmann factor given by $\exp{\left(-\frac{1}{\hbar}S_{E}\left(\left\{x_{i}\right\}\right)\right)}$. So in summary we now have a classical interpretation of our quantum calculation of the path integral; our lattice is essentially a one dimensional crystal of size $N$ at temperature $T$ with a continuous variable $x_i$ at each crystal site, and its Hamiltonian is given by $S_E\left(\left\{x_i\right\}\right)$.
 
         It is interesting to note that in quantum mechanics, due to the uncertainty principle $\Delta x\Delta p \geq \frac{\hbar}{2}$, $\hbar$ provides a measure of quantum fluctuations in our system. As $\hbar \rightarrow 0$ we recover classical physics and in this limit the only path in the path integral that contributes to the transition amplitude is the classical one. On the other hand, in statistical mechanics $T$ provides a measure of statistical fluctuations in our system, and in the limit that $T \rightarrow 0$ these fluctuations go to zero. Hence taking the limit that $\hbar \rightarrow 0$ and $T \rightarrow 0$ we see statistical mechanics on a (real) crystal lattice is equivalent quantum mechanics in imaginary time.
 
@@ -270,19 +276,22 @@
 
 \section{Methods}
     \subsection{Monte Carlo Methods}
-    Monte Carlo methods provide a way of numerically evaluating integrals where the error is independent of the dimensionality of the integral. The general idea is that we can approximate the value of an $d$ dimensional integral:
+    Monte Carlo methods provide a way of numerically evaluating integrals where the error is independent of the dimensionality of the integral. For the purposes of our work we will be interested in estimating expectation values of functions $\phi\left(X\right)$ of some n-dimensional random variable $X$ under some probability distribution $P\left(\bm{x}\right)$:
     \begin{equation}
-        I = \int_V d^{d}x f\left(\bm{x}\right)
+        \label{eq:expectation}
+        \langle \phi\left(X\right) \rangle = \int d^nxP\left(\bm{x}\right)\phi\left(\bm{x}\right).
     \end{equation}
-    by considering it as an average value of the function over the integral volume:
+    In order to estimate the expectation value we approximate the expectation as a sample mean on some finite set of $M$ samples of $X$ as (we will refer to this as the \textit{Monte-Carlo estimate}):
     \begin{equation}
-        I \approx \frac{1}{N}\sum_i^{N}f\left(\bm{x}_i\right),
+        \langle\phi\left(X\right)\rangle \approx \frac{1}{M} \sum_{i=1}^{M}\phi\left(\bm{x}_i\right).
     \end{equation}
-    where $\bm{x}_i\in V$ are \textit{samples} from the integration domain. The most naive method for generating the samples is to draw them from a uniform distribution over the domain. To see why uniform sampling is naive note that the error in the Monte Carlo estimate on the integral is:
-    \begin{align}
-        \sigma_I \approx \frac{\sigma_f}{\sqrt{N}} = \sqrt{\frac{1}{N}\left[\frac{1}{N}\sum_{i=1}^{N}f\left(\bm{x}_i\right)^2-\left(\frac{1}{N}\sum_{i=1}^{N}f\left(\bm{x}_i\right)\right)^2\right]},
-    \end{align}
-    so that unless the function is very smooth and hence has a small variance, it will have a large error. It is equally likely that samples are taken from the subsets of the domain where $f\left(\bm{x}_i\right)$ is very small as when it is large, hence the integral converges very slowly. A solution to this problem is to use importance sampling. In importance sampling, rather than sample uniformly from the domain, samples are selected according to a probability distribution that gives preference to samples that give dominant contributions to the integral. To realise importance sampling we 
+    It is now just a question of how to choose the samples $\bm{x}_i$ to get a expectation value with a small error. From the form of equation \ref{eq:expectation} drawing uniform samples from the support of $f$ is clearly unwise, since this would give equal weight to contributions to our approximation of the expectation value for samples that are very unlikely to be realised by the random variable $X$ under the density function $f$ as those which are very likely to be realised. We therefore choose to draw samples according to the distribution of $X$, this is known as \textit{importance sampling}. In order to draw samples according to a probability distribution we use a \textit{Markov chain} which for our purposes can be defined as a sequence of random variables (samples) for which the probability of the next random variable in the sequence taking on a particular value depends only on the current random variable, we will denote this probability by $P_M\left(\bm{x}\rightarrow \bm{x}'\right)$. This idea of a \textit{Markov Chain Monte-Carlo} method was first introduced by Metropolis et al. in \cite{metropolis_rosenbluth_rosenbluth_teller_teller_1953} via the Metropolis algorithm. A Markov chain will converge on a distribution with density function $P\left(\bm{x}\right)$ provided the chain is ergodic and obeys detailed balance. Ergodicity is the condition that any sample that can be realised under the probability distribution can be reached through the Markov chain and the detailed balance condition is given by: 
+    \begin{equation}
+        \label{eq:detailedbalance}
+        P\left(\bm{x}\right)P_M\left(\bm{x}\rightarrow \bm{x}'\right)=P\left(\bm{x}'\right)P_M\left(\bm{x}'\rightarrow \bm{x}\right).
+    \end{equation}
+
+
     \subsection{Hybrid Monte Carlo}
         \subsubsection{Hamiltonian Dynamics}
             \label{sec:HamiltonianDynamics}
@@ -293,7 +302,7 @@
                 \label{eq:HamiltonsEquation1} \frac{dq_i}{dt} & = \frac{\partial H}{\partial p_i} \\
                 \label{eq:HamiltonsEquation2} \frac{dp_i}{dt} & = -\frac{\partial H}{\partial q_i}
             \end{align}
-            for $i = 1, 2, \dots d$, provide the time evolution of the vectors $\bm{q}$ and $\bm{p}$. We will see in section \ref{sec:SamplingAndTheHamiltonian} for the purposes of the implementing the HMC algorithm we may assume that the Hamiltonian is of the form:
+            for $i = 1, 2, \dots d$, provide the time evolution of the vectors $\bm{q}$ and $\bm{p}$, so that if the state of the system is $\left(\bm{q},\bm{p}\right)$ at time $t$ then Hamilton's equations give a mapping $T_s$ to the state $\left(\bm{q}',\bm{p}'\right)$ at time $t+s$.  We will see in section \ref{sec:SamplingAndTheHamiltonian} for the purposes of the implementing the HMC algorithm we may assume that the Hamiltonian is of the form:
             \begin{equation}
                 \label{eq:HamiltonianUPlusK}
                 H\left(\bm{q},\bm{p}\right) = U\left(\bm{q}\right) + K\left(\bm{p}\right),
@@ -304,7 +313,7 @@
                 \label{eq:HamiltonsEquation2T} \frac{dp_i}{dt} & = -\frac{\partial U}{\partial q_i}.
             \end{align}
 
-            Since we intend to use the solutions to Hamilton's equations in the HMC simulation we need to find a way of integrating them numerically; in Neal's review of Hamiltonian Monte-Carlo methods \cite{neal_2011} it is argued that a successful method for this is \textit{leapfrog integration}. In the leapfrog method to make the small time step $\epsilon$ from $t$ to $t+\epsilon$ on position and momentum we use the equations:
+            Since we intend to use the solutions to Hamilton's equations in the HMC simulation we need to find a way of integrating them numerically; in Neal's review of Hamiltonian Monte-Carlo methods \cite{neal_2011} it is argued that a successful method for this is \textit{leapfrog integration}. In the leapfrog method to make the small time step $\epsilon$ from $t$ to $t+\epsilon$ in position and momentum we use the equations:
             \begin{align}
                 \label{eq:LeapFrogEq1} p_i\left(t+\epsilon/2\right) & = p_i\left(t\right) + \epsilon/2\frac{dp_i}{dt}\left(t\right) = p_i\left(t\right) - \epsilon/2\frac{\partial U}{\partial q_i}\left(\bm{q}\left(t\right)\right), \\
                 \label{eq:LeapFrogEq2}q_i\left(t+\epsilon\right) & = q_i\left(t\right) + \epsilon\frac{dq_i}{dt}\left(t+\epsilon/2\right) = q_i\left(t\right) + \epsilon\frac{\partial K}{\partial p_i}\left(\bm{p}\left(t+\epsilon/2\right)\right), \\
@@ -343,34 +352,41 @@
             \end{enumerate}
             The reasoning for the name \textit{leapfrog} becomes apparent here since apart from the initial and final half steps in momentum, the momentum and position values are used alternatively to calculate the position and momentum respectively at the next step and the variables ``leap'' over one another at on offset of $\epsilon/2$. 
 
-            An important feature of the leap frog integration scheme that makes it applicable to HMC is that it preserves volume in phase space exactly, which we will see leads to detailed balance. For Hamiltonian dynamics in continuous time, preservation of volume in phase space is known as Louville's theorem and its proof is given by Goldstein, Poole and Safko's in \cite{goldstein_poole_safko_2014}. For the discrete dynamics integrated via the leap frog scheme we can easily verify that volume preservation is still the case. The leap frog equations \ref{eq:LeapFrogEq1}, \ref{eq:LeapFrogEq2} and \ref{eq:LeapFrogEq3} which evolve the system a single step in time from $t$ to $t+\epsilon$ can be rewritten using matrices as:
+            An important feature of the leap frog integration scheme that makes it applicable to HMC is that it preserves volume in phase space exactly, which we will see leads to detailed balance. For Hamiltonian dynamics in continuous time, preservation of volume in phase space is known as Louville's theorem and its proof is given by Goldstein, Poole and Safko's in \cite{goldstein_poole_safko_2014}. For the discrete dynamics integrated via the leap frog scheme we can easily verify that volume preservation is still the case. First let us define the mappings $T_q\left(\epsilon\right): \left(\bm{q},\bm{p}\right) \rightarrow \left(\bm{q}',\bm{p}'\right) $ and $T_p\left(\epsilon\right): \left(\bm{q},\bm{p}\right) \rightarrow \left(\bm{q}',\bm{p}'\right)$ on phase space such that:
             \begin{align}
-                \label{eq:leapfrogmatrix1}\begin{bmatrix} \bm{q}\left(t\right) \\ \bm{p}\left(t+\epsilon/2\right) \end{bmatrix} & =
-                \begin{bmatrix} I_{d\times d} & 0_{d\times d} \\ A & I_{d\times d} \end{bmatrix}\begin{bmatrix} \bm{q}\left(t\right) \\ \bm{p}\left(t\right) \end{bmatrix} \\
-                \label{eq:leapfrogmatrix2}\begin{bmatrix} \bm{q}\left(t+\epsilon\right) \\ \bm{p}\left(t+\epsilon/2\right) \end{bmatrix} & = 
-                \begin{bmatrix} I_{d\times d} & \epsilon \\ 0_{d\times d} & I_{d\times d} \end{bmatrix} \begin{bmatrix} \bm{q}\left(t\right) \\ \bm{p}\left(t+\epsilon/2\right) \end{bmatrix} \\
-                \label{eq:leapfrogmatrix3}\begin{bmatrix} \bm{q}\left(t+\epsilon\right) \\ \bm{p}\left(t+\epsilon\right) \end{bmatrix} & = 
-                \begin{bmatrix} I_{d\times d} & 0_{d\times d} \\ B & I_{d\times d} \end{bmatrix} \begin{bmatrix} \bm{q}\left(t+\epsilon\right) \\ \bm{p}\left(t+\epsilon/2\right) \end{bmatrix}
+                \label{eq:psMap1}
+                T_q\left(\epsilon\right)\begin{pmatrix} \bm{q} \\ \bm{p} \end{pmatrix} & = \begin{pmatrix} \bm{q} +\epsilon \underline{\nabla}_pK\left(\bm{p}\right) \\ \bm{p} \end{pmatrix}, \\
+                \label{eq:psMap2}
+                T_q\left(\epsilon\right)\begin{pmatrix} \bm{q} \\ \bm{p} \end{pmatrix} & = \begin{pmatrix} \bm{q} \\ \bm{p} - \epsilon \underline{\nabla}_qU\left(\bm{q}\right) \end{pmatrix},
             \end{align}
-            where the off diagonal $d\times d$ matrices $A$ and $B$ are determined by the partial derivatives of the potential evaluated at $t$ and $t+\epsilon$ respectively. The form of $A$ and $B$ is not important here since the other off diagonal term is always a zero matrix (the transformation is always a sheer) so these elements make no contribution to the determinant which we will see below leads to preservation of volume. Combing equations \ref{eq:leapfrogmatrix1}, \ref{eq:leapfrogmatrix2} and \ref{eq:leapfrogmatrix3} we have that:
+            then (with a slight abuse of notation) the Jacobians of these mappings will be of the form:
             \begin{equation}
-                \label{eq:LeapFrogJacobian}
-                \begin{bmatrix} \bm{q}\left(t+\epsilon\right) \\ \bm{p}\left(t+\epsilon\right) \end{bmatrix} =
-                T \begin{bmatrix} \bm{q}\left(t\right) \\ \bm{p}\left(t\right) \end{bmatrix}
+                J = \det\begin{pmatrix}\frac{\partial q_i'}{\partial q_j} & \frac{\partial q_i'}{\partial p_j} \\ \frac{\partial p_i'}{\partial q_j} & \frac{\partial p_i'}{\partial p_j} \end{pmatrix}
             \end{equation}
-            where the $2d\times2d$ matrix $T$ is the Jacobian matrix of the transformation from $\left(\bm{q}\left(t\right),\bm{p}\left(t\right)\right)$ to $\left(\bm{q}\left(t+\epsilon\right),\bm{p}\left(t+\epsilon\right)\right)$ given by:
+            so that:
+            \begin{align}
+            J_q& =\det\begin{pmatrix} \delta_{ij} & \epsilon\partial_{p_i}\partial_{p_j}K\left(\bm{p}\right) \\ 0 & \delta_{ij} \end{pmatrix} = 1 \\
+            J_p& =\det\begin{pmatrix} \delta_{ij} &  0  \\ -\epsilon\partial_{q_i}\partial_{q_j}U\left(\bm{q}\right) & \delta_{ij} \end{pmatrix} = 1.
+            \end{align}
+            For a single step of size $\epsilon$ the leap frog algorithm equations \ref{eq:LeapFrogEq1}, \ref{eq:LeapFrogEq2} and \ref{eq:LeapFrogEq3} define a mapping on phase space $T\left(\epsilon\right)$ that can be written using the mappings given above as:
             \begin{equation}
-                T= \begin{bmatrix} I_{d\times d} & 0_{d\times d} \\ A & I_{d\times d} \end{bmatrix} \begin{bmatrix} I_{d\times d} & \epsilon \\ 0_{d\times d} & I_{d\times d} \end{bmatrix} \begin{bmatrix} I_{d\times d} & 0_{d\times d} \\ B & I_{d\times d} \end{bmatrix}
+                T\left(\epsilon\right)=T_p\left(\epsilon/2\right)T_q\left(\epsilon\right)T_p\left(\epsilon/2\right).
             \end{equation}
-            from which it is clear that $\text{det}\left(T\right)=1$ and therefore we have preservation of volume in phase space for a single step of the leap frog method. Clearly if volume is preserved for a single step it must be preserved for an arbitrary number of steps as well. We will return to this argument in section \ref{sec:Tempering} where we will show that the leap frog integration scheme preserves volume even for the case of tempered dynamics. 
-
+            Since each map in the composition on the right hand side of this equation has a Jacobian of $1$ we have that the Jacobian of $T\left(\epsilon\right)$ is $1$. For the total trajectory which consists of $l$ steps we may write the mapping that via leapfrog integration takes us from the start to the end of the trajectory as:
+            \begin{equation}
+                \text{traj}\left(\epsilon,l\right) = \left(T\left(\epsilon\right)\right)^l
+            \end{equation}
+            which of course also a Jacobian of $1$ since each mapping in the composition has Jacobian $1$ and hence the leapfrog integration presreves volume on the phase space since as a mapping its Jacobian is $1$. We will return to this argument in section \ref{sec:Tempering} where we will show that the leap frog integration scheme preserves volume even for the case of tempered dynamics. 
+            
             It is also obvious that the leapfrog integration scheme provides reversible dynamics; by negating the momenta at the end of a trajectory and applying the equations a second time we will return to the initial point in phase space. 
+
+
 
         
 
         \subsubsection{Sampling and the Hamiltonian}
             \label{sec:SamplingAndTheHamiltonian}
-            For a physical system in thermodynamic equilibrium with a fixed number of degrees of freedom and with energy function $E\left(\bm{x}\right)$, where the vector $\bm{x} = \left(x_{1},x_{2},\dots,x_{d}\right)$ denotes the state of the system that depends on $d$ variables, the canonical Boltzmann distribution (probability density function for the states of the system) is given by:
+            For a physical system in thermodynamic equilibrium with a fixed number of degrees of freedom and with energy function $E\left(\bm{x}\right)$, where the vector $\bm{x} = \left(x_{1},x_{2},\dots,x_{d}\right)$ denotes the state of the system that depends on $d$ variables, the canonical Boltzmann distribution (probability density function for the states of the system) in units where $k_b=1$ is given by:
             \begin{equation}
                 \label{eq:BoltzmannDistribution}
                 P\left(\bm{x}\right) = \frac{1}{Z} \exp{\left(-\frac{E\left(\bm{x}\right)}{T} \right)},
@@ -396,9 +412,9 @@
                 \label{eq:BoltzmannDistributionXPFactorised}
                 P\left(\bm{q},\bm{p}\right) = \frac{1}{Z_U}\exp{\left(-\frac{U\left(\bm{q}\right)}{T} \right)}\frac{1}{Z_K}\exp{\left(-\frac{K\left(\bm{p}\right)}{T} \right)} = P\left(\bm{q}\right) P\left(\bm{p}\right),
             \end{equation}
-            so the variables $\bm{q}$ and $\bm{p}$ and their respective probability distributions are independent. This means that in order to sample $\bm{q}$ from the marginal distribution $P\left(\bm{q}\right)$ we can sample from the joint distribution $P\left(\bm{q},\bm{p}\right)$ and disregard the $\bm{p}$. 
+            so the variables $\bm{q}$ and $\bm{p}$ and their respective probability distributions are independent with energy functions $U\left(\bm{q}\right)$ and $K\left(\bm{p}\right)$. This means that in order to sample $\bm{q}$ from the marginal distribution $P\left(\bm{q}\right)$ we can sample from the joint distribution $P\left(\bm{q},\bm{p}\right)$ and disregard the $\bm{p}$. 
 
-            In the HMC algorithm we employ Hamiltonian dynamics to sample from the joint distribution $P\left(\bm{q},\bm{p}\right)$. Therefore, if we have some probability distribution $P\left(\bm{x}\right)$ for states $\bm{x}$ we wish to sample, we may through equation \ref{eq:BoltzmannDistribution} define an energy function $E\left(\bm{x}\right)$ for that distribution. We then define $\bm{q}\equiv\bm{x}$ and $U\left(\bm{q}\right) \equiv E\left(\bm{x}\right)$, introduce ``fictitious momenta'' $\bm{p}$ and define a kinetic energy $K\left(\bm{p}\right)$ and the Hamiltonian $H\left(\bm{q},\bm{p}\right) = U\left(\bm{q}\right) + K\left(\bm{p}\right)$. Running the HMC algorithm generates samples according to the distribution given by equation \ref{eq:BoltzmannDistributionXP}, but by the factorization in equation \ref{eq:BoltzmannDistributionXPFactorised} this gives samples of $\bm{x}$ according to out original distribution $P\left(\bm{x}\right)$. In the HMC algorithm, we think of the variables of interest $\bm{x}$ as position $\bm{q}$ with conjugate momenta $\bm{p}$ which of course matches up nicely in physical applications where we are actually sampling position, although the algorithm is equally applicable in non-physical cases.
+            In the HMC algorithm we employ Hamiltonian dynamics to sample from the joint distribution $P\left(\bm{q},\bm{p}\right)$. Therefore, if we have some probability distribution $P\left(\bm{x}\right)$ for states $\bm{x}$ we wish to sample, we may through equation \ref{eq:BoltzmannDistribution} define an energy function $E\left(\bm{x}\right)$ for that distribution. We then define $\bm{q}\equiv\bm{x}$ and $U\left(\bm{q}\right) \equiv E\left(\bm{x}\right)$, introduce ``fictitious momenta'' $\bm{p}$ and define a kinetic energy $K\left(\bm{p}\right)$ and the Hamiltonian $H\left(\bm{q},\bm{p}\right) = U\left(\bm{q}\right) + K\left(\bm{p}\right)$. Running the HMC algorithm generates samples according to the distribution given by equation \ref{eq:BoltzmannDistributionXP}, but by the factorization in equation \ref{eq:BoltzmannDistributionXPFactorised} this gives samples of $\bm{x}$ according to our original distribution $P\left(\bm{x}\right)$. In the HMC algorithm, we think of the variables of interest $\bm{x}$ as position $\bm{q}$ with conjugate momenta $\bm{p}$ which of course matches up nicely in physical applications where we are actually sampling position, although the algorithm is equally applicable in non-physical cases.
 
             Since the fictitious momenta $\bm{p}$ are introduced artificially, we need to choose their probability distribution $P\left(\bm{p}\right)$ by specifying the kinetic energy function $K\left(\bm{p}\right)$. For the purposes of our work we may take:
             \begin{equation}
@@ -408,17 +424,16 @@
             and $T=1$ from now on.
 
             \subsubsection{Steps of the HMC Algorithm}
-            Here we will outline the main steps of the HMC algorithm then give a more detailed explanation of each stage and its implementation.
+            Here we will outline the main steps of the HMC algorithm then give a more detailed explanation of each stage and its implementation. The two key steps are \ref{en:HMCStep1} and \ref{en:HMCStep2}. In step \ref{en:HMCStep1} momentum is changed, where as in step \ref{en:HMCStep2} may change position and momentum. The canonical joint distribution for $\left(\bm{q},\bm{p}\right)$ is left invariant in both steps, and therefore is also invariant under their combination. The steps of the algorithm are:
             \begin{enumerate}
                 \setcounter{enumi}{-1}
                 \item \label{en:HMCStep0} Provide an initial sample $\bm{q}$
                 \item \label{en:HMCStep1} Generate $\bm{p}$ from the multivariate Gaussian Distribution $\mathcal{N}\left(\bm{0},I_{d\times d}\right)$ 
-                \item \label{en:HMCStep2} Evolve the variables from $\left(\bm{q},\bm{p}\right)$ to $\left(\bm{q^{*}},\bm{p^{*}}\right)$ using Hamilton's equations of motion.
-                \item \label{en:HMCStep3} Accept the proposed state $\left(\bm{q^{*}},\bm{p^{*}}\right)$ with probability:
+                \item \label{en:HMCStep2} Evolve the variables from $\left(\bm{q},\bm{p}\right)$ to $\left(\bm{q'},\bm{p}'\right)$ by simulating Hamiltonian dynamics for $l$ steps of size $\epsilon$ and negating the momentum variables at the end of the trajectory. Accept the proposed state $\left(\bm{q}',\bm{p}'\right)$ as the next state in the Markov chain with probability:
                         \begin{equation*}
-                            \min{\left[1,\exp{\left(-H_{HMC}\left(\bm{q}^{*},\bm{p}^{*}\right)+ \allowbreak H_{HMC}\left(\bm{q},\bm{p}\right)\right)}\right]}
+                            \min{\left[1,\exp{\left(-H_{HMC}\left(\bm{q}',\bm{p}'\right)+ \allowbreak H_{HMC}\left(\bm{q},\bm{p}\right)\right)}\right]}
                         \end{equation*}
-                        If proposed state rejected, record current state $\bm{q}$ as sample (i.e. state started with), if successful set current state to proposed state $\bm{q}$ = $\bm{q^{*}}$ and record it as a sample.
+                        If proposed state rejected, record current state $\bm{q}$ as sample (i.e. state started with), if successful set current state to proposed state $\bm{q}$ = $\bm{q}'$ and record it as a sample.
                 \item \label{en:HMCStep5} Return to step \ref{en:HMCStep1} with $\bm{q}$.
             \end{enumerate}
 
@@ -428,46 +443,27 @@
             \begin{align}
                 \label{eq:KineticBoltzmannDistribution}
                 P\left(\bm{p}\right) & = \frac{1}{Z_K}\exp{\left(-\sum_{i=1}^{d}\frac{p_i^2}{2}\right)} \\
-                                     & = \frac{1}{Z_K} \prod_{i}^{d}\exp{\left(-\frac{p_i^2}{2}\right)}
+                                     & = \prod_{i=1}^d\frac{1}{\sqrt{2\pi}} \exp{\left(-\frac{p_i^2}{2}\right)} \\
+                                     & = \prod_{i=1}^dP\left(p_i\right)
             \end{align}
-            and
-            \begin{align}
-                Z_k & = \int \prod_{i=1}^{d} dp_i \exp{\left(-\frac{1}{2}\sum_{i=1}^{d}p_i^2\right)} \\
-                    & = \int \prod_{i=1}^{d} dp_i \prod_{i=1}^{d} \exp{\left(-\frac{p_i}{2}\right)} \\
-                    & = \prod_{i=1}^{d}Z_{K_i}
-            \end{align}
-            such that
-            \begin{equation}
-                Z_{K_i} = \int dp_i \exp{\left(-\frac{1}{2}p_i\right)} = \sqrt{2\pi}.
-            \end{equation}
-            We can then see that the canonical distribution function for the momentum factorises into the marginal distribution functions, that is:
-            \begin{equation}
-                P\left(\bm{p}\right) = \prod_{i=1}^{d} \frac{1}{Z_{K_i}}P\left(p_i\right)
-            \end{equation}
-            where each marginal distribution $P\left(p_i\right)$ is given by:
-            \begin{equation}
-                \label{eq:KineticMarginalDistribution}
-                P\left(p_{i}\right) = \frac{1}{Z_{k_i}}\exp{\left(-\frac{p_i^2}{2}\right)} = \frac{1}{\sqrt{2\pi}} \exp{\left(-\frac{p_i^2}{2}\right)}
-            \end{equation}
-            which is a Gaussian distribution of mean $0$ and variance $1$. Each component $p_i$ of $\bm{p}$ is therefore drawn from a Gaussian $\mathcal{N}{\left(0,1\right)}$, so we draw $\bm{p}$ from a multivariate Gaussian distribution of mean $\bm{0}$ and covariance $I_{d\times d}$ .
+            where each $P\left(p_i\right)$ is a Gaussian distribution of mean $0$ and variance $1$. So the $d$ momentum variables are independent with each component $p_i$ of $\bm{p}$ drawn from a Gaussian $\mathcal{N}{\left(0,1\right)}$, so we draw $\bm{p}$ from a multivariate Gaussian distribution of mean $\bm{0}$ and covariance $I_{d\times d}$. In this step $\bm{q}$ is not changed, and $\bm{p}$ gets drawn from the it's correct conditional distribution given $\bm{q}$ which is it's marginal distribution by the above independence so the canonical joint distribution is left invariant.
 
-            In step \ref{en:HMCStep2} we evolve the variables $\left(\bm{q},\bm{p}\right)$ by integrating Hamilton's equations. In order to implement this in a computer simulation we use the leapfrog method described in section \ref{sec:HamiltonianDynamics}. We have a choice of the number of time steps $l$ and their size $\epsilon$; it is common practice in HMC to choose $\epsilon$ and $l$ such that $l\epsilon=1$.
-
-
-            In step \ref{en:HMCStep3} we accept or reject the proposed state with a probability given by:
+            In step \ref{en:HMCStep2} we evolve the variables $\left(\bm{q},\bm{p}\right)$ by integrating Hamilton's equations. In order to implement this in a computer simulation we use the leapfrog method described in section \ref{sec:HamiltonianDynamics}. We have a choice of the number of time steps $l$ and their size $\epsilon$; it is common practice in HMC to choose $\epsilon$ and $l$ such that $l\epsilon=1$. At the end of the trajectory, negating the momentum variables makes the Metropolis proposal symmetric, which is needed for the acceptance probability to remain valid. However, in practice since $K\left(\bm{p}\right)=K\left(-\bm{p}\right)$ and the momentum is replaced anyway in the next iteration, there is no need for the negation. We accept or reject the proposed state with a probability given by:
             \begin{equation}
                 \label{eq:HMCMetropolisUpdate}
-                P\left(\bm{q}^{*},\bm{p}^{*},\bm{q},\bm{p}\right) = \min{\left[1,\exp{\left(-H_{HMC}\left(\bm{q}^{*},\bm{p}^{*}\right)+ \allowbreak H_{HMC}\left(\bm{q},\bm{p}\right)\right)}\right]},
+                P\left(\bm{q}',\bm{p}',\bm{q},\bm{p}\right) = \min{\left[1,\exp{\left(-H_{HMC}\left(\bm{q}',\bm{p}'\right)+ \allowbreak H_{HMC}\left(\bm{q},\bm{p}\right)\right)}\right]},
             \end{equation}
-            which is known as a \textit{Metropolis update}. The interpretation of \ref{eq:HMCMetropolisUpdate} is that if the Hamiltonian decreases (or stays constant) as a result of moving to the proposed state the update is accepted with certainty. However, if the Hamiltonian increases as a result of the moving to the proposed state, the proposal is accepted with a probability that decreases for larger increases in the Hamiltonian. If the state is accepted then it becomes the current state state i.e. $\bm{q} = \bm{q^*}$, otherwise the current state remains as it was in step \ref{en:HMCStep1}. In either case we then record the current state as a sample and return to step \ref{en:HMCStep1} with the current state $\bm{q}$.
+            which is known as a \textit{Metropolis update}. The interpretation of \ref{eq:HMCMetropolisUpdate} is that if the Hamiltonian decreases (or stays constant) as a result of moving to the proposed state the update is accepted with certainty. However, if the Hamiltonian increases as a result of the moving to the proposed state, the proposal is accepted with a probability that decreases for larger increases in the Hamiltonian. If the state is accepted then it becomes the current state state i.e. $\bm{q} = \bm{q}'$, otherwise the current state remains as it was in step \ref{en:HMCStep1}. In either case we then record the current state as a sample and return to step \ref{en:HMCStep1} with the current state $\bm{q}$.
 
             From the Metropolis update in equation \ref{eq:HMCMetropolisUpdate} we can show that for smaller value of $\epsilon$ and larger $l$ (i.e. smaller time steps and more of them) the probability of accepting an update approaches unity. To see this note that as $\epsilon \rightarrow 0$ and $l \rightarrow \infty$ the leap frog method approaches an exact integration of Hamilton's equations. It is easily shown that for continuous time the Hamiltonian is a conserved quantity:
             \begin{align}
             \frac{dH}{dt}=\sum_{i=1}^{d}\left[\frac{dq_i}{dt}\frac{\partial H}{\partial q_i}+\frac{dp_i}{dt}\frac{\partial H}{\partial p_i}\right]=\sum_{i=1}^{d}\left[\frac{\partial H}{\partial p_i}\frac{\partial H}{\partial q_i}-\frac{\partial H}{\partial q_i}\frac{\partial H}{\partial p_i}\right]=0
             \end{align}
-            where in the second equality we have used Hamilton's equations. Therefore as $\epsilon \rightarrow 0$ and $l\rightarrow \infty$, $H_{HMC}\left(\bm{q},\bm{p}\right) \rightarrow H_{HMC}\left(\bm{q}^*,\bm{p}^*\right)$ and so the probability of accepting a state is always unity.   
+            where in the second equality we have used Hamilton's equations. Therefore as $\epsilon \rightarrow 0$ and $l\rightarrow \infty$, $H_{HMC}\left(\bm{q},\bm{p}\right) \rightarrow H_{HMC}\left(\bm{q}',\bm{p}'\right)$ and so the probability of accepting a state is always $1$.   
 
             As $\epsilon$ decreases $l$ increases provided $l\epsilon$ is kept fixed, therefore more steps and hence a larger computational cost is required for proposal states with smaller $\epsilon$ in the trajectory. Conversely if we have a fixed computation time, then for smaller $\epsilon$ we will generate less proposals with a higher acceptance rate and hence our the error in the Monte-Carlo estimate on any observable will be larger. It is shown by Beskos et al. in \cite{beskos_pillai_roberts_sanz-serna_stuart_2013} that an acceptance rate of $\sim 65.1\%$ provides an optimal balance between the cost of generating proposals and the total number of samples.
+
+            HMC will be typically ergodic \cite{neal_2011} however proving ergodicity is highly non-trivial, we will therefore assume that ergodicity of the HMC algorithm holds for our simulation and refer the reader to the mathematical literature on the subject such as \cite{bou-rabee_sanz-serna_2017}, \cite{durmus_moulines_saksman} and \cite{livingstone_betancourt_byrne_girolami} as justification.
           
 
             
@@ -518,9 +514,82 @@
                 \item Final half step in momentum:
                 \begin{equation}
                     \label{eq:MomnetumQuadraticKinetic}
-                    p_i\left(\epsilon l\right) = p_i\left(l\epsilon-\epsilon/2\right) - \epsilon/2\left[\frac{m}{a}\left(2q_i\left(\epsilon l\right)-q_{i-1}\left(\epsilon l\right)-q_{i+1}\left(\epsilon l\right)\right)+a\frac{\partial V\left(q_i\left(\epsilon l\right)\right)}{\partial q_i}\right].
+                    p_i\left(\epsilon l\right) = p_i\left(l\epsilon-\epsilon/2\right) - \epsilon/2\left[\frac{m}{a}\left(2q_i\left(\epsilon l\right)-q_{i-1}\left(\epsilon l\right)-q_{i+1}\left(\epsilon l\right)\right)+a\frac{\partial V\left(q_i\left(\epsilon l\right)\right)}{\partial q_i}\right],
                 \end{equation}
             \end{enumerate}
+            where we are, as mentioned previously enforcing the periodic boundary conditions that $q_N=q_0$.
+
+        \subsection{Data Analysis}
+        The results of our simulation will ultimately be average values with accompanying statistical errors for several measured observables. Because Monte Carlo simulations generate samples using a Markov chain, subsequent samples in the chain can be correlated, in which case naive error estimates can be wrong. In what follows we will briefly explore this issue and explain our method for dealing with this problem in the simulation.
+
+            \paragraph{Uncorrelated Data}
+            Say we have via our Markov chain of Monte Carlo generated configurations at equilibrium calculated the values of $x_1,\dots,x_N$ of some observable (e.g. the ground state energy, or position expectation in the ground state). Then since the Markov chain is a sequence of random variables, each sample $x_i$ is the realisation of some random variable $X_i$. Since the lattice configurations and therefore the samples that are functions of those configurations are generated at equilibrium according to the canonical distribution, these random variables have the same expectation value and variance:
+            \begin{align}
+                \langle X_i \rangle & = \langle X \rangle, \\
+                \sigma^2_{X_i} & = \langle \left(X_i-\langle X_i\rangle\right)^2 \rangle = \sigma_X^2
+            \end{align}
+            and unbiased estimators for these values are \cite{gattringer_lang_2013}
+            \begin{align}
+                \hat{X} & = \frac{1}{N}\sum_{i=1}^{N} X_i \\
+                \hat{\sigma}_X^2 & = \frac{1}{N-1}\sum_{i=1}^N\left(X_i-\hat{X}\right)^2.
+            \end{align}
+            For $X_i$ uncorrelated and $i\neq j$, $\langle X_iX_j \rangle = \langle X_i \rangle \langle X_j \rangle = \langle X \rangle^2$ from which it can be shown \cite{gattringer_lang_2013}, that:
+            \begin{equation}
+                \label{eq:sdRelation1}
+                \sigma^2_{\hat{X}} = \frac{1}{N}\sigma^2_X,
+            \end{equation}
+            so that the statistical error (standard deviation) in the observable $\hat{X}$ is $\sigma_{\hat{X}}$ and by approximating $\sigma_X$ by the (now biased) estimator $\hat{\sigma}_X$, for $N$ uncorrelated measurements of some observable $X$ our final estimate will be:
+            \begin{equation}
+                \label{eq:niaveerror}
+                \hat{X}\pm \frac{\hat{\sigma}_X}{\sqrt{N}}
+            \end{equation}
+            from which we can see the error decreases as $1/\sqrt{N}$ with the number of measurements $N$.
+
+
+
+            \paragraph{Correlated Data} Subsequent samples generated in the HMC simulation will be correlated due to the fact that they are generated via a Markov chain and hence the above error analysis will not be valid in general. In order to quantify the correlation between samples we can use the \textit{autocorrelation function}. If the random variables are correlated, they will have a non-vanishing autocorrelation function which is given by:
+            \begin{equation}
+                C_{X}\left(X_i,X_{i+t}\right) = \langle \left(X_i-\langle X_i\rangle\right)\left(X_{i+t}-\langle X_{i+t}\right)\rangle = \langle X_iX_{i+t}\rangle - \langle X_i \rangle \langle X_{i+t} \rangle.
+            \end{equation}
+            For invariance in the shift of the index $\langle X_i \rangle = \langle X \rangle$ (which we can assume here since we are always sampling from the canonical distribution at equilibrium) the correlation function only depends on the separation time $t$ between samples in the chain, and utilising the translational invariance in the index $i$ we are able to get a good estimate on the correlation function from the sum:
+            \begin{equation}
+                C_{X}\left(t\right) \approx \frac{1}{N}\sum_{i=1}^NC\left(X_i,X_i+t\right),
+            \end{equation}
+            and it is useful to normalise the autocorrelation function by:
+            \begin{equation}
+                \label{eq:normalisedAutocorrelation}
+                \Gamma_{X}\left(t\right) \equiv \frac{C_X\left(t\right)}{C_X\left(0\right)}.
+            \end{equation}
+            Equation \ref{eq:normalisedAutocorrelation} typically takes the form of a sum of exponentials however for  large $t$  we may truncate to the asymptomatically leading term \cite{gattringer_lang_2013}:
+            \begin{equation}
+                \Gamma_{X}\left(t\right)\sim\exp\left(-\frac{t}{\tau_{X,\text{exp}}}\right),
+            \end{equation}
+            where $\tau_{X,\text{exp}}$ is the \textit{exponential autocorrelation time} for $X$, which gives us a measure of the number of configurations in the Markov chain, before measurements we are working with become uncorrelated. It is important to note that different observables will have in general, different autocorrelation times. For example, we may on each configuration of the lattice compute position expectation, and position squared expectation. Therefore in order to get an overall measure of when all measurements become uncorrelated we should compute:
+            \begin{equation}
+                \tau_{\text{exp}}=\sup_{X} \tau_{X,\text{exp}}
+            \end{equation}
+            for all observables $X$. If the computer time between subsequent measurements is $t$ then autocorrelations lead to systematic errors of $\cal{O}\left(\exp{\left( - t / \tau_{\text{exp}}\right)}\right)$\cite{gattringer_lang_2013}.
+
+            For correlated random variables, equation \ref{eq:sdRelation1} is no longer valid, however it can be shown for the correlated case \cite{gattringer_lang_2013} that:
+            \begin{equation}
+                \sigma_{\hat{X}}^2 \approx \frac{\sigma_X^2}{N} 2 \tau_{X,\text{int}}
+            \end{equation}
+            where the \textit{integrated autocorrelation time} is defined by:
+            \begin{equation}
+                \label{eq:integratedAutocorrelation}
+                \tau_{X,\text{int}} = \frac{1}{2} + \sum_{i=1}^{N}\Gamma_{X}\left(t\right),
+            \end{equation}
+            and provides  a second measure (like the exponential autocorrelation time) of the number of configurations before the samples become uncorrelated. As before, the integrated autocorrelation time will vary for different measured quantities, so to find the number of configurations before measurements are completely uncorrelated one should consider $\sup_X{\tau_{X,\text{int}}}$.
+            Hence, for the case of correlated samples, our estimates will be now:
+            \begin{equation}
+                \hat{X}\pm\sqrt{\frac{1}{N}2\tau_{X,\text{int}}\hat{\sigma}^{2}_{X}}.
+            \end{equation}
+
+            In practice obtaining the values of either the exponential, or integrated autocorrelation times is not always easy. Due to the statistical noise that appears in the autocorrelation function at larger times one needs to first plot the autocorrelation function, then either fit an exponential, or computer the sum in equation \ref{eq:integratedAutocorrelation} for an appropriate range. Due to the fact that for the systems we simulated computational costs are (relatively) small, rather than compute the autocorrelation times after the simulation to determine the errors in any quantities, we introduce into the simulation a parameter that determines at what frequency measurements are actually recorded from configurations in the Markov chain. By increasing this parameter on preliminary test runs until $\tau_{X,\text{int}}$ and $\tau_{X,\text{exp}}$ are both less than one, we know that our measurements are always uncorrelated and we are therefore free to use the naive error in equation \ref{eq:niaveerror} with confidence, since are samples are uncorrelated. This makes the simulation somewhat simpler, since it allows us to do statistical analysis in-line, rather than saving all generated configurations and performing data analysis after. 
+
+            Finally in section \ref{sec:SamplingAndTheHamiltonian} we claimed the optimum acceptance rate was $\sim 65.1\%$, in what follows we will always tune our input parameters so that the success rate is close to and/or greater than this value.
+            
+
     
         \subsubsection{Quantum Harmonic Oscillator}
             \label{sec:QuantumHarmonicOscillator}
@@ -529,10 +598,16 @@
                 \label{eq:HarmonicPotential}
                 V\left(x\right) = \frac{1}{2}\mu^2x^2
             \end{equation}
+            so that 
+            \begin{equation}
+                \label{eq:HarmonicPotential}
+                H_{hmc}\left(\bm{q},\bm{p}\right) = \sum_{i=0}^{N-1} \frac{p_i^2}{2} + \sum_{i=0}^{N-1} \epsilon \left[\frac{1}{2}m\left(\frac{q_{i+1}-q_{i}}{\epsilon}\right)^2 + \frac{1}{2}\mu^2q_i^2\right]
+            \end{equation}
+
             where $\mu \in \mathbb{R}$.
 
-            \paragraph{Typical Trajectory}
-                Figure \ref{fig:TypicalHarmonicTrajectory} shows a typical path for the HMC simulation of the harmonic oscillator. This is just a plot of the position variable at each lattice site. 
+            \paragraph{Typical Configuration}
+                Figure \ref{fig:TypicalHarmonicPath} shows a typical configuration for the HMC simulation of the harmonic oscillator. This is just a plot of the position variable at each lattice site. 
                 \begin{figure}
                     \centering
                         \begin{tikzpicture}[scale=1.5]
@@ -547,10 +622,10 @@
                             \end{axis}
                         \end{tikzpicture}
                         \caption{Typical configuration for the harmonic oscillator with $\mu^2 = 1, m = 1, a = 1, L = 1000, d = 0.1, N = 10, \text{configurations} = 100000, \text{burn period} = 1000$.}
-                        \label{fig:TypicalHarmonicTrajectory}
+                        \label{fig:TypicalHarmonicPath}
                 \end{figure}
             \paragraph{Mean Square Position}
-                The first quantity we calculate is the mean square position. For the discrete theory, the value this quantity for an imaginary time lattice of spacing $a$ and size $N$ can be calculated exactly to be: 
+                The first quantity we calculate is the mean square position which for the statistical mechanical system is $\langle x \rangle$ and corresponds to $\bra{0}\hat{x}^2\ket{0}$ (the position in the ground state) for the quantum mechanical system. For the discrete theory, the value this quantity for an imaginary time lattice of spacing $a$ and size $N$ can be calculated exactly to be: 
                 \begin{equation}
                     \label{eq:MeanSquarePosition}
                     \braket{x^2} = \frac{1}{2\mu\left(m+\frac{a^2\mu^2}{4}\right)^\frac{1}{2}}\left(\frac{1+R^N}{1-R^N}\right),
@@ -580,11 +655,11 @@
                                     y index=1, 
                                     y error index=2]{DataForReport/LatticeSpacingvsExpectationXSquared.dat};
                             \addlegendentry{Measured Values}
-                            \addplot[domain=0:1,
+                            \addplot[domain=0.1:1,
                                 samples=100,
                                 color=blue,
                                     ]
-                                {(1/2)*(1/sqrt(1+0.25*x*x)) * ((1+(1+0.5*x*x-x*sqrt(1+0.25*x*x))^(1000))/((1-(1+0.5*x*x-x*sqrt(1+0.25*x*x))^(1000))))};
+                                {(1/2)*(1/sqrt(1+0.25*x*x)) * ((1+(1+0.5*x*x-x*sqrt(1+0.25*x*x))^(100))/((1-(1+0.5*x*x-x*sqrt(1+0.25*x*x))^(100))))};
                          \addlegendentry{Discrete Theory}      
                         \end{axis}
                     \end{tikzpicture}
@@ -608,11 +683,12 @@
                     \label{eq:HarmonicGroundStateEnergy}
                     E_0 = m\mu^2\braket{x^2}
                 \end{align}
-                Of course when $\mu=m=1$ the calculated values for the ground state energy are the same as those for $\braket{x^2}$ in figure \ref{fig:MeanXSquaredPlot}. When we recover the continuum limit as $a\rightarrow0$ and $N\rightarrow\infty$ we see that $E_0$ approaches the value of $\frac{1}{2}$ which is given by:
+                Since the measured observables correspond to expectations in the ground state this is the ground state energy. Of course when $\mu=m=1$ the calculated values for the ground state energy are the same as those for $\braket{x^2}$ in figure \ref{fig:MeanXSquaredPlot}. When we recover the continuum limit as $a\rightarrow0$ and $N\rightarrow\infty$ we see that $E_0$ approaches the value of $\frac{1}{2}$ which is given by the formula for the energy levels of a harmonic oscillator:
                 \begin{equation}
                     \label{eq:ContinuumEnergyLevels}
-                    E_n=\mu\left(n+\frac{1}{2}\right).
+                    E_n=\mu\left(n+\frac{1}{2}\right),
                 \end{equation}
+                when $n=0$.
                 To calculate the energy gap between the first and ground state we use:
                 \begin{equation}
                     \label{eq:FirstExcitedStateHarmonicOscillator}
@@ -729,8 +805,17 @@
                 \end{figure}
                 
 
-            \paragraph{Ground State Wave Function}
-            Our method for measuring the ground state wave function follows that of \cite{creutz_freedman_1981}. We discretise position into $K$ bins of size $\Delta x$. On any given configuration we may then bin the position coordinate at each lattice site and create a histogram. Normalising the histogram gives the probability mass density for finding the particle in any interval $x+\Delta x$ and as $\Delta x \rightarrow 0$, this becomes the probability density function that is the square amplitude of the wave function. On any configuration position coordinates are therefore binned according to:
+            \paragraph{Ground State Probability Density Function}
+            Our method for measuring the density function of the ground state follows that of \cite{creutz_freedman_1981}. We discretise position into $K$ bins of size $\Delta x$. On any given configuration we may then bin the position coordinate at each lattice site and create a histogram. Normalising the histogram gives the probability mass density for finding the particle in any interval $\left[x,x+\Delta x\right]$ and as $\Delta x \rightarrow 0$, this becomes the probability density function that is the amplitude squared of the wave function. Since we know that measurements made in our simulation correspond to ground state expectation values this wave function is that of the ground state. It can be shown (see appendix \ref{ap:DiscretePathIntegralDerivation} or \cite{creutz_freedman_1981}) that for the discrete quantum harmonic oscillator the magnitude squared of the ground state wavefunction is given exactly by:
+            \begin{equation}
+                \label{eq:magSquaredWavefunction}
+                |\psi\left(x\right)|^2=\left(\frac{\sqrt{5}}{2\pi}\right)^\frac{1}{2}\exp\left(-\frac{\sqrt{5}}{2}x^2\right)
+            \end{equation}
+            when $m=\mu=1$ and with a lattice spacing of $a=1$ which should be contrast with the continuum result when $a\rightarrow 0$:
+            \begin{equation}
+            |\psi\left(x\right)|^2 = \frac{1}{\sqrt{\pi}}\exp{-x^2}.
+            \end{equation}
+            Plots of the density functions for the discrete and continuum cases are shown in figure \ref{fig:HarmonicWaveFunction} along with the simulation results at the given parameters.
                 \begin{figure}
                     \centering
                     \begin{tikzpicture}[scale=1.5]
@@ -781,8 +866,8 @@
                 V\left(x\right) = \lambda\left(x^2-f^2\right)
             \end{equation}
             with $\lambda\in\mathbb{R}_{>0}$ and $f^2\in\mathbb{R}_{>0}$. This form of the potential has the advantage that its zeros coincide with its minima at $x=\pm f$. Since potential \ref{eq:AnharmonicPotentialF} is equivalent to potential \ref{eq:AharmonicPotentialLambda} up to the additive constant $\lambda f^4$, the action and consequently the HMC Hamiltonian for the system is the same up to the additive constant $\lambda f^4$ also. This makes no difference to the measured quantities since the constant in the Hamiltonian vanishes when we take its derivatives in Hamilton's equations, and any constant term in the action amounts to rescaling the path integral in equation \ref{eq:PathIntegral} by a complex exponential factor, which will therefore vanish when we take the magnitude to get the probability.
-            \paragraph{Typical Trajectory}
-                Figure \ref{} shows a typical trajectory for the HMC simulation of the anharmonic oscillator. We can now observe the tunnelling behaviour we expect for a quantum system.
+            \paragraph{Typical configuration}
+                Figure \ref{} shows a typical configuration for the HMC simulation of the anharmonic oscillator. We now observe the tunnelling behaviour we expect for a quantum system.
                 \begin{figure}
                     \centering
                     \begin{tikzpicture}[scale=1.5]
@@ -843,8 +928,8 @@
                     \label{fig:AnharmonicEnergies}
                 \end{figure}
 
-            \paragraph{Ground State Wave Function}
-                To measure the ground state wave function we follow the same method as we did for the harmonic oscillator in section \ref{sec:QuantumHarmonicOscillator}. The results can be seen in figure \ref{fig:AnharmonicWaveFunction}
+            \paragraph{Ground State Probability Density Function}
+                To measure the ground probability density function we follow the same method as we did for the harmonic oscillator in section \ref{sec:QuantumHarmonicOscillator}. The results can be seen in figure \ref{fig:AnharmonicWaveFunction}
                 \begin{figure}
                     \centering
                     \begin{tikzpicture}[scale=1.5]
@@ -949,9 +1034,9 @@
                 \end{figure}
     \label{sec:Tempering}
     \subsection{Accelerated Dynamics (Tempering)}
-    We have seen above that Hybrid Monte Carlo much like other MCMC methods \cite{neal_2011} has an issue in that it struggles to sample from isolated modes in a probability distribution, such as the wells in the double well potential. A solution to this problem proposed in \cite{neal_2011} is to use \textit{tempering} dynamics to try and sample more frequently from modes separated by a region of low probability. In HMC tempering is incorporated directly into the Hamiltonian dynamics and here we follow the method given in \cite{neal_2011}.  
+    We have seen above that Hybrid Monte Carlo much like other MCMC methods \cite{neal_2011} has an issue in that it struggles to sample from isolated modes in a probability distribution, such as the wells in the double well potential. A solution to this problem proposed first proposed in \cite{neal_1996_b} is to use \textit{tempering} dynamics to try and sample more frequently from modes separated by a region of low probability. In HMC tempering is incorporated directly into the Hamiltonian dynamics and here we follow the method given in \cite{neal_1996_b} and \cite{neal_2011}.  
 
-    In order to implement tempering on a trajectory that is used to propose an update in the HMC algorithm we multiply each momentum variable in the first half of the trajectory by $1+\epsilon$ where $\epsilon$ is small, and divide each momentum variable in the second half of the trajectory by $1+\epsilon$. We will follow the symmetric method given in \cite{neal_2011} and defining $\alpha=1+\epsilon$ multiply each momentum variable before the first half step (equation \ref{eq:LeapFrogEq1}) and after the second half step (equation \ref{eq:LeapFrogEq1}) in the leapfrog update by $\sqrt{\alpha}$ in the first half of the trajectory and then in the second half of the trajectory to replace this multiplication with division $\sqrt{\alpha}$. If there is an odd number of steps in the leapfrog trajectory then on the middle step we before the first half step in momenta we multiply by $\sqrt{\alpha}$  and on the second half step we do a corresponding division so that the number of multiplications and divisions by $\alpha$ is equal.
+    In order to implement tempering on a trajectory that is used to propose an update in the HMC algorithm we multiply each momentum variable in the first half of the trajectory by $1+\delta$ where $\delta$ is small, and divide each momentum variable in the second half of the trajectory by $1+\delta$. We will follow the symmetric method given in \cite{neal_2011} and defining $\alpha=1+\delta$ multiply each momentum variable before the first half step (equation \ref{eq:LeapFrogEq1}) and after the second half step (equation \ref{eq:LeapFrogEq1}) in the leapfrog update by $\sqrt{\alpha}$ in the first half of the trajectory and then in the second half of the trajectory to replace this multiplication with division $\sqrt{\alpha}$. If there is an odd number of steps in the leapfrog trajectory then on the middle step we before the first half step in momenta we multiply by $\sqrt{\alpha}$  and on the second half step we do a corresponding division so that the number of multiplications and divisions by $\alpha$ is equal.
 
     With tempering introduced the leapfrog equations \ref{eq:LeapFrogEq1},\ref{eq:LeapFrogEq2} and \ref{eq:LeapFrogEq3} become:
     \begin{align}
@@ -974,53 +1059,23 @@
 
 
 
-    Just as in section \ref{sec:HamiltonianDynamics} we still require that volume is preserved by the leapfrog integration scheme, even with tempering present. The argument carries over from the non-tempered case, however on any given leapfrog step the determinant of the Jacobian will not necessarily be unity and therefore volume will not be preserved, it will only be the transformation for the whole trajectory that preserves volume. To see why this is the case note that as before we can write the new tempered leap frog equations in matrix form as as:
+    Just as in section \ref{sec:HamiltonianDynamics} we still require that volume is preserved by the leapfrog integration scheme since this is required for detailed balance, even with tempering present. The argument carries over from the non-tempered case, however on any given leapfrog step the determinant of the Jacobian will not necessarily be unity and therefore volume will not be preserved, it will only be the transformation for the whole trajectory that preserves volume. To see why this is the case note that as before we can define the mappings on phase space $T_{p_1}\left(\epsilon,\alpha\right): \left(\bm{q},\bm{p}\right) \rightarrow \left(\bm{q}',\bm{p}'\right)$, $T_{q}\left(\epsilon\right): \left(\bm{q},\bm{p}\right) \rightarrow \left(\bm{q}',\bm{p}'\right)$ (this is the same map as in the non-tempered case) and $T_{p_2}\left(\epsilon,\alpha\right): \left(\bm{q},\bm{p}\right) \rightarrow \left(\bm{q}',\bm{p}'\right)$ such that:
     \begin{align}
-        \label{eq:Tleapfrogmatrix1}\begin{bmatrix} \bm{q}\left(t\right) \\ \bm{p}\left(t+\epsilon/2\right) \end{bmatrix} & =
-        \begin{bmatrix} I_{d\times d} & 0_{d\times d} \\ A & \sqrt{\alpha}I_{d\times d} \end{bmatrix}\begin{bmatrix} \bm{q}\left(t\right) \\ \bm{p}\left(t\right) \end{bmatrix} \\
-        \label{eq:Tleapfrogmatrix1}\begin{bmatrix} \bm{q}\left(t+\epsilon\right) \\ \bm{p}\left(t+\epsilon/2\right) \end{bmatrix} & = 
-        \begin{bmatrix} I_{d\times d} & \epsilon \\ 0_{d\times d} & I_{d\times d} \end{bmatrix} \begin{bmatrix} \bm{q}\left(t\right) \\ \bm{p}\left(t+\epsilon/2\right) \end{bmatrix} \\
-        \label{eq:Tleapfrogmatrix1}\begin{bmatrix} \bm{q}\left(t+\epsilon\right) \\ \bm{p}\left(t+\epsilon\right) \end{bmatrix} & = 
-        \begin{bmatrix} I_{d\times d} & 0_{d\times d} \\ B & \sqrt{\alpha}I_{d\times d} \end{bmatrix} \begin{bmatrix} \bm{q}\left(t+\epsilon\right) \\ \bm{p}\left(t+\epsilon/2\right) \end{bmatrix} \\
+        T_{p_1}\left(\epsilon,\alpha\right)\begin{pmatrix} \bm{q} \\ \bm{p} \end{pmatrix} & = \begin{pmatrix} \bm{q} \\ \sqrt{\alpha}\bm{p} - \epsilon \underline{\nabla}_{q}U\left(\bm{q}\right)\end{pmatrix},\\
+        T_{q}\left(\epsilon\right)\begin{pmatrix} \bm{q} \\ \bm{p} \end{pmatrix} & = \begin{pmatrix} \bm{q} + \epsilon \underline{\nabla}_pK\left(\bm{p}\right)  \\ \bm{p} \end{pmatrix},\\
+        T_{p_2}\left(\epsilon,\alpha\right)\begin{pmatrix} \bm{q} \\ \bm{p} \end{pmatrix} & = \begin{pmatrix} \bm{q} \\ \sqrt{\alpha}\left(\bm{p} - \epsilon \underline{\nabla}_qU\left(\bm{q}\right)\right)\end{pmatrix},
     \end{align}
-    for single step from $t$ to $t+\epsilon$ in the first half of the trajectory and
+    where we have now had to define three maps due to the fact the tempering multiplication happens before and after the half updates in the momenta so the forms of the half steps in momentum in the leapfrog equations are no longer the same. Having defined these mappings we can calculate their Jacobians to be:
     \begin{align}
-        \begin{bmatrix} \bm{q}\left(t\right) \\ \bm{p}\left(t+\epsilon/2\right) \end{bmatrix} & =
-        \begin{bmatrix} I_{d\times d} & 0_{d\times d} \\ A & \frac{1}{\sqrt{\alpha}}I_{d\times d} \end{bmatrix}\begin{bmatrix} \bm{q}\left(t\right) \\ \bm{p}\left(t\right) \end{bmatrix} \\
-        \begin{bmatrix} \bm{q}\left(t+\epsilon\right) \\ \bm{p}\left(t+\epsilon/2\right) \end{bmatrix} & = 
-        \begin{bmatrix} I_{d\times d} & \epsilon \\ 0_{d\times d} & I_{d\times d} \end{bmatrix} \begin{bmatrix} \bm{q}\left(t\right) \\ \bm{p}\left(t+\epsilon/2\right) \end{bmatrix} \\
-        \begin{bmatrix} \bm{q}\left(t+\epsilon\right) \\ \bm{p}\left(t+\epsilon\right) \end{bmatrix} & = 
-        \begin{bmatrix} I_{d\times d} & 0_{d\times d} \\ B & \frac{1}{\sqrt{\alpha}}I_{d\times d} \end{bmatrix} \begin{bmatrix} \bm{q}\left(t+\epsilon\right) \\ \bm{p}\left(t+\epsilon/2\right) \end{bmatrix}
+        J_{p_1} & = \det\begin{pmatrix} \delta_{ij} & 0 \\ -\epsilon\partial q_i \partial q_j U\left(\bm{q}\right) & \sqrt{\alpha}\delta_{ij} \end{pmatrix} = \alpha^\frac{d}{2} \\
+        J_{q} & = \det\begin{pmatrix} \delta_{ij} & \epsilon\partial p_i \partial p_j K\left(\bm{p}\right) \\ 0 & \delta_{ij} \end{pmatrix} = 1 \\
+        J_{p_2} & = \det\begin{pmatrix} \delta_{ij} & 0 \\ -\sqrt{\alpha}\epsilon\partial q_i \partial q_j U\left(\bm{q}\right) & \sqrt{\alpha}\delta_{ij} \end{pmatrix} = \alpha^\frac{d}{2}. \\
     \end{align}
-    in the second half of the trajectory. Where as before $A$ will depend on the partial derivatives of $U\left(q\right)$ evaluated at $t$ and $B$ the partial derivatives at $t+\epsilon$ however since they are off diagonal terms with the opposite off diagonal terms being zero, there form is not relevant for the argument. It is also possible that for an odd number of steps the middle step will be of the form:
-    \begin{align}
-        \label{eq:middlematrix}\begin{bmatrix} \bm{q}\left(t\right) \\ \bm{p}\left(t+\epsilon/2\right) \end{bmatrix} & =\begin{bmatrix} I_{d\times d} & 0_{d\times d} \\ A & \sqrt{\alpha}I_{d\times d} \end{bmatrix}\begin{bmatrix} \bm{q}\left(t\right) \\ \bm{p}\left(t\right) \end{bmatrix} \\
-        \begin{bmatrix} \bm{q}\left(t+\epsilon\right) \\ \bm{p}\left(t+\epsilon/2\right) \end{bmatrix}&=\begin{bmatrix} I_{d\times d} & \epsilon \\ 0_{d\times d} & I_{d\times d} \end{bmatrix} \begin{bmatrix} \bm{q}\left(t\right) \\ \bm{p}\left(t+\epsilon/2\right) \end{bmatrix} \\
-        \begin{bmatrix} \bm{q}\left(t+\epsilon\right) \\ \bm{p}\left(t+\epsilon\right) \end{bmatrix} & =
-        \begin{bmatrix} I_{d\times d} & 0_{d\times d} \\ B & \frac{1}{\sqrt{\alpha}}I_{d\times d} \end{bmatrix} \begin{bmatrix} \bm{q}\left(t+\epsilon\right) \\ \bm{p}\left(t+\epsilon/2\right) \end{bmatrix}. \\
-    \end{align}
-
-    From the above we can see that for a step of size $\epsilon$ in the first half of the trajectory the transformation that takes us from $\left(\bm{q}\left(t\right),\bm{p}\left(t\right)\right)$ to $\left(\bm{q}\left(t\right),\bm{p}\left(t\right)\right)$ given by:
+    Let us assume that we have an even number $l$ of leapfrog steps in our trajectory. A leapfrog step in the first half of the trajectory can be written in terms of the above mappings as $T\left(\alpha,\epsilon\right) = T_{p_2}\left(\alpha,\epsilon/2\right)T_q\left(\epsilon\right)T_{p_1}\left(\alpha,\epsilon/2\right)$, which from the compositions of the above maps will have Jacobian $ \alpha^d $ and in the second half trajectory as $T\left(1/\alpha,\epsilon\right) = T_{p_2}\left(1/\alpha,\epsilon/2\right)T_q\left(\epsilon\right)T_{p_1}\left(1/\alpha,\epsilon/2\right)$ which will have Jacobian $1/\alpha^{d}$. The mapping which via the leapfrog equations takes us from the start of the trajectory can be written as:
     \begin{equation}
-        \begin{bmatrix} \bm{q}\left(t+\epsilon\right) \\ \bm{p}\left(t+\epsilon\right) \end{bmatrix} = T \begin{bmatrix}\bm{q}\left(t\right) \\ \bm{p}\left(t\right) \end{bmatrix}
+        \text{traj}\left(\epsilon,l\right)=\left[T\left(1/\alpha,\epsilon\right)\right]^{\frac{l}{2}}\left[T\left(\alpha,\epsilon\right)\right]^{\frac{l}{2}}
     \end{equation}
-    is 
-    \begin{equation}
-    T= \begin{bmatrix} I_{d\times d} & 0_{d\times d} \\ B & \sqrt{\alpha}I_{d\times d} \end{bmatrix} \begin{bmatrix} I_{d\times d} & \epsilon \\ 0_{d\times d} & I_{d\times d} \end{bmatrix} \begin{bmatrix} I_{d\times d} & 0_{d\times d} \\ A & \sqrt{\alpha}I_{d\times d} \end{bmatrix}
-    \end{equation}
-    the determinant of which is no longer unity $det\left(T\right)=\alpha$ so that a single step in the first half trajectory does not preserve volume. This is because with tempering the diagonal terms in the matrix are no longer all unity. For steps in the second half trajectory we may construct an equivalent Jacobian matrix:
-    \begin{equation}
-    S= \begin{bmatrix} I_{d\times d} & 0_{d\times d} \\ B & \frac{1}{\sqrt{\alpha}}I_{d\times d} \end{bmatrix} \begin{bmatrix} I_{d\times d} & \epsilon \\ 0_{d\times d} & I_{d\times d} \end{bmatrix} \begin{bmatrix} I_{d\times d} & 0_{d\times d} \\ A & \frac{1}{\sqrt{\alpha}}I_{d\times d} \end{bmatrix}
-    \end{equation}
-    and we see $det\left(S\right)=1/\alpha$. For an even number of steps of size $\epsilon$ it is clear that these factors will always cancel when we consider the Jacobian that takes us from $t$ to $t+2N\epsilon$ formed by the product of an even number of matrices of the form $S$ and $T$ and take its determinant. For an odd number of steps there will be an extra term in the middle of the product of matrices of the form \ref{eq:middlematrix}, however its determinant is unity so it does not contribute to any change in volume.
-
-
-
-
-    
-
-    
-
+    which using the Jacobians of the mappings in the composition will have Jacobian $J_{\text{traj}}=\left[\alpha^d\right]^{\frac{l}{2}}\left[1/\alpha^d\right]^{\frac{l}{2}} = 1$ and so as in the case of non-tempered dynamics we have preservation of volume on phase space if we integrate Hamilton's equations via the leapfrog scheme and include a tempering factor. Note that for an odd number of steps we would have $\text{traj}\left(\epsilon,l\right)=\left[T\left(1/\alpha,\epsilon\right)\right]^{\frac{l}{2}} T_{p_2}\left(1/\alpha,\epsilon/2\right)T_q\left(\epsilon\right)T_{p_1}\left(\alpha,\epsilon/2\right)[T\left(\alpha,\epsilon)\right]^{\frac{l}{2}}$ however the factors of alpha will still cancel in the Jacobian and so volume is still preserved.
 
 
 
