@@ -1,29 +1,29 @@
 \contentsline {section}{\numberline {1}Introduction}{1}{section.1}
 \contentsline {section}{\numberline {2}Background}{3}{section.2}
 \contentsline {subsection}{\numberline {2.1}Quantum Mechanics}{3}{subsection.2.1}
-\contentsline {section}{\numberline {3}Methods}{6}{section.3}
-\contentsline {subsection}{\numberline {3.1}Monte Carlo Methods}{6}{subsection.3.1}
-\contentsline {subsection}{\numberline {3.2}Hybrid Monte Carlo}{7}{subsection.3.2}
-\contentsline {subsubsection}{\numberline {3.2.1}Hamiltonian Dynamics}{7}{subsubsection.3.2.1}
-\contentsline {subsubsection}{\numberline {3.2.2}Sampling and the Hamiltonian}{10}{subsubsection.3.2.2}
-\contentsline {subsubsection}{\numberline {3.2.3}Steps of the HMC Algorithm}{11}{subsubsection.3.2.3}
-\contentsline {section}{\numberline {4}Results and Discussion}{13}{section.4}
-\contentsline {subsection}{\numberline {4.1}Quantum Oscillators}{13}{subsection.4.1}
-\contentsline {subsection}{\numberline {4.2}Data Analysis}{15}{subsection.4.2}
-\contentsline {paragraph}{Uncorrelated Data}{15}{section*.8}
-\contentsline {paragraph}{Correlated Data}{15}{section*.9}
-\contentsline {subsubsection}{\numberline {4.2.1}Quantum Harmonic Oscillator}{17}{subsubsection.4.2.1}
-\contentsline {paragraph}{Typical Configuration}{17}{section*.10}
-\contentsline {paragraph}{Mean Square Position}{18}{section*.12}
-\contentsline {paragraph}{Energy Levels}{18}{section*.14}
-\contentsline {paragraph}{Ground State Probability Density Function}{20}{section*.21}
-\contentsline {subsubsection}{\numberline {4.2.2}Quantum Anharmonic Oscillator}{22}{subsubsection.4.2.2}
-\contentsline {paragraph}{Typical configuration}{23}{section*.23}
-\contentsline {paragraph}{Energy Levels}{23}{section*.25}
-\contentsline {paragraph}{Ground State Probability Density Function}{25}{section*.28}
-\contentsline {paragraph}{Isolated Modes}{25}{section*.30}
+\contentsline {section}{\numberline {3}Methods}{7}{section.3}
+\contentsline {subsection}{\numberline {3.1}Monte Carlo Methods}{7}{subsection.3.1}
+\contentsline {subsection}{\numberline {3.2}Hybrid Monte Carlo}{8}{subsection.3.2}
+\contentsline {subsubsection}{\numberline {3.2.1}Hamiltonian Dynamics}{8}{subsubsection.3.2.1}
+\contentsline {subsubsection}{\numberline {3.2.2}Sampling and the Hamiltonian}{11}{subsubsection.3.2.2}
+\contentsline {subsubsection}{\numberline {3.2.3}Steps of the HMC Algorithm}{12}{subsubsection.3.2.3}
+\contentsline {section}{\numberline {4}Results and Discussion}{15}{section.4}
+\contentsline {subsection}{\numberline {4.1}Quantum Oscillators}{15}{subsection.4.1}
+\contentsline {subsection}{\numberline {4.2}Data Analysis}{16}{subsection.4.2}
+\contentsline {paragraph}{Uncorrelated Data}{16}{section*.8}
+\contentsline {paragraph}{Correlated Data}{17}{section*.9}
+\contentsline {subsubsection}{\numberline {4.2.1}Quantum Harmonic Oscillator}{19}{subsubsection.4.2.1}
+\contentsline {paragraph}{Typical Configuration}{19}{section*.10}
+\contentsline {paragraph}{Mean Square Position}{19}{section*.12}
+\contentsline {paragraph}{Energy Levels}{19}{section*.14}
+\contentsline {paragraph}{Ground State Probability Density Function}{21}{section*.21}
+\contentsline {subsubsection}{\numberline {4.2.2}Quantum Anharmonic Oscillator}{23}{subsubsection.4.2.2}
+\contentsline {paragraph}{Typical configuration}{24}{section*.23}
+\contentsline {paragraph}{Energy Levels}{24}{section*.25}
+\contentsline {paragraph}{Ground State Probability Density Function}{24}{section*.28}
+\contentsline {paragraph}{Isolated Modes}{24}{section*.30}
 \contentsline {subsection}{\numberline {4.3}Accelerated Dynamics (Tempering)}{25}{subsection.4.3}
-\contentsline {section}{\numberline {5}Conclusion}{29}{section.5}
-\contentsline {section}{Appendices}{31}{section*.34}
-\contentsline {section}{\numberline {A}Quantum Virial Theorem}{31}{appendix.A}
-\contentsline {section}{\numberline {B}Derivation of the discrete path integral for quantum harmonic oscillator}{32}{appendix.B}
+\contentsline {section}{\numberline {5}Conclusion}{30}{section.5}
+\contentsline {section}{Appendices}{33}{section*.34}
+\contentsline {section}{\numberline {A}Quantum Virial Theorem}{33}{appendix.A}
+\contentsline {section}{\numberline {B}Derivation of the discrete path integral for quantum harmonic oscillator}{34}{appendix.B}
