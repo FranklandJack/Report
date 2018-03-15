@@ -70,6 +70,18 @@ R.~Blankenbecler, T.~Degrand, and R.~L. Sugar.
 \newblock Moment method for eigenvalues and expectation values.
 \newblock {\em Physical Review D}, 21(4):1055--1061, 1980.
 
+\bibitem{gattringer_lang_2013}
+Christof Gattringer and Christian~B. Lang.
+\newblock {\em Quantum Chromodynamics on the Lattice An Introductory
+  Presentation}.
+\newblock Springer Berlin, 2013.
+
+\bibitem{sokal_1997}
+A.~Sokal.
+\newblock Monte carlo methods in statistical mechanics: Foundations and new
+  algorithms.
+\newblock {\em Functional Integration NATO ASI Series}, pages 131--192, 1997.
+
 \bibitem{goldstein_poole_safko_2014}
 Herbert Goldstein, Charles~P. Poole, and John Safko.
 \newblock {\em Classical mechanics}.
@@ -93,12 +105,6 @@ Alain Durmus, Eric Moulines, and Eero Saksman.
 \bibitem{livingstone_betancourt_byrne_girolami}
 Samuel Livingstone, Michael Betancourt, Simon Byrne, and Mark Girolami.
 \newblock On the geometric ergodicity of hamiltonian monte carlo, 2016.
-
-\bibitem{gattringer_lang_2013}
-Christof Gattringer and Christian~B. Lang.
-\newblock {\em Quantum Chromodynamics on the Lattice An Introductory
-  Presentation}.
-\newblock Springer Berlin, 2013.
 
 \bibitem{binney_skinner_2015}
 James Binney and David~Benjamin. Skinner.

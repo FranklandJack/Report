@@ -277,7 +277,7 @@
 
 \section{Methods}
     \subsection{Monte Carlo Methods}
-    Monte Carlo methods provide a way of numerically evaluating integrals where the error is independent of the dimensionality of the integral. For the purposes of our work we will be interested in estimating expectation values of functions $\phi\left(X\right)$ of some d-dimensional random variable $X$ under some probability distribution with density function $f\left(\bm{x}\right)$:
+    Monte Carlo methods provide a way of numerically evaluating integrals where the error is independent of the dimensionality of the integral. For the purposes of our work we will be interested in estimating expectation values of functions (which are the observables of our statistical system) $\phi\left(X\right)$ of some d-dimensional random variable $X$ under some probability distribution with density function $f\left(\bm{x}\right)$:
     \begin{equation}
         \label{eq:expectation}
         \langle \phi\left(X\right) \rangle = \int \prod_{i=1}^{d}{dx_i}f\left(\bm{x}\right)\phi\left(\bm{x}\right),
@@ -288,11 +288,17 @@
         \langle\phi\left(X\right)\rangle \approx \frac{1}{M} \sum_{n=1}^{M}\phi\left(\bm{x}_n\right).
     \end{equation}
     It can be shown that the error in \ref{eq:montecarloestimate} is always $\mathcal{O}\left(1/\sqrt{M}\right)$ independent of the dimension of the integral, and that the Monte method wins over quadrature methods (traditional numerical integration schemes) in terms of computational cost vs. accuracy for $d>3$ \cite{gattringer_lang_2013}.
-    It is now just a question of how to choose the samples $\bm{x}_n$ to get a expectation value with a small error. From the form of equation \ref{eq:expectation} drawing uniform samples from the support of $f$ is clearly unwise, since this would give equal weight to contributions to our approximation of the expectation value for samples that are very unlikely to be realised by the random variable $X$ under the density function $f$ as those which are very likely to be realised. We therefore choose to draw samples according to the distribution of $X$, this is known as \textit{importance sampling}. In order to draw samples according to a probability distribution we use a \textit{Markov chain} which for our purposes can be defined as a sequence of random variables (samples) for which the probability of the next random variable in the sequence taking on a particular value depends only on the current random variable, we will denote this probability by $P_M\left(\bm{x}\rightarrow \bm{x}'\right)$. This idea of a \textit{Markov Chain Monte Carlo} method was first introduced by Metropolis et al. in \cite{metropolis_rosenbluth_rosenbluth_teller_teller_1953} via the Metropolis algorithm. A Markov chain will converge on a distribution with density function $P\left(\bm{x}\right)$ provided the chain is ergodic and obeys detailed balance. Ergodicity is the condition that any sample that can be realised under the probability distribution can be reached through the Markov chain and the detailed balance condition is given by: 
+    It is now just a question of how to choose the samples $\bm{x}_n$ to get a expectation value with a small error. From the form of equation \ref{eq:expectation} drawing uniform samples from the support of $f$ is clearly unwise, since this would give equal weight to contributions to our approximation of the expectation value for samples that are very unlikely to be realised by the random variable $X$ under the density function $f$ as those which are very likely to be realised. We therefore choose to draw samples according to the distribution of $X$, this is known as \textit{importance sampling}. In order to draw samples according to a probability distribution we use a \textit{Markov chain} which for our purposes can be defined as a sequence of random variables (samples) for which the probability of the next random variable in the sequence taking on a particular value depends only on the current random variable, we will denote this probability by $P_M\left(\bm{x}\rightarrow \bm{x}'\right)$. By starting from some arbitrary state (which in our simulation is a configuration) through the stochastic sequence of configurations we will eventually end up sampling from the desired equilibrium distribution with density function $f\left(\bm{x}\right)$. This idea of a \textit{Markov Chain Monte Carlo} method was first introduced by Metropolis et al. in \cite{metropolis_rosenbluth_rosenbluth_teller_teller_1953} via the Metropolis algorithm. Hybrid Monte Carlo is a method for constructing such a Markov chain and it is discussed in the next section. 
+
+    A Markov chain will converge on a distribution with density function $P\left(\bm{x}\right)$ provided the chain is ergodic and obeys detailed balance. Ergodicity is the condition that any sample that can be realised under the probability distribution can be reached through the Markov chain and the detailed balance condition is given by: 
     \begin{equation}
         \label{eq:detailedbalance}
         P\left(\bm{x}\right)P_M\left(\bm{x}\rightarrow \bm{x}'\right)=P\left(\bm{x}'\right)P_M\left(\bm{x}'\rightarrow \bm{x}\right).
     \end{equation}
+    During an actual simulation, one only starts to calculate the values of observables via equation \ref{eq:montecarloestimate} after an equilibration period, this is due to the fact that initially samples will not be drawn according to the correct probability distribution and it is only once the Markov chain has converged that they will. 
+
+    We may consider our Monte Carlo simulation as consisting of three main stages. First to start the simulation we provide an initial configuration to begin the chain. We then have to perform a sufficient number of updates/steps of the chain such that we are drawing from the correct distribution, which in our case is the canonical distribution for our statistical system. Once we are at equilibrium we may compute the values of any observables on any configuration and use them to calculate the Monte Carlo estimate. In order to provide an initial lattice configuration we found that after some experimentation, a reasonable method was to provide a so called \textit{hot start} by uniformly distributing the position values of the lattice sites on the interval $\left[-1,1\right]$. In order to determine when and if samples are being drawn from the equilibrium distribution one can observe the evolution of some set of observables, for example position, and see when these values begin to converge. This method has potential issues in that there are the possibilities of \textit{metastable states} \cite{sokal_1997} for which it may seem as if the system has reached equilibrium, when in fact it is sampling from region of the configuration space for which it is metastable but will not remain indefinitely. This issue will arise for the case of the anharmonic oscillator, where the possibility of the particle getting ``stuck'' in one well can lead to Monte Carlo estimates on $\langle x \rangle$ being non-zero for a symmetric well about zero. However, in this case we are able to identify when this metastability has occurred, since by symmetry we know the true answer. Once we have achieved equilibrium we are able to evaluate observables via the configurations, due to the possibility of correlations between samples in the Markov chain this is not entirely trivial, and the analysis of recorded data is discussed at the end of this chapter.
+
 
 
     \subsection{Hybrid Monte Carlo}
@@ -382,9 +388,9 @@
             \begin{equation}
                 \text{traj}\left(\epsilon,l\right) = \left(T\left(\epsilon\right)\right)^l
             \end{equation}
-            which of course also a Jacobian of $1$ since each mapping in the composition has Jacobian $1$ and hence the leapfrog integration presreves volume on the phase space since as a mapping its Jacobian is $1$. We will return to this argument in section \ref{sec:Tempering} where we will show that the leap frog integration scheme preserves volume even for the case of tempered dynamics. 
+            which of course also a Jacobian of $1$ since each mapping in the composition has Jacobian $1$ and hence the leapfrog integration preserves volume on the phase space since as a mapping its Jacobian is $1$. We will return to this argument in section \ref{sec:Tempering} where we will show that the leap frog integration scheme preserves volume even for the case of tempered dynamics. 
             
-            It is also obvious that the leapfrog integration scheme provides reversible dynamics; by negating the momenta at the end of a trajectory and applying the equations a second time we will return to the initial point in phase space. 
+            It is also obvious that the leapfrog integration scheme provides reversible dynamics; by negating the momenta at the end of a trajectory and applying the equations a second time we will return to the initial point in phase space. Negating the momenta at the end of a leapfrog trajectory will also preserve the volume.
 
 
 
@@ -443,7 +449,7 @@
                 \item \label{en:HMCStep5} Return to step \ref{en:HMCStep1} with $\bm{q}$.
             \end{enumerate}
 
-            In step \ref{en:HMCStep0} we provide an initial state. This can be chosen or generated randomly; some starting configurations are better than others\todo{Good place for a reference}. However, since we normally disregard the samples generated in the early HMC iterations (see section \todo{Reference section on thermalization}) this choice is not critical. 
+            In step \ref{en:HMCStep0} we provide an initial state. This can be chosen or generated randomly, however, since we normally disregard the samples generated in the early HMC iterations as discussed above this choice is not critical. 
 
             In step \ref{en:HMCStep1} we draw the fictitious momenta according to their probability distribution. The choice of kinetic energy in equation \ref{eq:HMCQuadraticKineticEnergy} and the form of equation \ref{eq:BoltzmannDistribution} means that:
             \begin{align}
@@ -502,59 +508,8 @@
             \end{align}
             where in the first equality we have just used the definitions, in the second we have used reversibility of the leapfrog integration scheme and factored out an exponent from the $\min$ function. In the third equality we have made the substitution $\pi \rightarrow -\pi$ and in the fourth we have then used that the phase space volume will be invariant under the change of sign in each momentum variable. In the fifth equality we utilize the preservation of volume for leapfrog integration which we proved above, then in the sixth seventh equality we make the substitution $\pi' \rightarrow -\pi'$ and utilise again the fact that volume will be invariant under negation of momentum. Finally we note that due to the quadratic kinetic term, $H$ is symmetric in $\pi$ and we can therefore negate the momenta in its arguments to get the result. So we have shown that detailed balance holds for the HMC algorithm. 
 
-            
-\section{Results and Discussion}
-    \subsection{Quantum Oscillators}
-    In section \ref{sec:QuantumMechanics} we showed in equation \ref{eq:DiscreteEuclideanPathIntegral} that by discretising the path integral and performing a Wick rotation into imaginary time the path integral of quantum mechanics is a partition function if $S_E\left(\left\{x_i\right\}\right)= H\left(x_i\right)$ (working now in units where $\hbar=T=k_B=1$). The Hamiltonian is an energy function of the system and so we may use equation \ref{eq:BoltzmannDistribution} with $E\left(\bm{x}\right) = S_E\left(\bm{x}\right)$ to get the Boltzmann distribution:
-    \begin{equation}
-        \label{eq:BoltzmannDistributionPathIntegral}
-        P\left(\bm{x}\right) = \frac{1}{Z}\exp{\left(-S_E\left(\bm{x}\right)\right)}.
-    \end{equation}
-    The probability distribution of equation \ref{eq:BoltzmannDistributionPathIntegral} is the distribution we wish to draw our samples according to for the Monte Carlo simulations, where the samples $\bm{x}=\left(x_0,\dots,x_{n-1}\right)$ are lattice configurations, therefore we follow the method of section \ref{sec:SamplingAndTheHamiltonian} with this distribution, taking $\bm{q}\equiv\bm{x}$,
-    \begin{align}
-        \label{eq:QuantumHMCPotential}
-        U\left(\bm{q}\right) & \equiv S_E\left(\bm{x}\right) \\
-                             & = \sum_{i=0}^{N-1} a \left[\frac{1}{2}m\left(\frac{x_{i+1}-x_{i}}{a}\right)^2 + V(x_i)\right]
-    \end{align} 
-    and the kinetic energy $K\left(\bm{p}\right)$ as in equation \ref{eq:HMCQuadraticKineticEnergy}. We define our HMC Hamiltonian:
-    \begin{align}
-        \label{eq:HMCQuantumMechanicalHamiltonian1}
-        H_{hmc}\left(\bm{q},\bm{p}\right) & \equiv K\left(\bm{p}\right) + U\left(\bm{q}\right)\\
-        \label{eq:HMCQuantumMechanicalHamiltonian2} & = \sum_{i=0}^{N-1} \frac{p_i^2}{2} + S_E\left(\bm{q}\right) \\
-        \label{eq:HMCQuantumMechanicalHamiltonian3}& = \sum_{i=0}^{N-1} \frac{p_i^2}{2} + \sum_{i=0}^{N-1} \epsilon \left[\frac{1}{2}m\left(\frac{q_{i+1}-q_{i}}{\epsilon}\right)^2 + V\left(q_i\right)\right],
-    \end{align} 
-    we can then use this Hamiltonian to generate samples with the HMC algorithm for any $1$-dimensional quantum mechanical system, by specifying the potential $V\left(x\right)$. With the choice of kinetic energy given in equation \ref{eq:HMCQuadraticKineticEnergy} and $U\left(\bm{q}\right) \equiv S_E\left(\bm{x}\right)$ this leads to the approximate solutions to Hamilton's equations in leapfrog implementation for $l$ steps of size $\epsilon$ taking the form:
-            \begin{enumerate}
-                \item Half step in momentum:
-                \begin{equation}
-                    \label{eq:MomentumInitialHalfStepQuadraticQHO}
-                    p_i\left(\epsilon/2\right) = p_i\left(0\right) - \epsilon/2\left[\frac{m}{a}\left(2q_i\left(0\right)-q_{i-1}\left(0\right)-q_{i+1}\left(0\right)\right)+a\frac{\partial V\left(q_i\left(0\right)\right)}{\partial q_i}\right],
-                \end{equation}
-                full step in position:
-                \begin{equation}
-                    \label{eq:PositionInitialStepQuadraticQHO}
-                    q_i\left(\epsilon\right) = q_i\left(0\right) + \epsilon p_i\left(\epsilon/2\right).
-                \end{equation}
-                \item Make $l-1$ alternating steps in momentum and position:
-                \begin{equation}
-                    \label{eq:MomentumFullStepQuadraticQHO}
-                    p_i\left(n\epsilon+\epsilon/2\right) = p_i\left(n\epsilon-\epsilon/2\right) - \epsilon\left[\frac{m}{a}\left(2q_i\left(n\epsilon\right)-q_{i-1}\left(n\epsilon\right)-q_{i+1}\left(n\epsilon\right)\right)+a\frac{\partial V\left(q_i\left(n\epsilon\right)\right)}{\partial q_i}\right],
-                \end{equation}
-                \begin{equation}
-                    \label{eq:PositionFullStepQuadraticQHO}
-                    q_i\left(n\epsilon+\epsilon\right) = q_i\left(n\epsilon\right) + \epsilon p_i\left(n\epsilon+\epsilon/2\right),
-                \end{equation}
-                for $n = 1, \dots , l-1$.
-                \item Final half step in momentum:
-                \begin{equation}
-                    \label{eq:MomnetumQuadraticKinetic}
-                    p_i\left(\epsilon l\right) = p_i\left(l\epsilon-\epsilon/2\right) - \epsilon/2\left[\frac{m}{a}\left(2q_i\left(\epsilon l\right)-q_{i-1}\left(\epsilon l\right)-q_{i+1}\left(\epsilon l\right)\right)+a\frac{\partial V\left(q_i\left(\epsilon l\right)\right)}{\partial q_i}\right],
-                \end{equation}
-            \end{enumerate}
-            where we are, as mentioned previously enforcing the periodic boundary conditions that $q_N=q_0$.
-
-        \subsection{Data Analysis}
-        The results of our simulation will ultimately be average values with accompanying statistical errors for several measured observables. Because Monte Carlo simulations generate samples using a Markov chain, subsequent samples in the chain can be correlated, in which case naive error estimates can be wrong. In what follows we will briefly explore this issue and explain our method for dealing with this problem in the simulation.
+            \subsection{Data Analysis}
+            The results of our simulation will ultimately be average values with accompanying statistical errors for several measured observables. Because Monte Carlo simulations generate samples using a Markov chain, subsequent samples in the chain can be correlated, in which case naive error estimates can be wrong. In what follows we will briefly explore this issue and explain our method for dealing with this problem in the simulation.
 
             \paragraph{Uncorrelated Data}
             Say we have via our Markov chain of Monte Carlo generated configurations at equilibrium calculated the values of $x_1,\dots,x_N$ of some observable (e.g. the ground state energy, or position expectation in the ground state). Then since the Markov chain is a sequence of random variables, each sample $x_i$ is the realisation of some random variable $X_i$. Since the lattice configurations and therefore the samples that are functions of those configurations are generated at equilibrium according to the canonical distribution, these random variables have the same expectation value and variance:
@@ -622,7 +577,60 @@
 
             In practice obtaining the values of either the exponential, or integrated autocorrelation times is not always easy. Due to the statistical noise that appears in the autocorrelation function at larger times one needs to first plot the autocorrelation function, then either fit an exponential, or computer the sum in equation \ref{eq:integratedAutocorrelation} for an appropriate range. Due to the fact that for the systems we simulated computational costs are (relatively) small, rather than compute the autocorrelation times after the simulation to determine the errors in any quantities, we introduce into the simulation a parameter that determines at what frequency measurements are actually recorded from configurations in the Markov chain. By increasing this parameter on preliminary test runs until $\tau_{X,\text{int}}$ and $\tau_{X,\text{exp}}$ are both less than one, we know that our measurements are always uncorrelated and we are therefore free to use the naive error in equation \ref{eq:niaveerror} with confidence, since are samples are uncorrelated. This makes the simulation somewhat simpler, since it allows us to do statistical analysis in-line, rather than saving all generated configurations and performing data analysis after. 
 
-            Finally in section \ref{sec:SamplingAndTheHamiltonian} we claimed the optimum acceptance rate was $\sim 65.1\%$, in what follows we will always tune our input parameters so that the success rate is close to and/or greater than this value. 
+            Finally in section \ref{sec:SamplingAndTheHamiltonian} we claimed the optimum acceptance rate was $\sim 65.1\%$, in what follows we will always tune our input parameters so that the success rate is close to and/or greater than this value.
+
+            
+\section{Results and Discussion}
+    \subsection{Quantum Oscillators}
+    In section \ref{sec:QuantumMechanics} we showed in equation \ref{eq:DiscreteEuclideanPathIntegral} that by discretising the path integral and performing a Wick rotation into imaginary time the path integral of quantum mechanics is a partition function if $S_E\left(\left\{x_i\right\}\right)= H\left(x_i\right)$ (working now in units where $\hbar=T=k_B=1$). The Hamiltonian is an energy function of the system and so we may use equation \ref{eq:BoltzmannDistribution} with $E\left(\bm{x}\right) = S_E\left(\bm{x}\right)$ to get the Boltzmann distribution:
+    \begin{equation}
+        \label{eq:BoltzmannDistributionPathIntegral}
+        P\left(\bm{x}\right) = \frac{1}{Z}\exp{\left(-S_E\left(\bm{x}\right)\right)}.
+    \end{equation}
+    The probability distribution of equation \ref{eq:BoltzmannDistributionPathIntegral} is the distribution we wish to draw our samples according to for the Monte Carlo simulations, where the samples $\bm{x}=\left(x_0,\dots,x_{n-1}\right)$ are lattice configurations, therefore we follow the method of section \ref{sec:SamplingAndTheHamiltonian} with this distribution, taking $\bm{q}\equiv\bm{x}$,
+    \begin{align}
+        \label{eq:QuantumHMCPotential}
+        U\left(\bm{q}\right) & \equiv S_E\left(\bm{x}\right) \\
+                             & = \sum_{i=0}^{N-1} a \left[\frac{1}{2}m\left(\frac{x_{i+1}-x_{i}}{a}\right)^2 + V(x_i)\right]
+    \end{align} 
+    and the kinetic energy $K\left(\bm{p}\right)$ as in equation \ref{eq:HMCQuadraticKineticEnergy}. We define our HMC Hamiltonian:
+    \begin{align}
+        \label{eq:HMCQuantumMechanicalHamiltonian1}
+        H_{hmc}\left(\bm{q},\bm{p}\right) & \equiv K\left(\bm{p}\right) + U\left(\bm{q}\right)\\
+        \label{eq:HMCQuantumMechanicalHamiltonian2} & = \sum_{i=0}^{N-1} \frac{p_i^2}{2} + S_E\left(\bm{q}\right) \\
+        \label{eq:HMCQuantumMechanicalHamiltonian3}& = \sum_{i=0}^{N-1} \frac{p_i^2}{2} + \sum_{i=0}^{N-1} \epsilon \left[\frac{1}{2}m\left(\frac{q_{i+1}-q_{i}}{\epsilon}\right)^2 + V\left(q_i\right)\right],
+    \end{align} 
+    we can then use this Hamiltonian to generate samples with the HMC algorithm for any $1$-dimensional quantum mechanical system, by specifying the potential $V\left(x\right)$. With the choice of kinetic energy given in equation \ref{eq:HMCQuadraticKineticEnergy} and $U\left(\bm{q}\right) \equiv S_E\left(\bm{x}\right)$ this leads to the approximate solutions to Hamilton's equations in leapfrog implementation for $l$ steps of size $\epsilon$ taking the form:
+            \begin{enumerate}
+                \item Half step in momentum:
+                \begin{equation}
+                    \label{eq:MomentumInitialHalfStepQuadraticQHO}
+                    p_i\left(\epsilon/2\right) = p_i\left(0\right) - \epsilon/2\left[\frac{m}{a}\left(2q_i\left(0\right)-q_{i-1}\left(0\right)-q_{i+1}\left(0\right)\right)+a\frac{\partial V\left(q_i\left(0\right)\right)}{\partial q_i}\right],
+                \end{equation}
+                full step in position:
+                \begin{equation}
+                    \label{eq:PositionInitialStepQuadraticQHO}
+                    q_i\left(\epsilon\right) = q_i\left(0\right) + \epsilon p_i\left(\epsilon/2\right).
+                \end{equation}
+                \item Make $l-1$ alternating steps in momentum and position:
+                \begin{equation}
+                    \label{eq:MomentumFullStepQuadraticQHO}
+                    p_i\left(n\epsilon+\epsilon/2\right) = p_i\left(n\epsilon-\epsilon/2\right) - \epsilon\left[\frac{m}{a}\left(2q_i\left(n\epsilon\right)-q_{i-1}\left(n\epsilon\right)-q_{i+1}\left(n\epsilon\right)\right)+a\frac{\partial V\left(q_i\left(n\epsilon\right)\right)}{\partial q_i}\right],
+                \end{equation}
+                \begin{equation}
+                    \label{eq:PositionFullStepQuadraticQHO}
+                    q_i\left(n\epsilon+\epsilon\right) = q_i\left(n\epsilon\right) + \epsilon p_i\left(n\epsilon+\epsilon/2\right),
+                \end{equation}
+                for $n = 1, \dots , l-1$.
+                \item Final half step in momentum:
+                \begin{equation}
+                    \label{eq:MomnetumQuadraticKinetic}
+                    p_i\left(\epsilon l\right) = p_i\left(l\epsilon-\epsilon/2\right) - \epsilon/2\left[\frac{m}{a}\left(2q_i\left(\epsilon l\right)-q_{i-1}\left(\epsilon l\right)-q_{i+1}\left(\epsilon l\right)\right)+a\frac{\partial V\left(q_i\left(\epsilon l\right)\right)}{\partial q_i}\right],
+                \end{equation}
+            \end{enumerate}
+            where we are, as mentioned previously enforcing the periodic boundary conditions that $q_N=q_0$.
+
+         
             
 
     
@@ -791,8 +799,48 @@
                 \begin{tikzpicture}[scale=1.5]
                             \begin{axis}[
                                 legend style={font=\tiny},
+                                legend style={at={(0.0,0.2)},anchor=west},
+                                xlabel= {Lattice Spacing $a$},
+                                ylabel style ={rotate=0},
+                                ylabel= {Energy},
+                                enlargelimits=true,
+                                        ]
+                                \addplot[only marks, 
+                                       mark=o,color=black]
+                                    plot [error bars/.cd, 
+                                        y dir = both, 
+                                        y explicit]
+                                    table[x index=0, 
+                                        y index=1, 
+                                        y error index=2]{DataForReport/HarmonicGSEnergy.dat};
+                                \addlegendentry{Measured Ground State Energies.}
+
+                                \addplot[domain=0.1:1,
+                                samples=100,
+                                color=blue,
+                                    ]
+                                {(1/2)*(1/sqrt(1+0.25*x*x)) * ((1+(1+0.5*x*x-x*sqrt(1+0.25*x*x))^(1000))/((1-(1+0.5*x*x-x*sqrt(1+0.25*x*x))^(1000))))};
+                                \addlegendentry{Ground State Discrete Theory}
+                                \addplot[domain=0:1,
+                                samples=100,
+                                color=orange,
+                                    ]
+                                {0.5};
+                                \addlegendentry{Ground State Continuum Theory}
+                            \end{axis}
+                        \end{tikzpicture}
+                        
+
+                \caption{Ground and first excited state energies for the HMC simulation with the continuum and discrete theory results.}
+                \label{fig:HarmonicEnergyLevels}
+                \end{figure}
+
+                \begin{figure}
+                \begin{tikzpicture}[scale=1.5]
+                            \begin{axis}[
+                                legend style={font=\tiny},
                                 legend style={at={(0.03,0.5)},anchor=west},
-                                xlabel= {Lattice Spaceing $a$},
+                                xlabel= {Lattice Spacing $a$},
                                 ylabel style ={rotate=0},
                                 ylabel= {Energy},
                                 enlargelimits=true,
@@ -804,26 +852,16 @@
                                         y explicit]
                                     table[x index=0, 
                                         y index=1, 
-                                        y error index=2]{DataForReport/GroundAndFirstEnergies.dat};
+                                        y error index=2]{DataForReport/HarmonicFirstEnergy.dat};
+                                    \addlegendentry{Measured values for first excited state.}
 
-                                \addplot[domain=0:1,
-                                samples=100,
-                                color=blue,
-                                    ]
-                                {(1/2)*(1/sqrt(1+0.25*x*x)) * ((1+(1+0.5*x*x-x*sqrt(1+0.25*x*x))^(1000))/((1-(1+0.5*x*x-x*sqrt(1+0.25*x*x))^(1000))))};
-                                \addlegendentry{Ground State Discrete Theory}
                                 \addplot[domain=0:1,
                                 samples=100,
                                 color=red,
                                     ]
                                 {1.5*sqrt(1+0.25*x*x)};
                                 \addlegendentry{First Excited State Discrete Theory}
-                                \addplot[domain=0:1,
-                                samples=100,
-                                color=orange,
-                                    ]
-                                {0.5};
-                                \addlegendentry{Ground State Continuum Theory}
+                                
                                 \addplot[domain=0:1,
                                 samples=100,
                                 color=green,
@@ -833,10 +871,9 @@
 
                             \end{axis}
                         \end{tikzpicture}
-                        
 
-                \caption{Ground and first excited state energies for the HMC simulation with the continuum and discrete theory results.}
-                \label{fig:HarmonicEnergyLevels}
+                \caption{First excited state of the harmonic oscillator on a 1000 site lattice of varying spacings.}
+                \label{fig:HarmonicFirstExcitedState}
                 \end{figure}
                 
 
@@ -890,7 +927,7 @@
 
 
         \subsubsection{Quantum Anharmonic Oscillator}
-            Since the anharmonic oscillator does not have an analytic solution for the properties we wish to calculate, it is a good first application of the Hybrid Monte Carlo method for calculations we do not already know the answer to. Rather than use the more common form of the anharmonic quartic potential:
+            Since the anharmonic oscillator does not have an analytic solution for the properties we wish to calculate, it is a good first application of out HMC simulation for calculations we do not already know the answer to. Rather than use the more common form of the anharmonic quartic potential:
             \begin{equation}
                 \label{eq:AharmonicPotentialLambda}
                 V\left(x\right) = \frac{1}{2}m\mu^2x^2+\lambda x^4
@@ -900,9 +937,9 @@
                 \label{eq:AnharmonicPotentialF}
                 V\left(x\right) = \lambda\left(x^2-f^2\right)
             \end{equation}
-            with $\lambda\in\mathbb{R}_{>0}$ and $f^2\in\mathbb{R}_{>0}$. This form of the potential has the advantage that its zeros coincide with its minima at $x=\pm f$. Since potential \ref{eq:AnharmonicPotentialF} is equivalent to potential \ref{eq:AharmonicPotentialLambda} up to the additive constant $\lambda f^4$, the action and consequently the HMC Hamiltonian for the system is the same up to the additive constant $\lambda f^4$ also. This makes no difference to the measured quantities since the constant in the Hamiltonian vanishes when we take its derivatives in Hamilton's equations, and any constant term in the action amounts to rescaling the path integral in equation \ref{eq:PathIntegral} by a complex exponential factor, which will therefore vanish when we take the magnitude to get the probability.
+            with $\lambda\in\mathbb{R}_{>0}$ and $f^2\in\mathbb{R}_{>0}$. This form of the potential has the advantage that its zeros coincide with its minima at $x=\pm f$. Since equation \ref{eq:AnharmonicPotentialF} is equivalent to equation \ref{eq:AharmonicPotentialLambda} up to the additive constant $\lambda f^4$, the action and consequently the HMC Hamiltonian for the system is the same up to the additive constant $\lambda f^4$ also. Since the constant in the Hamiltonian vanishes when we take its derivatives in Hamilton's equations, and any constant term in the action amounts to rescaling the path integral in equation \ref{eq:PathIntegral} by a complex exponential factor, which will therefore vanish when we take the magnitude to get the probability, this redefinition of the potential is valid. Of course it will have the effects of rescaling the energy eigen values by the additive constant $\lambda f^4$. 
             \paragraph{Typical configuration}
-                Figure \ref{} shows a typical configuration for the HMC simulation of the anharmonic oscillator. We now observe the tunnelling behaviour we expect for a quantum system.
+                Figure \ref{fig:TypicalAnharmonicTrajectory} shows a typical configuration for the HMC simulation of the anharmonic oscillator. We now observe the tunnelling behaviour we expect for a quantum system double well system.
                 \begin{figure}
                     \centering
                     \begin{tikzpicture}[scale=1.5]
@@ -929,7 +966,7 @@
                     \label{eq:VirialTheoremAnharmonicOsillator}
                     E_0=3\lambda\braket{x^4}-4\lambda f^2\braket{x^2}+\lambda f^4.
                 \end{equation}
-                To calculate the first excited state we\todo{How do we do this?}. The results of the HMC simulation of the anharmonic oscillator for the ground and first excited states are shown in \ref{} for a range of values of $f^2$ and lattice spacings.
+                To calculate the first excited state we. The results of the HMC simulation of the anharmonic oscillator for the ground and first excited states are shown in \ref{fig:AnharmonicEnergies} for a range of values of $f^2$.
                 \begin{figure}
                     \centering
                     \begin{tikzpicture}[scale=1.5]
@@ -959,12 +996,12 @@
                             \addlegendentry{Measured $E_1$}            
                         \end{axis}
                     \end{tikzpicture}
-                    \caption{Ground and first excited state energies for the anharmonic oscillator with $\lambda = 1, m = 1, L = 1000 \text{configurations} = 100000, \text{burn period} = 1000$.}
+                    \caption{Ground and first excited state energies for the anharmonic oscillator with $\lambda = 1, m = 1, L = 1000, \text{configurations} = 100000, \text{burn period} = 1000$.}
                     \label{fig:AnharmonicEnergies}
                 \end{figure}
 
             \paragraph{Ground State Probability Density Function}
-                To measure the ground probability density function we follow the same method as we did for the harmonic oscillator in section \ref{sec:QuantumHarmonicOscillator}. The results can be seen in figure \ref{fig:AnharmonicWaveFunction}
+                To measure the ground state probability density function we follow the same method as we did for the harmonic oscillator in section \ref{sec:QuantumHarmonicOscillator}. The results can be seen in figure \ref{fig:AnharmonicWaveFunction}
                 \begin{figure}
                     \centering
                     \begin{tikzpicture}[scale=1.5]
@@ -985,7 +1022,7 @@
                     \label{fig:AnharmonicWaveFunction}
                 \end{figure}
             \paragraph{Isolated Modes}
-                In figure \ref{fig:TypicalAnharmonicTrajectory} we saw the tunnelling behaviour displayed by the anharmonic oscillator as the particle tunnelled between the minima of the symmetric potential wells at $x=\pm f$. By the Boltzmann distribution of equation \ref{eq:BoltzmannDistribution} the minima of the potential correspond to maxima of the Boltzmann distribution, which are separated by a region of low probability. We refer to the two regions around $x\pm=f$ where there is high probability of finding the particle as \textit{isolated modes}. In figure \ref{} we investigate the effect of varying the value of $f^2$ which varies the distance between the isolated modes.
+                In figure \ref{fig:TypicalAnharmonicTrajectory} we saw the tunnelling behaviour displayed by the anharmonic oscillator as the particle tunnelled between the minima of the symmetric potential wells at $x=\pm f$. By the Boltzmann distribution of equation \ref{eq:BoltzmannDistribution} the minima of the potential correspond to maxima of the Boltzmann distribution, which are separated by a region of low probability. We refer to the two regions around $x=\pm f$ where there is high probability of finding the particle as \textit{isolated modes}. In figure \ref{fig:IsolatedAnharmonicModes} we investigate the effect of varying the value of $f^2$ which varies the distance between the isolated modes.
                 \begin{figure}
                     \centering
                     \begin{subfigure}[b]{0.5\textwidth}
