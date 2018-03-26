@@ -11,6 +11,12 @@ Nicholas Metropolis, Arianna~W. Rosenbluth, Marshall~N. Rosenbluth, Augusta~H.
 \newblock Equation of state calculations by fast computing machines.
 \newblock {\em The Journal of Chemical Physics}, 21(6), Jun 1953.
 
+\bibitem{neal_2011}
+Radford Neal.
+\newblock Mcmc using hamiltonian dynamics.
+\newblock {\em Chapman \& Hall/CRC Handbooks of Modern Statistical Methods
+  Handbook of Markov Chain Monte Carlo}, Oct 2011.
+
 \bibitem{neal_1996_a}
 Radford~M. Neal.
 \newblock Bayesian learning for neural networks.
@@ -34,17 +40,21 @@ Radford~M. Neal.
 \newblock Sampling from multimodal distributions using tempered transitions.
 \newblock {\em Statistics and Computing}, 6(4):353--366, 1996.
 
-\bibitem{neal_2011}
-Radford Neal.
-\newblock Mcmc using hamiltonian dynamics.
-\newblock {\em Chapman \& Hall/CRC Handbooks of Modern Statistical Methods
-  Handbook of Markov Chain Monte Carlo}, Oct 2011.
-
 \bibitem{bietenholz_2016}
 Wolfgang Bietenholz.
 \newblock Hadron physics from lattice qcd.
 \newblock {\em International Journal of Modern Physics E}, 25(07):1642008,
   2016.
+
+\bibitem{debbio_panagopoulos_vicari_2002}
+Luigi~Del Debbio, Haralambos Panagopoulos, and Ettore Vicari.
+\newblock θ dependence of su(n) gauge theories.
+\newblock {\em Journal of High Energy Physics}, 2002(08):044--044, 2002.
+
+\bibitem{debbio_manca_vicari_2004}
+Luigi~Del Debbio, Gian~Mario Manca, and Ettore Vicari.
+\newblock Critical slowing down of topological modes.
+\newblock {\em Physics Letters B}, 594(3-4):315--323, 2004.
 
 \bibitem{creutz_freedman_1981}
 M~Creutz and B~Freedman.
@@ -70,6 +80,21 @@ R.~Blankenbecler, T.~Degrand, and R.~L. Sugar.
 \newblock Moment method for eigenvalues and expectation values.
 \newblock {\em Physical Review D}, 21(4):1055--1061, 1980.
 
+\bibitem{feynman_hibbs_1965}
+Richard~P. Feynman and A.~R. Hibbs.
+\newblock {\em Quantum mechanics and path integrals R.P. Feynman A.R. Hibbs}.
+\newblock McGraw-Hill, 1965.
+
+\bibitem{binney_skinner_2015}
+James Binney and David~Benjamin. Skinner.
+\newblock {\em The physics of quantum mechanics}.
+\newblock Oxford University Press, 2015.
+
+\bibitem{fock_1930}
+V.~Fock.
+\newblock Bemerkung zum virialsatz.
+\newblock {\em Zeitschrift f�r Physik}, 63(11-12):855--858, 1930.
+
 \bibitem{gattringer_lang_2013}
 Christof Gattringer and Christian~B. Lang.
 \newblock {\em Quantum Chromodynamics on the Lattice An Introductory
@@ -86,6 +111,12 @@ A.~Sokal.
 Herbert Goldstein, Charles~P. Poole, and John Safko.
 \newblock {\em Classical mechanics}.
 \newblock Pearson, 2014.
+
+\bibitem{kennedy_pendleton_2001}
+A.d. Kennedy and Brian Pendleton.
+\newblock Cost of the generalised hybrid monte carlo algorithm for free field
+  theory.
+\newblock {\em Nuclear Physics B}, 607(3):456--510, 2001.
 
 \bibitem{beskos_pillai_roberts_sanz-serna_stuart_2013}
 Alexandros Beskos, Natesh Pillai, Gareth Roberts, Jesus-Maria Sanz-Serna, and
@@ -106,14 +137,24 @@ Alain Durmus, Eric Moulines, and Eero Saksman.
 Samuel Livingstone, Michael Betancourt, Simon Byrne, and Mark Girolami.
 \newblock On the geometric ergodicity of hamiltonian monte carlo, 2016.
 
-\bibitem{binney_skinner_2015}
-James Binney and David~Benjamin. Skinner.
-\newblock {\em The physics of quantum mechanics}.
-\newblock Oxford University Press, 2015.
+\bibitem{geyer_1991}
+Charles~J. Geyer.
+\newblock Markov chain monte carlo maximum likelihood.
+\newblock {\em Interface Foundation of North America}, 1991.
 
-\bibitem{fock_1930}
-V.~Fock.
-\newblock Bemerkung zum virialsatz.
-\newblock {\em Zeitschrift f�r Physik}, 63(11-12):855--858, 1930.
+\bibitem{earl_deem_2005}
+David~J. Earl and Michael~W. Deem.
+\newblock Parallel tempering: Theory, applications, and new perspectives.
+\newblock {\em Physical Chemistry Chemical Physics}, 7(23):3910, 2005.
+
+\bibitem{marinari_parisi_1992}
+E~Marinari and G~Parisi.
+\newblock Simulated tempering: A new monte carlo scheme.
+\newblock {\em Europhysics Letters (EPL)}, 19(6):451--458, 1992.
+
+\bibitem{neal_2001}
+Radford~M. Neal.
+\newblock Annealed importance sampling.
+\newblock {\em Statistics and Computing}, 11(2):125--139, 2001.
 
 \end{thebibliography}
