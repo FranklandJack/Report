@@ -68,6 +68,7 @@
 
 % Insert your abstract below
 \begin{abstract}
+    This report explains how the Hybrid Monte Carlo algorithm can be used numerically calculate the properties of the quantum harmonic and anharmonic oscillators and discusses the results of a simulation written for this purpose. In the case of the anharmonic oscillator there are isolated modes in the probability distribution and hence the states in the simulation can have difficulty tunnelling between the minima in the double well potential, leading to incorrect estimates. We investigate the effect of introducing a tempering parameter into the Hybrid Monte Carlo simulation in order to reduce the effect of the tunnelling problem. Tempering is shown to be ineffective for the system in question and we examine why this is case.
     
 \end{abstract}
 
@@ -76,6 +77,27 @@
 
 % This command introduces the Personal Statement
 \personalstatement
+    Since the main component of my work would be writing a simulation, in preparation for my MPhys project I spent several weeks during the summer vacation thoroughly learning the C++ programming language. I choose to use C++ rather than another programming language due to its speed which proved to be valuable for any intensive computations I needed to perform during my project.
+
+    Having had no previous experience with Monte Carlo simulations, I spent the first two weeks of semester one reading introductory articles and exploring the theory behind Markov chain Monte Carlo algorithms. During this time I also began reading papers explaining the connection between the path integral formulation of quantum mechanics and statistical mechanics, and how in this context Monte Carlo methods can be used to compute properties of the quantum system.
+
+    As an initial exercise and preliminary test, the first simulation I wrote used the Metropolis algorithm rather than Hybrid Monte Carlo (HMC) algorithm to calculate the path integrals for the harmonic oscillator. Writing the simulation took around two weeks and during this time I also read articles and papers on the HMC algorithm that I would be using in my actual simulation. At this point I was able to begin writing the HMC simulation for the quantum harmonic oscillator. Implementing the HMC algorithm was more complicated than the Metropolis algorithm, and at the advice of my supervisors I included several tests in my simulation to check its validity, overall this took two weeks. 
+
+    Although at this point I had a working simulation, the properties of the system it could calculated were limited to basic quantities such as position expectation in the ground state, I therefore spent the next three weeks investigating how more complicated quantities such as the ground state density function and energy eigenvalues could be computed from the Monte Carlo simulation. As well as reading the theory behind how these quantities are obtained, I implemented methods within my simulation to actually calculate them, I also learned how to use the plotting tool Gnuplot to plot and fit data which was very useful for analysing results. Checking these results against exact theoretical ones in the case of the discrete quantum harmonic oscillator enabled me to verify the validity of my calculations in the simulation. 
+
+    Since I now had a working HMC simulation for the quantum anharmonic oscillator I spent the final two weeks of the semester editing my simulation to include the option of simulation for the anharmonic oscillator as well; I could reuse most of the methods from the harmonic case.
+
+    Over the Christmas vacation period I spent time investigating how in the case of the quantum harmonic oscillator the discrete theory can still be solved exactly, and re-derived the results that I had been  checking my simulation against. During this time I also read into the effects on numerical results of correlations between measurements in a Monte Carlo simulation, and how to take this into account with the error analysis.
+
+    During the first week of semester two I investigated the effect of varying well depths and distances in my anharmonic oscillator simulation and found example cases when tunnelling became a problem for the system. I then spent the following two weeks reading papers explaining how tempered dynamics can be incorporated into the HMC algorithm to solve tunnelling like problems, and implemented methods in my simulation to do this. At this point I found the tempering to be ineffective in the system due to the fact it lowered the acceptance rate without increasing the tunnelling of the system. 
+
+    I spent the following two weeks taking a break from computational work and looking into some more of the theory behind HMC. I devised proofs for volume preservation and then detailed balance for normal HMC, and then modified them for the tempered case.
+
+    Returning to my simulation I spend a further two weeks making edits to my code so I could observe the effect tempering was having on the proposed update states in the simulation. By observing the evolution of the Hamiltonian in these cases I was able to identify the reason why tempered dynamics as applied to our system did not work.
+
+    I spent the remainder of the time generating data and plots for both the tempered and non-tempered simulations and then working these into the report and presentation. 
+
+    I met with my superiors throughout semesters one and two in weekly hour sessions to discuss issues and questions as well as explain and demonstrate results.
 
 
 
@@ -94,7 +116,7 @@ I wish to extend my deep appreciation and gratitude to Dr. Roger Horsely and Dr.
 
  Standard HMC can have difficulty sampling from the different areas of a probability distribution if those areas are separated by a region of low probability; we will refer to these areas as \textit{isolated modes} of the distribution. An example of this in quantum mechanics is that of a 1-dimensional double well potential, where the probability of finding a particle in either well is high, whilst finding it in the region between the wells is low. If we are interested in generating samples for say the position of the particle using the HMC algorithm, then for a deep enough well there will be an asymmetry in the number of samples recorded in each well. This is due to the energy cost associated with moving between the wells, and so the Hamiltonian dynamics in the HMC simulation will tend to propose an update state in the well the current state is in, leading to the asymmetry in the recorded samples. The aim of this project is to write an HMC simulation of the anharmonic oscillator and introduce a tempering parameter as proposed in \cite{neal_2011} and \cite{neal_1996_b} into the dynamics to investigate whether this increases the frequency at which samples move between the two wells. In terms of our simulation the benefit of successful tempering would be more accurate estimations of observed quantities such as position expectation and ground state density functions. However, in terms of a broader goal, successful tempering results in HMC simulations of simple quantum mechanical systems, may suggest it has potential applications in lattice field theory where isolated modes are a more serious problem. In certain field theories, including QCD, the states we wish to construct via our Markov chain are in ``distinct topological sectors which are labelled by a topological charge''\cite{bietenholz_2016}. For small lattice spacings moving between these sectors can take a very long time, since they are separated by a region of high Euclidean action (i.e. low probability in the distribution) and so the transitions are statistically suppressed \cite{bietenholz_2016}, \cite{debbio_panagopoulos_vicari_2002} and \cite{debbio_manca_vicari_2004}. It is therefore possible that tempered dynamics will have applications to theories such as lattice QCD where isolated modes arise as regions of distinct topological charge. In general the \textit{autocorrelation time} which measures how correlated subsequent samples in any Monte Carlo simulation are will be high if the system is trapped in an isolated mode. The purpose of tempering is to try and diminish the autocorrelation time without the need for extra computation. 
 
- In this report we follow the work of Creutz and Freedman in \cite{creutz_freedman_1981} who constructed a MCMC simulation of the harmonic and anharmonic oscillators, however we will use HMC where they used the Metropolis algorithm. Reproducing the results in \cite{creutz_freedman_1981} using the Metropolis algorithm is a popular choice for undergraduate projects e.g. \cite{westbroek_king_vvedensky_durr_2017}, \cite{rodgers_raes} and \cite{slapik_serenone} which provide a useful comparison for our simulation which uses a different algorithm. We begin the report by following the steps taken in \cite{creutz_freedman_1981} where we introduce and define the path integral of quantum mechanics and show that for a discrete lattice in Euclidean time the path integral can be considered as a canonical partition function. This connection between quantum mechanics and statistical physics is what will enable us to apply Monte Carlo methods and we will see that the quantum expectation values in the ground state correspond to classical expectation values of the statistical system with a canonical distribution. We will then briefly review the topic of Monte Carlo methods and explain how they can be used to approximate expectation values for functions of random variables under some probability distribution via a Markov chain as well as defining detailed balance and ergodicity which are conditions required for the Monte Carlo simulation to be valid. Before introducing the HMC algorithm we very briefly review Hamiltonian dynamics, explain how Hamilton's equations can be integrated numerically via the leapfrog method and show that as well as being reversible, the leapfrog method preserves volume on the phase space of position and momentum coordinates, which we we will see is necessary for detailed balance to hold. Having provided the relevant background we are then able to define the steps of the HMC algorithm and explain how it can be used to sample from a canonical distribution by defining axillary momenta coordinates and a Hamiltonian. In this section we will also discuss the issue of ergodicity and show that HMC obeys detailed balance. Due to the stochastic nature of MCMC algorithms, samples in the Markov chain can be correlated and we briefly discuss the effect of this on data analysis. The results section begins by applying the HMC algorithm to the canonical distribution for the quantum system. We examine the results of our simulation for the harmonic oscillator where we are able to compare with numerical and exact results for the discrete theory in \cite{creutz_freedman_1981},\cite{westbroek_king_vvedensky_durr_2017}, \cite{rodgers_raes} and \cite{slapik_serenone}. The simple system of the harmonic oscillator provides a good testing ground for our simulation where we can easily compare our results to theory. Moving on to the anharmonic oscillator we are able to apply our simulation to a system that does not have an analytic solution. For the case of the anharmonic oscillator we are able to compare our results to those acquired through alternative methods \cite{blankenbecler_degrand_sugar_1980} and simulations \cite{rodgers_raes} however we will observe in this section that the HMC simulation begins to fail in the case of the isolated modes in the double well potential. In particular the double well system can have difficulty tunnelling between the two modes. At this point we will examine the effects of introducing a tempering parameter into the simulation, with the hope that it will increase the tunnel rate. We will show that volume preservation still holds for tempered dynamics, which is necessary if it is still to obey detailed balance.
+ In this report we follow the work of Creutz and Freedman in \cite{creutz_freedman_1981} who constructed a MCMC simulation of the harmonic and anharmonic oscillators, however we will use HMC where they used the Metropolis algorithm. Reproducing the results in \cite{creutz_freedman_1981} using the Metropolis algorithm is a popular choice for undergraduate projects e.g. \cite{westbroek_king_vvedensky_durr_2017}, \cite{rodgers_raes} and \cite{slapik_serenone} which provide a useful comparison for our simulation which uses a different algorithm. We begin the report by following the steps taken in \cite{creutz_freedman_1981} where we introduce and define the path integral of quantum mechanics and show that for a discrete lattice in Euclidean time the path integral can be considered as a canonical partition function. This connection between quantum mechanics and statistical physics is what will enable us to apply Monte Carlo methods and we will see that the quantum expectation values in the ground state correspond to classical expectation values of the statistical system with a canonical distribution. We will then briefly review the topic of Monte Carlo methods and explain how they can be used to approximate expectation values for functions of random variables under some probability distribution via a Markov chain as well as defining detailed balance and ergodicity which are conditions required for the Monte Carlo simulation to be valid. Before introducing the HMC algorithm we very briefly review Hamiltonian dynamics, explain how Hamilton's equations can be integrated numerically via the leapfrog method and show that as well as being reversible, the leapfrog method preserves volume on the phase space of position and momentum coordinates, which we we will see is necessary for detailed balance to hold. Having provided the relevant background we are then able to define the steps of the HMC algorithm and explain how it can be used to sample from a canonical distribution by defining axillary momenta coordinates and a Hamiltonian. In this section we will also discuss the issue of ergodicity and show that HMC obeys detailed balance. Due to the stochastic nature of MCMC algorithms, samples in the Markov chain can be correlated and we briefly discuss the effect of this on data analysis. The results section begins by applying the HMC algorithm to the canonical distribution for the quantum system. We examine the results of our simulation for the harmonic oscillator where we are able to compare with numerical and exact results for the discrete theory in \cite{creutz_freedman_1981},\cite{westbroek_king_vvedensky_durr_2017}, \cite{rodgers_raes} and \cite{slapik_serenone}. The simple system of the harmonic oscillator provides a good testing ground for our simulation where we can easily compare our results to theory. Moving on to the anharmonic oscillator we are able to apply our simulation to a system that does not have an analytic solution. For the case of the anharmonic oscillator we are able to compare our results to those acquired through alternative methods \cite{blankenbecler_degrand_sugar_1980} and simulations \cite{rodgers_raes} however we will observe in this section that the HMC simulation begins to fail in the case of the isolated modes in the double well potential. In particular the double well system can have difficulty tunnelling between the two modes. At this point we will examine the effects of introducing a tempering parameter into the simulation, with the hope that it will increase the tunnel rate. We will show that volume preservation still holds for tempered dynamics, which is necessary if it is still to obey detailed balance. Ultimately we found that tempering did not solve the problem of the isolated modes in our system, however we end the report by investigating why this is the case by tracking the evolution of the Hamiltonian during a tempered leapfrog proposal trajectory.
 
 
 \section{Background}
@@ -1621,15 +1643,15 @@ A possible solution to the problem of tempering in the quantum anharmonic oscill
             \label{eq:VirialCommutatorWithHeisenberg}
             \frac{d\left(\hat{x}\hat{p}\right)}{dt} = 2\hat{T}\left(\hat{p}\right)-xV'\left(x\right)
         \end{equation}
-        Then taking the expectation value of both sides of equation \ref{eq:VirialCommutatorWithHeisenberg} and noting that \todo{Why is this true?}:
+        Then taking the expectation value of both sides of equation \ref{eq:VirialCommutatorWithHeisenberg} and noting that for stationary states:
         \begin{equation}
             \label{eq:VanishingExpectationOfTimeDerivative}
-            \langle \frac{d\left(\hat{x}\hat{p}\right)}{dt} \rangle = 0,
+            \bra{n} \frac{d\left(\hat{x}\hat{p}\right)}{dt} \ket{n} = 0,
         \end{equation}
         we get the virial theorem:
         \begin{equation}
             \label{eq:VirialTheoremAppendix}
-            2\langle\hat{T}\rangle = \langle xV'\left(x\right)\rangle
+            2\bra{n} \hat{T} \ket{n} = \bra{n} \hat{x} \hat{V}'\left(\hat{x}\right) \ket{n}
         \end{equation}
 
 
@@ -1639,12 +1661,12 @@ A possible solution to the problem of tempering in the quantum anharmonic oscill
         \label{ap:DiscretePathIntegralDerivation}
         Here we follow the derivation given in \cite{creutz_freedman_1981} for the exact result of the path integral for discrete theory and a particle of mass $m=1$. Since in \cite{creutz_freedman_1981} the derivation has several typographical mistakes and jumps in the algebra that make it difficult to follow for the reader, we have chosen to reproduce it with corrections and alterations.
 
-        For a quantum harmonic oscillator of mass $m=1$, the discrete Euclidean path integral is given in equation \ref{eq:DiscreteEuclideanPathIntegral} as\todo{FIX INDEXING}:
+        For a quantum harmonic oscillator of mass $m=1$, the discrete Euclidean path integral is given in equation \ref{eq:partWithBoundaryConditions1} as:
         \begin{equation}
             \label{eq:DiscreteEuclideanPathIntegral2}
-            Z = \int^{+\infty}_{-\infty}\prod_{i=1}^{N-1}dx_i \exp{\left(-\sum^{N-1}_{j=0} a \left[\frac{1}{2}\left(\frac{x_{j+1}-x_j}{a}\right)^2+\frac{1}{2}\mu^2x_{j}^2\right]\right)}.
+            Z = \int^{+\infty}_{-\infty}\prod_{i=0}^{N-1}dx_i \exp{\left(-\sum^{N-1}_{j=0} a \left[\frac{1}{2}\left(\frac{x_{j+1}-x_j}{a}\right)^2+\frac{1}{2}\mu^2x_{j}^2\right]\right)}.
         \end{equation}
-        We begin by defining an operator $T$ such that its matrix elements in the Schr{\''o}dinger picture are given by:
+        We begin by defining an operator $T$ such that its matrix elements in the Schr{\"o}dinger picture are given by:
         \begin{equation}
             \label{eq:TMatrixElements}
             \bra{x'}\hat{T}\ket{x} = \exp{\left(-\frac{1}{2a}\left(x'-x\right)^2-\frac{\mu^2a}{4}\left(x^2+x'^2\right)\right)}.
@@ -1657,17 +1679,17 @@ A possible solution to the problem of tempering in the quantum anharmonic oscill
         By inserting $N-1$ copies of this relation into the expression (one between each pair of $\hat{T}$s):
         \begin{equation}
             \label{eq:TraceT}
-            Tr\left(\hat{T}^{N}\right),
+            \text{Tr}\left(\hat{T}^{N}\right),
         \end{equation}
         and using the definition of the matrix elements in equation \ref{eq:TMatrixElements}, we recover the path integral in equation \ref{eq:DiscreteEuclideanPathIntegral2}, that is:
         \begin{equation}
             \label{eq:PathIntegralAsTrace}
-            Z = \sim Tr\left(\hat{T}^N\right).
+            Z = \text{Tr}\left(\hat{T}^N\right).
         \end{equation}
-        Here we take the trace over the physical Hilbert space, so that for any operator $\hat{A}$ in the Schr{\''o}dinger eigenbasis, the trace is:
+        Here we take the trace over the physical Hilbert space, so that for any operator $\hat{A}$ in the Schr{\"o}dinger eigenbasis, the trace is:
         \begin{equation}
             \label{eq:Trace}
-            Tr\left(\hat{A}\right) = \int_{-\infty}^{\infty}dx\bra{x}\hat{A}\ket{x},
+            \text{Tr}\left(\hat{A}\right) = \int_{-\infty}^{\infty}dx\bra{x}\hat{A}\ket{x},
         \end{equation}
         which is of course basis independent.
 
@@ -1691,7 +1713,7 @@ A possible solution to the problem of tempering in the quantum anharmonic oscill
             \label{eq:TClosedForm}
             \hat{T} = \sqrt{2\pi a} e^{-\frac{-\mu^2a}{4}\hat{x}^2}e^{-\frac{a}{2}\hat{p}^2}e^{-\frac{\mu^2a}{4}\hat{x}^2}.
         \end{equation}
-        Notice at this stage in our derivation we could apply the Baker-Campbell-Hausdorff\todo{CHECK THAT THIS IS WHAT CREUTZ MEANS} formula to combine the exponentials; dropping $\mathcal{O}\left(a^2\right)$ would then give the harmonic oscillator Hamiltonian exponentiated. Since this system is exactly solvable in the discrete case, we will avoid doing this and keep all terms. 
+        Notice at this stage in our derivation we could apply the Baker-Campbell-Hausdorff formula to combine the exponentials; dropping $\mathcal{O}\left(a^2\right)$ would then give the harmonic oscillator Hamiltonian exponentiated. Since this system is exactly solvable in the discrete case, we will avoid doing this and keep all terms. 
 
         The canonical commutation relation of quantum mechanics gives:
         \begin{equation}
@@ -1818,7 +1840,7 @@ A possible solution to the problem of tempering in the quantum anharmonic oscill
         \end{align}
         We may then calculate $C$ by first taking the trace of $\hat{T}$ over the energy eigenbasis $\ket{n}$:
         \begin{align}
-            \label{eq:TraceTN1} Tr{\left(\hat{T}\right)} & = \sum_{n}\bra{n}\hat{T}\ket{n} \\
+            \label{eq:TraceTN1} \text{Tr}{\left(\hat{T}\right)} & = \sum_{n}\bra{n}\hat{T}\ket{n} \\
             \label{eq:TraceTN2}                          & = C\sum_n R^{n+\frac{1}{2}} \\
             \label{eq:TraceTN3}                          & = C \frac{R^{\frac{1}{2}}}{1-R}\\
             \label{eq:TraceTN4}                          & = C\frac{1}{a\mu}
@@ -1826,7 +1848,7 @@ A possible solution to the problem of tempering in the quantum anharmonic oscill
         where we have used that $\hat{H}\ket{n} = E_n\ket{n} = \left(n+\frac{1}{2}\right)\omega$ for the harmonic oscillator in units where $\hbar=1$, and in order to compute the sum we have used that $|R| < 1$.
         We then take the trace of $\hat{T}$ over the position eigenbasis according to equation \ref{eq:Trace}, and using equation \ref{eq:TMatrixElements}:
         \begin{align}
-            \label{eq:TraceTX1} Tr\left(\hat{T}\right) & = \int dx \bra{x}\hat{T}\ket{n} \\ 
+            \label{eq:TraceTX1} \text{Tr}\left(\hat{T}\right) & = \int dx \bra{x}\hat{T}\ket{n} \\ 
             \label{eq:TraceTX2}                        & = \int dx e^{-\frac{a\mu^2}{2}x^2} \\
             \label{eq:TraceTX3}                        & = \frac{1}{\mu}\sqrt{\frac{2\pi}{a}},
         \end{align}
@@ -1842,7 +1864,7 @@ A possible solution to the problem of tempering in the quantum anharmonic oscill
         \end{equation}
         This is the exact expression for the discrete path integral of a quantum harmonic oscillator of mass $m=1$, angular frequency $\mu$ on an imaginary time lattice of $N-1$ sites with lattice spacing $a$.
 
-        The correlation functions are given by:\todo{FIND OUT WHY THIS IS TRUE}
+        The correlation functions are given by:
         \begin{align}
             \label{eq:DiscreteCorrelationFunctions}
             \braket{x_ix_{i+j}} & = \frac{1}{Z}Tr\left(\hat{x}\hat{T}^j\hat{x}\hat{T}^{N-j}\right) \\
@@ -1854,7 +1876,7 @@ A possible solution to the problem of tempering in the quantum anharmonic oscill
             \label{eq:XSquaredExpectation23} & = \frac{1}{2\mu\left(1+\frac{a^2\mu^2}{4}\right)^{\frac{1}{2}}}\left(\frac{1+R^N}{1-R^N}\right)
         \end{align}
 
-        We have shown in above that the discrete theory for the harmonic oscillator leads to a quantum system with the Hamiltonian given in equation \ref{eq:OmegaHamiltonian}. This is the Hamiltonian of a quantum harmonic oscillator of angular frequency $\omega$ rather than $\mu$ and hence we employ the standard result from quantum theory that for a a quantum harmonic oscillator of angular frequency $\omega$ the ground state wave function is given by: \todo{CHECK THIS LOGIC IS CORRECT}
+        We have shown in above that the discrete theory for the harmonic oscillator leads to a quantum system with the Hamiltonian given in equation \ref{eq:OmegaHamiltonian}. This is the Hamiltonian of a quantum harmonic oscillator of angular frequency $\omega$ rather than $\mu$ and hence we employ the standard result from quantum theory that for a a quantum harmonic oscillator of angular frequency $\omega$ the ground state wave function is given by:
         \begin{align}
             \label{eq:DiscreteGroundStateWaveFunction2}
             \psi(x) & = \left(\frac{\omega}{\pi}\right)^\frac{1}{4}\exp\left(-\frac{1}{2}\omega x^2\right) \\

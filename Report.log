@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.12.18)  9 APR 2018 22:04
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.12.18)  10 APR 2018 11:55
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -975,7 +975,7 @@ enefit from \pgfplotsset{compat=1.14} (current compat level: 1.12).
 <PandA_black.pdf, id=111, 372.39125pt x 89.33376pt>
 File: PandA_black.pdf Graphic file (type pdf)
  <use PandA_black.pdf>
-Package pdftex.def Info: PandA_black.pdf used on input line 76.
+Package pdftex.def Info: PandA_black.pdf used on input line 77.
 (pdftex.def)             Requested size: 355.838pt x 85.35826pt.
 
 [1
@@ -986,10 +986,10 @@ _black.pdf>]pdfTeX warning (ext4): destination with the same identifier (name{p
 age.i}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.91 \maintext
-               [1
+l.93 
+      [1
 
-] (./Report.toc
+] [2] (./Report.toc
 LaTeX Font Info:    Try loading font information for OML+lmm on input line 3.
 
 (/usr/local/texlive/2017/texmf-dist/tex/latex/lm/omllmm.fd
@@ -1024,53 +1024,53 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 \tf@toc=\write5
 \openout5 = `Report.toc'.
 
- [2
+ [3
 
 ] [1
 
 ]
 [2]
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10.95> on input line 158.
-LaTeX Font Info:    Calculating math sizes for size <30> on input line 191.
+(Font)              <10.95> on input line 180.
+LaTeX Font Info:    Calculating math sizes for size <30> on input line 213.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <30> on input line 191.
+(Font)              <30> on input line 213.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <20.99991> on input line 191.
+(Font)              <20.99991> on input line 213.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <15> on input line 191.
+(Font)              <15> on input line 213.
 
 
 LaTeX Font Warning: Font shape `OT1/cmr/bx/n' in size <30> not available
-(Font)              size <24.88> substituted on input line 191.
+(Font)              size <24.88> substituted on input line 213.
 
 
 LaTeX Font Warning: Font shape `OT1/cmr/bx/n' in size <15> not available
-(Font)              size <14.4> substituted on input line 191.
+(Font)              size <14.4> substituted on input line 213.
 
 
 LaTeX Font Warning: Font shape `OML/cmm/b/it' in size <30> not available
-(Font)              size <24.88> substituted on input line 191.
+(Font)              size <24.88> substituted on input line 213.
 
 
 LaTeX Font Warning: Font shape `OML/cmm/b/it' in size <15> not available
-(Font)              size <14.4> substituted on input line 191.
+(Font)              size <14.4> substituted on input line 213.
 
 
 LaTeX Font Warning: Font shape `OMS/cmsy/b/n' in size <30> not available
-(Font)              size <24.88> substituted on input line 191.
+(Font)              size <24.88> substituted on input line 213.
 
 
 LaTeX Font Warning: Font shape `OMS/cmsy/b/n' in size <15> not available
-(Font)              size <14.4> substituted on input line 191.
+(Font)              size <14.4> substituted on input line 213.
 
 [3] [4] [5] [6]
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 297.
+(Font)              <10> on input line 319.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 297.
+(Font)              <7> on input line 319.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 297.
+(Font)              <5> on input line 319.
  [7] [8] [9] [10] [11] [12] [13] [14] [15] [16] [17] [18]
 [19] [20] [21]
 PGFPlots: reading {DataForReport/HarmonicTypicalTrajectory.dat}
@@ -2880,18 +2880,18 @@ PGFPlots: reading {DataForReport/LatticeSpacingvsExpectationXSquared.dat}
 PGFPlots: reading {DataForReport/HarmonicGSEnergy.dat}
  [23]
 Package hyperref Info: bookmark level for unknown todo defaults to 0 on input l
-ine 819.
+ine 841.
 
 
-LaTeX Warning: Reference `' on page 24 undefined on input line 830.
+LaTeX Warning: Reference `' on page 24 undefined on input line 852.
 
 
-LaTeX Warning: Reference `' on page 24 undefined on input line 830.
+LaTeX Warning: Reference `' on page 24 undefined on input line 852.
 
 PGFPlots: reading {DataForReport/HarmonicCorrelationFunction.dat}
 PGFPlots: reading {DataForReport/HarmonicCorrelationFunction.dat}
 
-LaTeX Warning: Reference `' on page 24 undefined on input line 880.
+LaTeX Warning: Reference `' on page 24 undefined on input line 902.
 
 PGFPlots: reading {DataForReport/HarmonicFirstEnergy.dat}
 
@@ -4711,68 +4711,68 @@ PGFPlots: reading {DataForReport/AnharmonicWaveFunction.dat}
 [28]
 PGFPlots: reading {DataForReport/AnharmonicIsolatedMode05.dat}
 
-Overfull \hbox (11.09514pt too wide) in paragraph at lines 1117--1118
+Overfull \hbox (11.09514pt too wide) in paragraph at lines 1139--1140
 [][] 
  []
 
 PGFPlots: reading {DataForReport/AnharmonicIsolatedMode1.dat}
 
-Overfull \hbox (2.39468pt too wide) in paragraph at lines 1136--1137
+Overfull \hbox (2.39468pt too wide) in paragraph at lines 1158--1159
 [][] 
  []
 
 PGFPlots: reading {DataForReport/AnharmonicIsolatedMode2.dat}
 
-Overfull \hbox (3.16069pt too wide) in paragraph at lines 1155--1156
+Overfull \hbox (3.16069pt too wide) in paragraph at lines 1177--1178
 [][] 
  []
 
 
-LaTeX Warning: Float too large for page by 23.55408pt on input line 1161.
+LaTeX Warning: Float too large for page by 23.55408pt on input line 1183.
 
 [29] [30]
 PGFPlots: reading {DataForReport/f1initialconfig.dat}
 PGFPlots: reading {DataForReport/f1finalconfig.dat}
 
-Overfull \hbox (2.3967pt too wide) in paragraph at lines 1183--1184
+Overfull \hbox (2.3967pt too wide) in paragraph at lines 1205--1206
 [][] 
  []
 
 PGFPlots: reading {DataForReport/f2initialconfig.dat}
 PGFPlots: reading {DataForReport/f2finalconfig.dat}
 
-Overfull \hbox (2.39452pt too wide) in paragraph at lines 1204--1205
+Overfull \hbox (2.39452pt too wide) in paragraph at lines 1226--1227
 [][] 
  []
 
 PGFPlots: reading {DataForReport/f3initialconfig.dat}
 PGFPlots: reading {DataForReport/f3finalconfig.dat}
 
-Overfull \hbox (2.39589pt too wide) in paragraph at lines 1225--1226
+Overfull \hbox (2.39589pt too wide) in paragraph at lines 1247--1248
 [][] 
  []
 
 PGFPlots: reading {DataForReport/f4initialconfig.dat}
 PGFPlots: reading {DataForReport/f4finalconfig.dat}
 
-Overfull \hbox (2.3918pt too wide) in paragraph at lines 1246--1247
+Overfull \hbox (2.3918pt too wide) in paragraph at lines 1268--1269
 [][] 
  []
 
 
-Overfull \hbox (2.61105pt too wide) in paragraph at lines 1167--1251
+Overfull \hbox (2.61105pt too wide) in paragraph at lines 1189--1273
 [][] []
  []
 
 
-Overfull \hbox (2.61105pt too wide) in paragraph at lines 1167--1251
+Overfull \hbox (2.61105pt too wide) in paragraph at lines 1189--1273
 [] [] 
  []
 
 [31] [32]
 PGFPlots: reading {DataForReport/f1isolatedmodewavefunction.dat}
 
-Overfull \hbox (30.34229pt too wide) in paragraph at lines 1278--1279
+Overfull \hbox (30.34229pt too wide) in paragraph at lines 1300--1301
 [][] 
  []
 
@@ -4780,12 +4780,12 @@ PGFPlots: reading {DataForReport/f2isolatedmodewavefunction.dat}
 PGFPlots: reading {DataForReport/f3isolatedmodewavefunction.dat}
 PGFPlots: reading {DataForReport/f4isolatedmodewavefunction.dat}
 
-Underfull \hbox (badness 10000) in paragraph at lines 1265--1339
+Underfull \hbox (badness 10000) in paragraph at lines 1287--1361
 [][] []
  []
 
 
-Overfull \hbox (2.61105pt too wide) in paragraph at lines 1265--1339
+Overfull \hbox (2.61105pt too wide) in paragraph at lines 1287--1361
 [] [] 
  []
 
@@ -4806,11 +4806,11 @@ PGFPlots: reading {DataForReport/105ConfigurationEvolution3.dat}
 [45] [46]) [47] [48
 
 ] [49] [50] [51] [52] [53] [54]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1896.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 1896.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1918.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 1918.
  (./Report.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1896.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1896.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1918.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1918.
 
 Package rerunfilecheck Info: File `Report.out' has not changed.
 (rerunfilecheck)             Checksum: 15D755DF865B89EF38B03942D303AF10;1916.
@@ -4825,13 +4825,13 @@ LaTeX Warning: There were undefined references.
 
 LaTeX Warning: There were multiply-defined labels.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1896.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1918.
  ) 
 Here is how much of TeX's memory you used:
- 29794 strings out of 492995
- 710361 string characters out of 6132703
- 1444895 words of memory out of 5000000
- 32380 multiletter control sequences out of 15000+600000
+ 29750 strings out of 492995
+ 709309 string characters out of 6132703
+ 1445884 words of memory out of 5000000
+ 32340 multiletter control sequences out of 15000+600000
  81348 words of font info for 105 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  62i,20n,96p,4554b,2754s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -4858,10 +4858,10 @@ st/fonts/type1/public/lm/lmsy6.pfb></usr/local/texlive/2017/texmf-dist/fonts/ty
 pe1/public/lm/lmsy8.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/public/
 amsfonts/symbols/msbm10.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/pub
 lic/amsfonts/symbols/msbm7.pfb>
-Output written on Report.pdf (57 pages, 698020 bytes).
+Output written on Report.pdf (58 pages, 700514 bytes).
 PDF statistics:
- 1098 PDF objects out of 1200 (max. 8388607)
- 1005 compressed objects within 11 object streams
- 380 named destinations out of 1000 (max. 500000)
+ 1096 PDF objects out of 1200 (max. 8388607)
+ 1002 compressed objects within 11 object streams
+ 376 named destinations out of 1000 (max. 500000)
  226 words of extra memory for PDF output out of 10000 (max. 10000000)
 

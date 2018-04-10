@@ -2,7 +2,7 @@
 \contentsline {section}{\numberline {2}Background}{3}{section.2}
 \contentsline {subsection}{\numberline {2.1}Quantum Mechanics}{3}{subsection.2.1}
 \contentsline {subsubsection}{\numberline {2.1.1}The Path Integral}{3}{subsubsection.2.1.1}
-\contentsline {subsubsection}{\numberline {2.1.2}Connecting to Statistical Physics}{5}{subsubsection.2.1.2}
+\contentsline {subsubsection}{\numberline {2.1.2}Connecting to Statistical Physics}{4}{subsubsection.2.1.2}
 \contentsline {section}{\numberline {3}Methods}{9}{section.3}
 \contentsline {subsection}{\numberline {3.1}Monte Carlo Methods}{9}{subsection.3.1}
 \contentsline {subsection}{\numberline {3.2}Hybrid Monte Carlo}{10}{subsection.3.2}
