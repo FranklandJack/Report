@@ -5,32 +5,32 @@
 \contentsline {subsubsection}{\numberline {2.1.2}Connecting to Statistical Physics}{4}{subsubsection.2.1.2}
 \contentsline {section}{\numberline {3}Methods}{9}{section.3}
 \contentsline {subsection}{\numberline {3.1}Monte Carlo Methods}{9}{subsection.3.1}
-\contentsline {subsection}{\numberline {3.2}Hybrid Monte Carlo}{10}{subsection.3.2}
-\contentsline {subsubsection}{\numberline {3.2.1}Hamiltonian Dynamics}{10}{subsubsection.3.2.1}
-\contentsline {subsubsection}{\numberline {3.2.2}Sampling and the Hamiltonian}{13}{subsubsection.3.2.2}
-\contentsline {subsubsection}{\numberline {3.2.3}Steps of the HMC Algorithm}{14}{subsubsection.3.2.3}
+\contentsline {subsection}{\numberline {3.2}Hybrid Monte Carlo}{11}{subsection.3.2}
+\contentsline {subsubsection}{\numberline {3.2.1}Hamiltonian Dynamics}{11}{subsubsection.3.2.1}
+\contentsline {subsubsection}{\numberline {3.2.2}Sampling and the Hamiltonian}{14}{subsubsection.3.2.2}
+\contentsline {subsubsection}{\numberline {3.2.3}Steps of the HMC Algorithm}{15}{subsubsection.3.2.3}
 \contentsline {subsection}{\numberline {3.3}Data Analysis}{18}{subsection.3.3}
 \contentsline {paragraph}{Uncorrelated Data}{18}{section*.6}
-\contentsline {paragraph}{Correlated Data}{18}{section*.7}
-\contentsline {section}{\numberline {4}Results and Discussion}{20}{section.4}
-\contentsline {subsection}{\numberline {4.1}Quantum Oscillators}{20}{subsection.4.1}
+\contentsline {paragraph}{Correlated Data}{19}{section*.7}
+\contentsline {section}{\numberline {4}Results and Discussion}{21}{section.4}
+\contentsline {subsection}{\numberline {4.1}Quantum Oscillators}{21}{subsection.4.1}
 \contentsline {subsubsection}{\numberline {4.1.1}Quantum Harmonic Oscillator}{22}{subsubsection.4.1.1}
-\contentsline {paragraph}{Typical Configuration}{22}{section*.8}
+\contentsline {paragraph}{Typical Configuration}{23}{section*.8}
 \contentsline {paragraph}{Mean Square Position}{23}{section*.10}
-\contentsline {paragraph}{Energy Levels}{23}{section*.12}
-\contentsline {paragraph}{Ground State Probability Density Function}{25}{section*.21}
-\contentsline {subsubsection}{\numberline {4.1.2}Quantum Anharmonic Oscillator}{27}{subsubsection.4.1.2}
-\contentsline {paragraph}{Typical configuration}{28}{section*.24}
-\contentsline {paragraph}{Energy Levels}{28}{section*.26}
-\contentsline {paragraph}{Ground State Probability Density Function}{29}{section*.28}
-\contentsline {subsubsection}{\numberline {4.1.3}Isolated Modes}{29}{subsubsection.4.1.3}
+\contentsline {paragraph}{Energy Levels}{24}{section*.12}
+\contentsline {paragraph}{Ground State Probability Density Function}{26}{section*.16}
+\contentsline {subsubsection}{\numberline {4.1.2}Quantum Anharmonic Oscillator}{28}{subsubsection.4.1.2}
+\contentsline {paragraph}{Typical configuration}{29}{section*.19}
+\contentsline {paragraph}{Energy Levels}{30}{section*.21}
+\contentsline {paragraph}{Ground State Probability Density Function}{32}{section*.24}
+\contentsline {subsubsection}{\numberline {4.1.3}Isolated Modes}{32}{subsubsection.4.1.3}
 \contentsline {subsection}{\numberline {4.2}Accelerated Dynamics (Tempering)}{37}{subsection.4.2}
 \contentsline {subsubsection}{\numberline {4.2.1}Tempering in HMC}{37}{subsubsection.4.2.1}
-\contentsline {subsubsection}{\numberline {4.2.2}Volume Preservation Under Tempering Dynamics}{38}{subsubsection.4.2.2}
-\contentsline {subsubsection}{\numberline {4.2.3}Tempered Simulation Results}{41}{subsubsection.4.2.3}
-\contentsline {subsubsection}{\numberline {4.2.4}Suggestions for Future Tempering Investigations}{46}{subsubsection.4.2.4}
-\contentsline {section}{\numberline {5}Conclusion}{46}{section.5}
-\contentsline {section}{Appendices}{50}{section*.37}
-\contentsline {section}{\numberline {A}Quantum Virial Theorem}{50}{appendix.A}
-\contentsline {section}{\numberline {B}Derivation of the discrete path integral for quantum harmonic oscillator}{51}{appendix.B}
-\contentsline {section}{\numberline {C}Simulation Code}{56}{appendix.C}
+\contentsline {subsubsection}{\numberline {4.2.2}Volume Preservation Under Tempering Dynamics}{39}{subsubsection.4.2.2}
+\contentsline {subsubsection}{\numberline {4.2.3}Tempered Simulation Results}{42}{subsubsection.4.2.3}
+\contentsline {subsubsection}{\numberline {4.2.4}Suggestions for Future Tempering Investigations}{47}{subsubsection.4.2.4}
+\contentsline {section}{\numberline {5}Conclusion}{47}{section.5}
+\contentsline {section}{Appendices}{53}{section*.33}
+\contentsline {section}{\numberline {A}Quantum Virial Theorem}{53}{appendix.A}
+\contentsline {section}{\numberline {B}Derivation of the discrete path integral for quantum harmonic oscillator}{54}{appendix.B}
+\contentsline {section}{\numberline {C}Simulation Code}{59}{appendix.C}

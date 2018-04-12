@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.12.18)  11 APR 2018 10:35
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.12.18)  12 APR 2018 14:19
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -837,9 +837,6 @@ Package: listings 2015/06/04 1.6 (Carsten Heinz)
 
 (./Report.aux
 
-LaTeX Warning: Label `eq:LargeLatticeExpectation' multiply defined.
-
-
 LaTeX Warning: Label `fig:initialfinalf2' multiply defined.
 
 
@@ -1061,46 +1058,46 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ]
 [2]
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10.95> on input line 195.
-LaTeX Font Info:    Calculating math sizes for size <30> on input line 228.
+(Font)              <10.95> on input line 197.
+LaTeX Font Info:    Calculating math sizes for size <30> on input line 230.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <30> on input line 228.
+(Font)              <30> on input line 230.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <20.99991> on input line 228.
+(Font)              <20.99991> on input line 230.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <15> on input line 228.
+(Font)              <15> on input line 230.
 
 
 LaTeX Font Warning: Font shape `OT1/cmr/bx/n' in size <30> not available
-(Font)              size <24.88> substituted on input line 228.
+(Font)              size <24.88> substituted on input line 230.
 
 
 LaTeX Font Warning: Font shape `OT1/cmr/bx/n' in size <15> not available
-(Font)              size <14.4> substituted on input line 228.
+(Font)              size <14.4> substituted on input line 230.
 
 
 LaTeX Font Warning: Font shape `OML/cmm/b/it' in size <30> not available
-(Font)              size <24.88> substituted on input line 228.
+(Font)              size <24.88> substituted on input line 230.
 
 
 LaTeX Font Warning: Font shape `OML/cmm/b/it' in size <15> not available
-(Font)              size <14.4> substituted on input line 228.
+(Font)              size <14.4> substituted on input line 230.
 
 
 LaTeX Font Warning: Font shape `OMS/cmsy/b/n' in size <30> not available
-(Font)              size <24.88> substituted on input line 228.
+(Font)              size <24.88> substituted on input line 230.
 
 
 LaTeX Font Warning: Font shape `OMS/cmsy/b/n' in size <15> not available
-(Font)              size <14.4> substituted on input line 228.
+(Font)              size <14.4> substituted on input line 230.
 
 [3] [4] [5] [6]
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 334.
+(Font)              <10> on input line 336.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 334.
+(Font)              <7> on input line 336.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 334.
+(Font)              <5> on input line 336.
  [7] [8] [9] [10] [11] [12] [13] [14] [15] [16] [17] [18]
 [19] [20] [21]
 PGFPlots: reading {DataForReport/HarmonicTypicalTrajectory.dat}
@@ -2909,33 +2906,70 @@ NOTE: coordinate (0.221247,999) has been dropped because of a coordinate filter
 PGFPlots: reading {DataForReport/LatticeSpacingvsExpectationXSquared.dat}
  [23]
 PGFPlots: reading {DataForReport/HarmonicGSEnergy.dat}
-Package hyperref Info: bookmark level for unknown todo defaults to 0 on input l
-ine 857.
+ [24] [25]
+PGFPlots: reading {DataForReport/HarmonicCorrelationFunction3.dat}
+Package pgfplots info on input line 918: Using 'lua backend=false' for axis: ym
+ode=log unsupported (yet).
+PGFPlots: reading {DataForReport/HarmonicCorrelationFunction3.dat}
 
-
-LaTeX Warning: Reference `' on page 24 undefined on input line 868.
-
-
-LaTeX Warning: Reference `' on page 24 undefined on input line 868.
-
-PGFPlots: reading {DataForReport/HarmonicCorrelationFunction.dat}
-PGFPlots: reading {DataForReport/HarmonicCorrelationFunction.dat}
-
-LaTeX Warning: Reference `' on page 24 undefined on input line 918.
-
+NOTE: coordinate (12,-0.00103575) has been dropped because it is unbounded (in 
+y). (see also unbounded coords=jump). 
+NOTE: coordinate (13,-0.000492897) has been dropped because it is unbounded (in
+ y). (see also unbounded coords=jump). 
+NOTE: coordinate (14,-0.0005054) has been dropped because it is unbounded (in y
+). (see also unbounded coords=jump). 
+NOTE: coordinate (15,-0.000655548) has been dropped because it is unbounded (in
+ y). (see also unbounded coords=jump). 
+NOTE: coordinate (16,-6.92204e-05) has been dropped because it is unbounded (in
+ y). (see also unbounded coords=jump). 
+NOTE: coordinate (17,-0.000590329) has been dropped because it is unbounded (in
+ y). (see also unbounded coords=jump). 
+NOTE: coordinate (18,-0.000825997) has been dropped because it is unbounded (in
+ y). (see also unbounded coords=jump). 
+NOTE: coordinate (19,-0.000292284) has been dropped because it is unbounded (in
+ y). (see also unbounded coords=jump). 
+NOTE: coordinate (21,-0.000283401) has been dropped because it is unbounded (in
+ y). (see also unbounded coords=jump). 
+NOTE: coordinate (22,-5.03539e-05) has been dropped because it is unbounded (in
+ y). (see also unbounded coords=jump). 
+NOTE: coordinate (30,-0.000149495) has been dropped because it is unbounded (in
+ y). (see also unbounded coords=jump). 
+NOTE: coordinate (31,-0.000406256) has been dropped because it is unbounded (in
+ y). (see also unbounded coords=jump). 
+NOTE: coordinate (32,-0.000600755) has been dropped because it is unbounded (in
+ y). (see also unbounded coords=jump). 
+NOTE: coordinate (33,-0.000620829) has been dropped because it is unbounded (in
+ y). (see also unbounded coords=jump). 
+NOTE: coordinate (34,-0.0005955) has been dropped because it is unbounded (in y
+). (see also unbounded coords=jump). 
+NOTE: coordinate (35,-0.00148186) has been dropped because it is unbounded (in 
+y). (see also unbounded coords=jump). 
+NOTE: coordinate (36,-0.00189093) has been dropped because it is unbounded (in 
+y). (see also unbounded coords=jump). 
+NOTE: coordinate (37,-0.00188461) has been dropped because it is unbounded (in 
+y). (see also unbounded coords=jump). 
+NOTE: coordinate (38,-0.00187026) has been dropped because it is unbounded (in 
+y). (see also unbounded coords=jump). 
+NOTE: coordinate (39,-0.00021965) has been dropped because it is unbounded (in 
+y). (see also unbounded coords=jump). 
+NOTE: coordinate (41,-0.000194407) has been dropped because it is unbounded (in
+ y). (see also unbounded coords=jump). 
+NOTE: coordinate (44,-0.000239493) has been dropped because it is unbounded (in
+ y). (see also unbounded coords=jump). 
+NOTE: coordinate (45,-0.000315503) has been dropped because it is unbounded (in
+ y). (see also unbounded coords=jump). 
+NOTE: coordinate (46,-0.00115183) has been dropped because it is unbounded (in 
+y). (see also unbounded coords=jump). 
+NOTE: coordinate (47,-0.00148417) has been dropped because it is unbounded (in 
+y). (see also unbounded coords=jump). 
+NOTE: coordinate (48,-0.00185354) has been dropped because it is unbounded (in 
+y). (see also unbounded coords=jump). 
+NOTE: coordinate (49,-0.000717146) has been dropped because it is unbounded (in
+ y). (see also unbounded coords=jump). 
 PGFPlots: reading {DataForReport/HarmonicFirstEnergy.dat}
-[24]
-
-LaTeX Warning: Marginpar on page 25 moved.
-
-
-LaTeX Warning: Marginpar on page 25 moved.
-
-
-LaTeX Warning: Marginpar on page 25 moved.
-
+[26] [27]
 PGFPlots: reading {DataForReport/HarmonicWaveFunction.dat}
-[25] [26] [27]
+ [28]
 PGFPlots: reading {DataForReport/AnharmonicTypicalTrajectory.dat}
 
 NOTE: coordinate (-1.84023,100) has been dropped because of a coordinate filter
@@ -4738,77 +4772,82 @@ NOTE: coordinate (-2.27368,998) has been dropped because of a coordinate filter
 . (see also unbounded coords=jump). 
 NOTE: coordinate (-1.98548,999) has been dropped because of a coordinate filter
 . (see also unbounded coords=jump). 
+[29]
+PGFPlots: reading {DataForReport/AnharmonicCorrelationFunction.dat}
+Package pgfplots info on input line 1131: Using 'lua backend=false' for axis: y
+mode=log unsupported (yet).
+PGFPlots: reading {DataForReport/AnharmonicCorrelationFunction.dat}
 PGFPlots: reading {DataForReport/ReferenceAnharmonicGroundstateEnergies.dat}
 PGFPlots: reading {DataForReport/ReferenceAnharmonicFirstExcitedStateEnergies.d
 at}
 PGFPlots: reading {DataForReport/MeasuredAnharmonicGroundstateEnergiesa1.dat}
 PGFPlots: reading {DataForReport/MeasuredFirstExcitedStateEnergiesa1.dat}
-[28]
 PGFPlots: reading {DataForReport/AnharmonicWaveFunction.dat}
+ [30] [31]
 PGFPlots: reading {DataForReport/AnharmonicIsolatedMode05.dat}
 
-Overfull \hbox (11.09514pt too wide) in paragraph at lines 1155--1156
+Overfull \hbox (11.09514pt too wide) in paragraph at lines 1223--1224
 [][] 
  []
 
 PGFPlots: reading {DataForReport/AnharmonicIsolatedMode1.dat}
 
-Overfull \hbox (2.39468pt too wide) in paragraph at lines 1174--1175
+Overfull \hbox (2.39468pt too wide) in paragraph at lines 1242--1243
 [][] 
  []
 
 PGFPlots: reading {DataForReport/AnharmonicIsolatedMode2.dat}
 
-Overfull \hbox (3.16069pt too wide) in paragraph at lines 1193--1194
+Overfull \hbox (3.16069pt too wide) in paragraph at lines 1261--1262
 [][] 
  []
 
 
-LaTeX Warning: Float too large for page by 23.55408pt on input line 1199.
+LaTeX Warning: Float too large for page by 23.55408pt on input line 1267.
 
-[29] [30]
+[32] [33]
 PGFPlots: reading {DataForReport/f1initialconfig.dat}
 PGFPlots: reading {DataForReport/f1finalconfig.dat}
 
-Overfull \hbox (2.3967pt too wide) in paragraph at lines 1221--1222
+Overfull \hbox (2.3967pt too wide) in paragraph at lines 1289--1290
 [][] 
  []
 
 PGFPlots: reading {DataForReport/f2initialconfig.dat}
 PGFPlots: reading {DataForReport/f2finalconfig.dat}
 
-Overfull \hbox (2.39452pt too wide) in paragraph at lines 1242--1243
+Overfull \hbox (2.39452pt too wide) in paragraph at lines 1310--1311
 [][] 
  []
 
 PGFPlots: reading {DataForReport/f3initialconfig.dat}
 PGFPlots: reading {DataForReport/f3finalconfig.dat}
 
-Overfull \hbox (2.39589pt too wide) in paragraph at lines 1263--1264
+Overfull \hbox (2.39589pt too wide) in paragraph at lines 1331--1332
 [][] 
  []
 
 PGFPlots: reading {DataForReport/f4initialconfig.dat}
 PGFPlots: reading {DataForReport/f4finalconfig.dat}
 
-Overfull \hbox (2.3918pt too wide) in paragraph at lines 1284--1285
+Overfull \hbox (2.3918pt too wide) in paragraph at lines 1352--1353
 [][] 
  []
 
 
-Overfull \hbox (2.61105pt too wide) in paragraph at lines 1205--1289
+Overfull \hbox (2.61105pt too wide) in paragraph at lines 1273--1357
 [][] []
  []
 
 
-Overfull \hbox (2.61105pt too wide) in paragraph at lines 1205--1289
+Overfull \hbox (2.61105pt too wide) in paragraph at lines 1273--1357
 [] [] 
  []
 
-[31] [32] [33] [34]
+[34]
 PGFPlots: reading {DataForReport/f1isolatedmodewavefunction.dat}
 
-Overfull \hbox (30.34229pt too wide) in paragraph at lines 1316--1317
+Overfull \hbox (30.34229pt too wide) in paragraph at lines 1384--1385
 [][] 
  []
 
@@ -4816,16 +4855,16 @@ PGFPlots: reading {DataForReport/f2isolatedmodewavefunction.dat}
 PGFPlots: reading {DataForReport/f3isolatedmodewavefunction.dat}
 PGFPlots: reading {DataForReport/f4isolatedmodewavefunction.dat}
 
-Underfull \hbox (badness 10000) in paragraph at lines 1303--1377
+Underfull \hbox (badness 10000) in paragraph at lines 1371--1445
 [][] []
  []
 
 
-Overfull \hbox (2.61105pt too wide) in paragraph at lines 1303--1377
+Overfull \hbox (2.61105pt too wide) in paragraph at lines 1371--1445
 [] [] 
  []
 
-[35] [36] [37] [38] [39] [40]
+[35] [36] [37] [38] [39] [40] [41]
 PGFPlots: reading {DataForReport/1001HamiltonianEvolution.dat}
 PGFPlots: reading {DataForReport/1001ConfigurationEvolution1.dat}
 PGFPlots: reading {DataForReport/1001ConfigurationEvolution2.dat}
@@ -4838,12 +4877,19 @@ PGFPlots: reading {DataForReport/105HamiltonianEvolution.dat}
 PGFPlots: reading {DataForReport/105ConfigurationEvolution1.dat}
 PGFPlots: reading {DataForReport/105ConfigurationEvolution2.dat}
 PGFPlots: reading {DataForReport/105ConfigurationEvolution3.dat}
- [41] [42] [43] [44] [45] [46] (./Report.bbl
-[47] [48]) [49] [50
+ [42] [43] [44] [45] [46] [47] [48]
+(./Report.bbl [49] [50]) [51]
 
-] [51] [52] [53] [54] [55]
-LaTeX Font Info:    Try loading font information for OT1+lmtt on input line 195
-9.
+Package mphysproject Warning: This report exceeds the maximum 50pages. on input
+ line 1704.
+
+[52
+
+] [53
+
+] [54] [55] [56] [57] [58]
+LaTeX Font Info:    Try loading font information for OT1+lmtt on input line 202
+8.
 
 (/usr/local/texlive/2017/texmf-dist/tex/latex/lm/ot1lmtt.fd
 File: ot1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
@@ -4858,7 +4904,7 @@ File: lstlang1.sty 2015/06/04 1.6 listings language file
 File: lstmisc.sty 2015/06/04 1.6 (Carsten Heinz)
 )
 Package hyperref Info: bookmark level for unknown lstlisting defaults to 0 on i
-nput line 1960.
+nput line 2029.
 
 (../HMC-Oscillator/src/main.cpp
 LaTeX Font Info:    Try loading font information for OML+lmr on input line 1.
@@ -4868,7 +4914,7 @@ File: omllmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Font Info:    Font shape `OML/lmr/m/n' in size <12> not available
 (Font)              Font shape `OML/lmm/m/it' tried instead on input line 1.
- [56]
+ [59]
 LaTeX Font Info:    Try loading font information for OMS+lmr on input line 27.
 
 (/usr/local/texlive/2017/texmf-dist/tex/latex/lm/omslmr.fd
@@ -4886,27 +4932,27 @@ Overfull \hbox (383.28981pt too wide) in paragraph at lines 34--36
 [][][][][][] 
  []
 
-[57] [58] [59]
+[60] [61] [62]
 Overfull \hbox (396.23985pt too wide) in paragraph at lines 143--144
 [][][][] 
  []
 
-[60]
+[63]
 Overfull \hbox (383.28981pt too wide) in paragraph at lines 145--148
 [][][][][][] 
  []
 
-[61]
+[64]
 Overfull \hbox (396.23985pt too wide) in paragraph at lines 212--213
 [][][][] 
  []
 
-[62]
+[65]
 Overfull \hbox (383.28981pt too wide) in paragraph at lines 214--216
 [][][][][][] 
  []
 
-[63]
+[66]
 Overfull \hbox (396.23985pt too wide) in paragraph at lines 259--260
 [][][][] 
  []
@@ -4926,7 +4972,7 @@ Overfull \hbox (383.28981pt too wide) in paragraph at lines 271--273
 [][][][][][] 
  []
 
-[64]
+[67]
 Overfull \hbox (396.23985pt too wide) in paragraph at lines 293--294
 [][][][] 
  []
@@ -4936,7 +4982,7 @@ Overfull \hbox (383.28981pt too wide) in paragraph at lines 295--297
 [][][][][][] 
  []
 
-[65] [66] [67]
+[68] [69] [70]
 Overfull \hbox (396.23985pt too wide) in paragraph at lines 404--405
 [][][][] 
  []
@@ -4946,7 +4992,7 @@ Overfull \hbox (383.28981pt too wide) in paragraph at lines 406--408
 [][][][][][] 
  []
 
-[68]
+[71]
 Overfull \hbox (375.08998pt too wide) in paragraph at lines 456--457
 [][][][] 
  []
@@ -4956,7 +5002,7 @@ Overfull \hbox (355.08998pt too wide) in paragraph at lines 458--459
 [][][][][][] 
  []
 
-[69]
+[72]
 Overfull \hbox (375.08998pt too wide) in paragraph at lines 489--490
 [][][][] 
  []
@@ -4966,7 +5012,7 @@ Overfull \hbox (362.13994pt too wide) in paragraph at lines 491--494
 [][][][][][] 
  []
 
-[70]
+[73]
 Overfull \hbox (375.08998pt too wide) in paragraph at lines 538--539
 [][][][] 
  []
@@ -4976,36 +5022,33 @@ Overfull \hbox (362.13994pt too wide) in paragraph at lines 540--541
 [][][][][][] 
  []
 
-[71]) [72]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1962.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 1962.
+[74]) [75]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 2031.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 2031.
  (./Report.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1962.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1962.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 2031.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 2031.
 
 Package rerunfilecheck Info: File `Report.out' has not changed.
-(rerunfilecheck)             Checksum: 1E0C2710C25BFD828F77B631E7E07C4B;1968.
+(rerunfilecheck)             Checksum: 53835EB0FEAB94E329FDDF39063D5C79;1968.
 
 
 LaTeX Font Warning: Size substitutions with differences
 (Font)              up to 5.12pt have occurred.
 
 
-LaTeX Warning: There were undefined references.
-
-
 LaTeX Warning: There were multiply-defined labels.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1962.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 2031.
  ) 
 Here is how much of TeX's memory you used:
- 32107 strings out of 492995
- 745552 string characters out of 6132703
- 1416049 words of memory out of 5000000
- 34095 multiletter control sequences out of 15000+600000
+ 32300 strings out of 492995
+ 749714 string characters out of 6132703
+ 1462236 words of memory out of 5000000
+ 34281 multiletter control sequences out of 15000+600000
  81658 words of font info for 106 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 62i,20n,100p,4725b,2754s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 62i,20n,100p,4725b,2753s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2017/texmf-dist/fonts/enc/dvips/lm/lm-rmtt.enc}{/usr/loca
 l/texlive/2017/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{/usr/local/texlive/2017
 /texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}{/usr/local/texlive/2017/texmf-dis
@@ -5031,10 +5074,10 @@ m/lmsy8.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/public/lm/lmtt12.pf
 b></usr/local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm1
 0.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/symbols/m
 sbm7.pfb>
-Output written on Report.pdf (76 pages, 785191 bytes).
+Output written on Report.pdf (79 pages, 813879 bytes).
 PDF statistics:
- 1859 PDF objects out of 2073 (max. 8388607)
- 1738 compressed objects within 18 object streams
- 943 named destinations out of 1000 (max. 500000)
+ 1884 PDF objects out of 2073 (max. 8388607)
+ 1760 compressed objects within 18 object streams
+ 948 named destinations out of 1000 (max. 500000)
  234 words of extra memory for PDF output out of 10000 (max. 10000000)
 

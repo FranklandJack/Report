@@ -127,11 +127,13 @@ I wish to extend my deep appreciation and gratitude to Dr. Roger Horsely and Dr.
 % The page count starts from here. DO NOT DELETE OR DISABLE THIS COMMAND!
 \maintext
 \section{Introduction}
- The Hybrid Monte Carlo (HMC) algorithm (also referred to as Hamiltonian Monte Carlo) was originally developed by Duane, Kennedy, Pendleton and Roweth in \cite{duane_kennedy_pendleton_roweth_1987} for the purposes of numerical simulation of lattice field theory. HMC is an example of a Markov Chain Monte Carlo (MCMC) method, where states are proposed via a Markov chain in order to produce samples distributed according to some probability distribution, these samples can then be used to estimate the expectation value of some function of the samples under the probability distribution. Although MCMC was original introduced via the \textit{Metropolis algorithm} in \cite{metropolis_rosenbluth_rosenbluth_teller_teller_1953}, HMC makes improvements on this method by using Hamiltonian dynamics to propose new states in the Markov chain. The idea is that we consider the variables of interest as \textit{position} and introduce auxiliary \textit{momentum} variables, which we can use to define a Hamiltonian and evolve the system in computer time via a leapfrog integration method to propose new states. We alternate between drawing the momentum variables from a multivariate Gaussian distribution and performing a Metropolis update, where the new state is proposed via the Hamiltonian dynamics. The advantage of the HMC method is that the proposed state can have a high probability of acceptance and be distant from the current state, it therefore avoids the problems of slow state exploration that results from using random-walk proposals such as in the original Metropolis algorithm \cite{neal_2011}. Although popular amongst the lattice field theory community the HMC method has also been used in statistics, e.g. \cite{neal_1996_a}, \cite{ishwaran_1999} and \cite{schmidt_2009} for applications such as neural network models. However, our application of HMC will be to quantum mechanical systems and in particular the case of quantum harmonic and anharmonic oscillators.
+ The Hybrid Monte Carlo (HMC) algorithm (also referred to as Hamiltonian Monte Carlo) was originally developed by Duane, Kennedy, Pendleton and Roweth in \cite{duane_kennedy_pendleton_roweth_1987} for the purposes of numerical simulation of lattice field theory. HMC is an example of a Markov Chain Monte Carlo (MCMC) method, where states are proposed via a Markov chain in order to produce samples distributed according to some probability distribution, these samples can then be used to estimate the expectation value of some function of the samples under the probability distribution. Although MCMC was original introduced via the \textit{Metropolis algorithm} in \cite{metropolis_rosenbluth_rosenbluth_teller_teller_1953}, HMC makes improvements on this method by using Hamiltonian dynamics to propose new states in the Markov chain. The idea is that we consider the variables of interest as \textit{position} and introduce auxiliary \textit{momentum} variables, which we can use to define a Hamiltonian and evolve the system in computer time via a leapfrog integration method to propose new states. We alternate between drawing the momentum variables from a multivariate Gaussian distribution, and performing a Metropolis update, where the new state is proposed via the Hamiltonian dynamics. The advantage of the HMC method is that the proposed state can have a high probability of acceptance and be distant from the current state, it therefore avoids the problems of slow state exploration that results from using random-walk proposals, such as in the original Metropolis algorithm \cite{neal_2011}. Although popular amongst the lattice field theory community, the HMC method has also been used in statistics, e.g. \cite{neal_1996_a}, \cite{ishwaran_1999} and \cite{schmidt_2009} for applications such as neural network models. However, our application of HMC will be to quantum mechanical systems, and in particular the case of quantum harmonic and anharmonic oscillators.
 
- Standard HMC can have difficulty sampling from the different areas of a probability distribution if those areas are separated by a region of low probability; we will refer to these areas as \textit{isolated modes} of the distribution. An example of this in quantum mechanics is that of a 1-dimensional double well potential, where the probability of finding a particle in either well is high, whilst finding it in the region between the wells is low. If we are interested in generating samples for say the position of the particle using the HMC algorithm, then for a deep enough well there will be an asymmetry in the number of samples recorded in each well. This is due to the energy cost associated with moving between the wells, and so the Hamiltonian dynamics in the HMC simulation will tend to propose an update state in the well the current state is in, leading to the asymmetry in the recorded samples. The aim of this project is to write an HMC simulation of the anharmonic oscillator and introduce a tempering parameter as proposed in \cite{neal_2011} and \cite{neal_1996_b} into the dynamics to investigate whether this increases the frequency at which samples move between the two wells. In terms of our simulation the benefit of successful tempering would be more accurate estimations of observed quantities such as position expectation and ground state density functions. However, in terms of a broader goal, successful tempering results in HMC simulations of simple quantum mechanical systems, may suggest it has potential applications in lattice field theory where isolated modes are a more serious problem. In certain field theories, including QCD, the states we wish to construct via our Markov chain are in ``distinct topological sectors which are labelled by a topological charge''\cite{bietenholz_2016}. For small lattice spacings moving between these sectors can take a very long time, since they are separated by a region of high Euclidean action (i.e. low probability in the distribution) and so the transitions are statistically suppressed \cite{bietenholz_2016}, \cite{debbio_panagopoulos_vicari_2002} and \cite{debbio_manca_vicari_2004}. It is therefore possible that tempered dynamics will have applications to theories such as lattice QCD where isolated modes arise as regions of distinct topological charge. In general, the \textit{autocorrelation time} which measures how correlated subsequent samples are in a Monte Carlo simulation will be high if the system is trapped in an isolated mode. The purpose of tempering is to try and diminish the autocorrelation time without the need for extra computation. 
+ Standard HMC can have difficulty sampling from the different areas of a probability distribution, if those areas are separated by a region of low probability; we will refer to these areas as \textit{isolated modes} of the distribution. An example of this in quantum mechanics is that of a 1-dimensional double well potential, where the probability of finding a particle in either well is high, whilst finding it in the region between the wells is low. If we are interested in generating samples for say the position of the particle using the HMC algorithm, then for a deep enough well there will be an asymmetry in the number of samples recorded in each well. This is due to the energy cost associated with moving between the wells, and so the Hamiltonian dynamics in the HMC simulation will tend to propose an update state in the well the current state is in, leading to the asymmetry in the recorded samples. The aim of this project is to write an HMC simulation of the anharmonic oscillator, and introduce a tempering parameter as proposed in \cite{neal_2011} and \cite{neal_1996_b} into the dynamics to investigate whether this increases the frequency at which samples move between the two wells. In terms of our simulation, the benefit of successful tempering would be more accurate estimations of observed quantities, such as position expectation and ground state density functions. However, in terms of a broader goal, successful tempering results in HMC simulations of simple quantum mechanical systems, may suggest it has potential applications in lattice field theory, where isolated modes are a more serious problem. In certain field theories, including lattice QCD, the states we wish to construct via our Markov chain are in `distinct topological sectors which are labelled by a topological charge'\cite{bietenholz_2016}. For small lattice spacings moving between these sectors can take a very long time, since they are separated by a region of high Euclidean action (i.e. low probability in the distribution) and so the transitions are statistically suppressed \cite{bietenholz_2016}, \cite{debbio_panagopoulos_vicari_2002} and \cite{debbio_manca_vicari_2004}. It is therefore possible that tempered dynamics will have applications to theories such as lattice QCD, where isolated modes arise as regions of distinct topological charge. In general, the \textit{autocorrelation time} which measures how correlated subsequent samples are in a Monte Carlo simulation, will be high if the system is trapped in an isolated mode. The purpose of tempering is to try and diminish the autocorrelation time, without the need for extra computation. 
 
- In this report we follow the work of Creutz and Freedman in \cite{creutz_freedman_1981} who constructed a MCMC simulation of the harmonic and anharmonic oscillators, however we will use HMC where they used the Metropolis algorithm. Reproducing the results in \cite{creutz_freedman_1981} using the Metropolis algorithm is a popular choice for undergraduate projects e.g. \cite{westbroek_king_vvedensky_durr_2017}, \cite{rodgers_raes} and \cite{slapik_serenone} which provide a useful comparison for our simulation which uses a different algorithm. We begin the report by following the steps taken in \cite{creutz_freedman_1981} where we introduce and define the path integral of quantum mechanics and show that for a discrete lattice in Euclidean time, the path integral can be considered as a canonical partition function. This connection between quantum mechanics and statistical physics is what will enable us to apply Monte Carlo methods and we will see that the quantum expectation values in the ground state correspond to classical expectation values of the statistical system with a canonical distribution. We will then briefly review the topic of Monte Carlo methods and explain how they can be used to approximate expectation values for functions of random variables under some probability distribution via a Markov chain, as well as defining detailed balance and ergodicity which are conditions required for the Monte Carlo simulation to be valid. Before introducing the HMC algorithm we very briefly review Hamiltonian dynamics, explain how Hamilton's equations can be integrated numerically via the leapfrog method and show that as well as being reversible, the leapfrog method preserves volume on the phase space of position and momentum coordinates, which we we will see is necessary for detailed balance to hold. Having provided the relevant background we are then able to define the steps of the HMC algorithm and explain how it can be used to sample from a canonical distribution by defining axillary momenta coordinates and a Hamiltonian. In this section we will also discuss the issue of ergodicity and show that HMC obeys detailed balance. Due to the stochastic nature of MCMC algorithms, samples in the Markov chain can be correlated and we briefly discuss the effect of this on data analysis. The results section begins by applying the HMC algorithm to the canonical distribution for the quantum system. We examine the results of our simulation for the harmonic oscillator where we are able to compare with numerical and exact results for the discrete theory in \cite{creutz_freedman_1981},\cite{westbroek_king_vvedensky_durr_2017}, \cite{rodgers_raes} and \cite{slapik_serenone}. The simple system of the harmonic oscillator provides a good testing ground for our simulation, where we can easily compare our results to theory. Moving on to the anharmonic oscillator we are able to apply our simulation to a system that does not have an analytic solution. For the case of the anharmonic oscillator we are able to compare our results to those acquired through alternative methods \cite{blankenbecler_degrand_sugar_1980} and simulations \cite{rodgers_raes} however we will observe in this section that the HMC simulation begins to fail in the case of the isolated modes in the double well potential. In particular the double well system can have difficulty tunnelling between the two modes. At this point we will examine the effects of introducing a tempering parameter into the simulation, with the hope that it will increase the tunnel rate. We will show that volume preservation still holds for tempered dynamics, which is necessary if it is still to obey detailed balance. Ultimately we find that tempering does not solve the problem of the isolated modes in our system, however we end the report by investigating why this is the case by tracking the evolution of the Hamiltonian during a tempered leapfrog proposal trajectory. Based on this result we are then able to propose a modified tempering method for future investigations into tempered HMC.
+ In this report we follow the work of Creutz and Freedman in \cite{creutz_freedman_1981}, who constructed a MCMC simulation of the harmonic and anharmonic oscillators, however we will use HMC where they used the Metropolis algorithm. Reproducing the results in \cite{creutz_freedman_1981} using the Metropolis algorithm is a popular choice for undergraduate projects e.g. \cite{westbroek_king_vvedensky_durr_2017}, \cite{rodgers_raes} and \cite{slapik_serenone} which provide a useful comparison for our simulation which uses a different algorithm. We begin the report by following the steps taken in \cite{creutz_freedman_1981} where we introduce and define the path integral of quantum mechanics, and show that for a discrete lattice in Euclidean time, the path integral can be considered as a canonical partition function. This connection between quantum mechanics and statistical physics is what will enable us to apply Monte Carlo methods, and we will see that the quantum expectation values in the ground state correspond to classical expectation values of the statistical system with a canonical distribution. We will then briefly review the topic of Monte Carlo methods and explain how they can be used to approximate expectation values for functions of random variables under some probability distribution via a Markov chain, as well as defining detailed balance and ergodicity, which are conditions required for the Monte Carlo simulation to be valid. Before introducing the HMC algorithm we very briefly review Hamiltonian dynamics, explain how Hamilton's equations can be integrated numerically via the leapfrog method, and show that as well as being reversible, the leapfrog method preserves volume on the phase space of position and momentum coordinates, which we we will see is necessary for detailed balance to hold. Having provided the relevant background we are then able to define the steps of the HMC algorithm and explain how it can be used to sample from a canonical distribution by defining axillary momenta coordinates and a Hamiltonian. In this section we will also discuss the issue of ergodicity and show that HMC obeys detailed balance. Due to the stochastic nature of MCMC algorithms, samples in the Markov chain can be correlated and we briefly discuss the effect of this on data analysis. The results section begins by applying the HMC algorithm to the canonical distribution for a quantum mechanical system. We examine the results of our simulation for the harmonic oscillator, where we are able to compare with numerical and exact results for the discrete theory in \cite{creutz_freedman_1981},\cite{westbroek_king_vvedensky_durr_2017}, \cite{rodgers_raes} and \cite{slapik_serenone}. The simple system of the harmonic oscillator provides a good testing ground for our simulation, where we can easily compare our results to theory. Moving on to the anharmonic oscillator we are able to apply our simulation to a system that does not have an analytic solution. For the case of the anharmonic oscillator we are able to compare our results to those acquired through alternative methods \cite{blankenbecler_degrand_sugar_1980} and simulations \cite{rodgers_raes} however, we will observe in this section that the HMC simulation begins to fail in the case of the isolated modes in the double well potential. In particular the double well system can have difficulty tunnelling between the two wells. At this point we will examine the effects of introducing a tempering parameter into the simulation, with the hope that it will increase the tunnel rate. We will show that volume preservation still holds for tempered dynamics, which is necessary if it is still to obey detailed balance. Ultimately we find that tempering does not solve the problem of the isolated modes in our system, however we end the report by investigating why this is the case by tracking the evolution of the Hamiltonian during a tempered leapfrog proposal trajectory. Based on this result we are then able to propose a modified tempering method for future investigations into tempered HMC.
+
+ The main method for the simulation code, written for this project by the author is attached in appendix \ref{ap:simulation code} with a link to the GitHub repository which contains the full project directory, should the reader wish to examine or even run the code themselves.
 
 
 \section{Background}
@@ -154,7 +156,7 @@ I wish to extend my deep appreciation and gratitude to Dr. Roger Horsely and Dr.
         \begin{equation}
             \hat{H}\left(\hat{p},\hat{x}\right) = \frac{\hat{p}^2}{2m} + \hat{V}\left(\hat{x}\right).
         \end{equation} 
-        $Z_{ba}$ is the transition amplitude for a particle of mass $m$ in position eigenstate (in the Heisenberg picture) $\ket{x_a,t_a}$ to move to position eigenstate $\ket{x_b,t_b}$; this gives us the probability amplitude of a particle at $x_a$ at time $t_a$ to move to position $x_b$ at time $t_b$. The term on the right of equation \ref{eq:PathIntegral} is known as the \textit{Feynman path integral}. The measure $\int {\cal D} x\left(t\right)$ is an integral over all paths between $x_a$ and $x_b$ and $S_M\left[x\left(t\right)\right]$ is the Minkowski action of a particle of mass $m$ on the path $x\left(t\right)$ which is defined by:
+        $Z_{ba}$ is the transition amplitude for a particle of mass $m$ in position eigenstate (in the Heisenberg picture) $\ket{x_a,t_a}$ to move to position eigenstate $\ket{x_b,t_b}$; this gives us the probability amplitude of a particle at $x_a$ at time $t_a$, to move to position $x_b$ at time $t_b$. The term on the RHS of equation \ref{eq:PathIntegral} is known as the \textit{Feynman path integral}. The measure $\int {\cal D} x\left(t\right)$ is an integral over all paths between $x_a$ and $x_b$, and $S_M\left[x\left(t\right)\right]$ is the Minkowski action of a particle of mass $m$ on the path $x\left(t\right)$, which is defined by:
         \begin{equation}
             \label{eq:MinkowskiAction}
             S_M\left[x\left(t\right)\right] = \int_{t_a}^{t_b} dt \left[\frac{1}{2}m\left(\frac{dx}{dt}\right)^2 - V(x)\right],
@@ -196,7 +198,7 @@ I wish to extend my deep appreciation and gratitude to Dr. Roger Horsely and Dr.
             \label{fig:ExamplePathIntegrals}
         \end{figure}
         \subsubsection{Connecting to Statistical Physics}
-        In the transition amplitude we integrate over an infinite number of paths, figure \ref{fig:ExamplePathIntegrals} shows three such paths that contribute to the path integral. The first step in calculating the path integral is to discretise time, this is shown in figure \ref{fig:TimeLattice} where we have discretised the \textcolor{green}{green} path in figure \ref{fig:ExamplePathIntegrals} onto a time lattice and we assume the particle travels along a straight line between the time sites.
+        In the transition amplitude we integrate over an infinite number of paths, figure \ref{fig:ExamplePathIntegrals} shows three such paths that contribute to the path integral. The first step in calculating the path integral is to discretise time, this is shown in figure \ref{fig:TimeLattice} where we have discretised the \textcolor{green}{green} path in figure \ref{fig:ExamplePathIntegrals} onto a time lattice, and we assume the particle travels along a straight line between the time sites.
         \begin{figure}
             \centering
             \begin{tikzpicture}[scale=0.5, every node/.style={transform shape}]
@@ -245,12 +247,12 @@ I wish to extend my deep appreciation and gratitude to Dr. Roger Horsely and Dr.
             \caption{Discretising time and a path from $\left(x_a,t_a\right)$ to $\left(x_b,t_b\right)$  onto a lattice of time spacing $\epsilon$.}
             \label{fig:TimeLattice}
         \end{figure}
-        For each time site $t_i$ on the lattice we have a continuous position variable $x_i = x\left(t_i\right)$ where $i=0,1,\dots,N$ which gives the position of the particle on the path at that point on the lattice. We introduce the notation:
+        For each time site $t_i$ on the lattice, we have a continuous position variable $x_i = x\left(t_i\right)$ where $i=0,1,\dots,N$, which gives the position of the particle on the path at that point on the lattice. We introduce the notation:
         \begin{equation}
             \label{eq:configuration}
             \bm{x}=\left(x_0,x_1,\dots,x_{N}\right)
         \end{equation}
-        to denote a particular path on the lattice where each position coordinate has been specified and we refer to equation \ref{eq:configuration} as a \textit{configuration} on the lattice. In our notation for the labelling of the position eigenstates in equation \ref{eq:PathIntegral} we also have $x_b=x_{N}=x\left(t_{N}\right)$ and $x_a=x_0=x\left(t_0\right)$ in order to match with figure \ref{fig:TimeLattice}. $ \epsilon $ is the spacing between lattice sites and so $\epsilon = \frac{t_b-t_a}{N} = t_{i+1}-t_i$ and for $k=0,1,\dots,N$ we have $ t_k = t_a + k \epsilon $. In order to discretise the action in equation \ref{eq:MinkowskiAction} we approximate the derivative by a forward difference and the integral as a Riemann sum since we assume the particle is travelling on a straight line between lattice sites:
+        to denote a particular path on the lattice where each position coordinate has been specified, and we refer to equation \ref{eq:configuration} as a \textit{configuration} on the lattice. In our notation for the labelling of the position eigenstates in equation \ref{eq:PathIntegral}, we also have $x_b=x_{N}=x\left(t_{N}\right)$ and $x_a=x_0=x\left(t_0\right)$ in order to match with figure \ref{fig:TimeLattice}. $ \epsilon $ is the spacing between lattice sites and so $\epsilon = \frac{t_b-t_a}{N} = t_{i+1}-t_i$ and for $k=0,1,\dots,N$ we have $ t_k = t_a + k \epsilon $. In order to discretise the action in equation \ref{eq:MinkowskiAction} we approximate the derivative by a forward difference, and the integral as a Riemann sum, since we assume the particle is travelling on a straight line between lattice sites:
         
         \begin{equation}
             \label{eq:DiscreteMinkowskiAction}
@@ -266,7 +268,7 @@ I wish to extend my deep appreciation and gratitude to Dr. Roger Horsely and Dr.
             \label{eq:DiscretePathIntegral}
             Z_{ba} \sim \int^{+\infty}_{-\infty}\prod_{i=1}^{N-1}dx_i \exp{\left(\frac{i}{\hbar}S_M\left(\bm{x}\right)\right)}.
         \end{equation}
-        In the limit that $N\rightarrow \infty$ (or equivalently $\epsilon \rightarrow 0$) we recover (up to normalisation) equation \ref{eq:PathIntegral} from equation \ref{eq:DiscretePathIntegral} exactly. The normalisation in this expression is irrelevant since we will see that in the expectation values we wish to calculate any normalisation would cancel anyway.  
+        In the limit that $N\rightarrow \infty$ (or equivalently $\epsilon \rightarrow 0$) we recover (up to normalisation) equation \ref{eq:PathIntegral} from equation \ref{eq:DiscretePathIntegral} exactly. The normalisation in this expression is irrelevant since we will see that in the expectation values we wish to calculate, any normalisation would cancel anyway.  
 
 
         In order to work with the discrete path integral we have one final step. We make a \textit{Wick rotation} into imaginary time; this is done via the substitution:
@@ -280,13 +282,13 @@ I wish to extend my deep appreciation and gratitude to Dr. Roger Horsely and Dr.
             S_M\left(\bm{x}\right) & = i\sum_{i=0}^{N-1} a \left[\frac{1}{2}m\left(\frac{x_{i+1}-x_{i}}{a}\right)^2 + V(x_i)\right] \\
             \label{eq:DiscreteEuclideanAction2} & = iS_E\left(\bm{x}\right),
         \end{align}
-        where we have redefined the notation slightly so that $x_i=x\left(\tau_i\right)$ since we now have a lattice in imaginary time.
+        where we have redefined the notation slightly so that $x_i=x\left(\tau_i\right)$, since we now have a lattice in imaginary time.
         The quantity
         \begin{equation}
             \label{eq:DiscreteEuclideanAction}
             S_{E}\left(\bm{x}\right) \equiv \sum_{i=0}^{N-1} a \left[\frac{1}{2}m\left(\frac{x_{i+1}-x_{i}}{a}\right)^2 + V(x_i)\right]
         \end{equation}
-        is the discretised \textit{Euclidean action}; it has this name because the effect of the Wick transformation is that it turns the Minkowski metric $ds_{M}$ on the coordinates $\left(x,y,z,t\right)$ into the Euclidean metric $ds_{E}$ on the coordinates $\left(x,y,z,\tau\right)$ and vice-versa:
+        is the discretised \textit{Euclidean action}; it has this name because the effect of the Wick transformation is that it turns the Minkowski metric $ds_{M}$ on the coordinates $\left(x,y,z,t\right)$, into the Euclidean metric $ds_{E}$ on the coordinates $\left(x,y,z,\tau\right)$ and vice-versa:
         \begin{align}
             \label{eq:MinkowskiMetric} ds_{M}^{2} & = -dt^2 + dx^2 + dy^2 + dz^2 \\
             \label{eq:MetricTransform}            & = d\tau^2 + dx^2 + dy^2 + dz^2 \\
@@ -297,7 +299,7 @@ I wish to extend my deep appreciation and gratitude to Dr. Roger Horsely and Dr.
             \label{eq:DiscreteEuclideanPathIntegral}
             Z_{ba} \sim \int^{+\infty}_{-\infty}\prod_{i=1}^{N-1}dx_i \exp{\left(-\frac{1}{\hbar}S_{E}\left(\bm{x}\right)\right)}
         \end{equation}
-        which we refer to as the \textit{discrete euclidean path integral} and will converge since the integrand is now exponentially suppressed. We will impose periodic boundary conditions by identifying the first and last lattice sites (i.e. take $x_b=x_a$) and then integrate over that site, which can be quantified through: 
+        which we refer to as the \textit{discrete euclidean path integral} and will converge since the integrand is now exponentially suppressed. We will impose periodic boundary conditions by identifying the first and last lattice sites (i.e. take $x_b=x_a$), and then integrate over that site, which can be quantified through: 
         \begin{align}
             \label{eq:partWithBoundaryConditions1}
             Z & = \text{Tr}\left(Z_{ba}\right) = \int dx_a \int dx_b \delta\left(x_b-x_a\right)Z_{ba} \\
@@ -309,12 +311,12 @@ I wish to extend my deep appreciation and gratitude to Dr. Roger Horsely and Dr.
             \label{eq:PartitionFunction}
             \mathcal{Z} \sim \int_{-\infty}^{+\infty}\prod_{i=0}^{N-1}dx_{i}\exp{\left(-\beta H\left(\bm{x}\right)\right)},
         \end{equation}
-        with $\beta=\frac{1}{k_{B}T}$ where $T$ is the system temperature and $k_{B}$ is the Boltzmann constant. Comparing equation \ref{eq:partWithBoundaryConditions2} to equation \ref{eq:PartitionFunction} we can see that the discretised Euclidean path integral is a classical canonical partition function on a system with $N$ degrees of freedom, provided that we take:
+        with $\beta=\frac{1}{k_{B}T}$ where $T$ is the system temperature and $k_{B}$ is the Boltzmann constant. Comparing equation \ref{eq:partWithBoundaryConditions2} to equation \ref{eq:PartitionFunction}, we can see that the discretised Euclidean path integral is a classical canonical partition function on a system with $N$ degrees of freedom, provided that we take:
         \begin{equation}
             \label{ActionToHamiltonian}
             \frac{1}{\hbar}S_{E}\left(\bm{x}\right) = \beta H\left(\bm{x}\right),
         \end{equation}
-        and impose periodic boundary conditions. We then have a Boltzmann factor given by $\exp{\left(-\frac{1}{\hbar}S_{E}\left(\bm{x}\right)\right)}$. So in summary we now have a classical interpretation of our quantum calculation of the path integral; our lattice is essentially a one dimensional crystal of size $N$ at temperature $T$ with a continuous variable $x_i$ at each crystal site, and its classical Hamiltonian (in the statistical system and units where $\hbar=\beta=1$) is given by $S_E\left(\bm{x}\right)$ which couples the nearest neighbour lattice variables $x_i$ and places each variable in its own potential. 
+        and impose periodic boundary conditions. We then have a Boltzmann factor given by $\exp{\left(-\frac{1}{\hbar}S_{E}\left(\bm{x}\right)\right)}$. So in summary we now have a classical interpretation of our quantum calculation of the path integral; our lattice is essentially a one dimensional crystal of size $N$ at temperature $T$ with a continuous variable $x_i$ at each crystal site, and its classical Hamiltonian (in the statistical system and units where $\hbar=\beta=1$) is given by $S_E\left(\bm{x}\right)$, which couples the nearest neighbour lattice variables $x_i$ and places each variable in its own potential. 
 
         Since we are interested in calculating properties of the quantum system, e.g. position expectation, ground state energy, the first excited state energy etc. we will explore how the quantum expectation values relate to those of the statistical system. Note that upon applying the Wick transformation and periodic boundary conditions to the continuum theory path integral in equation \ref{eq:PathIntegralZ_fi2}:
         \begin{equation}
@@ -335,13 +337,12 @@ I wish to extend my deep appreciation and gratitude to Dr. Roger Horsely and Dr.
         \begin{equation}
             P\left(\bm{x}\right) = \frac{1}{Z}\exp{\left(-\frac{1}{\hbar}S_{E}\left(\bm{x}\right)\right)}
         \end{equation}
-        where $Z$ is the partition function for the discrete theory derived as above. We can see from equation \ref{eq:SpecialEXP2} that the normalisation in $Z$ is indeed not relevant for calculating such expressions as it would cancel between the numerator and the denominator in the discretisation. It can also be shown that in the limit that $\tau_b - \tau_a \rightarrow \infty$, that is, for a large enough lattice, equation \ref{eq:SpecialEXP} takes the form \cite{creutz_freedman_1981}
+        where $Z$ is the partition function for the discrete theory derived as above. We can see from equation \ref{eq:SpecialEXP2} that the normalisation in $Z$ is indeed not relevant for calculating such expressions, as it would cancel between the numerator and the denominator in the discretisation. It can also be shown that in the limit that $\tau_b - \tau_a \rightarrow \infty$, that is, for a large enough lattice, equation \ref{eq:SpecialEXP} takes the form \cite{creutz_freedman_1981}
         \begin{align}
-            \label{eq:LargeLatticeExpectation}
-            \braket{\hat{A}} & = \frac{\sum_{n=0}^{\infty}e^{-\frac{1}{\hbar}E_n\left(\tau_b-\tau_a\right)}\bra{n}\hat{A}\ket{n}}{\sum_{n=0}^{\infty}e^{-\frac{1}{\hbar}E_n\left(\tau_b-\tau_a\right)}} \\
-            & = \bra{0}\hat{A}\ket{0}.
+            \label{eq:LargeLatticeExpectation1} \braket{\hat{A}} & = \frac{\sum_{n=0}^{\infty}e^{-\frac{1}{\hbar}E_n\left(\tau_b-\tau_a\right)}\bra{n}\hat{A}\ket{n}}{\sum_{n=0}^{\infty}e^{-\frac{1}{\hbar}E_n\left(\tau_b-\tau_a\right)}} \\
+            \label{eq:LargeLatticeExpectation2}& = \bra{0}\hat{A}\ket{0}.
         \end{align}
-        So, in order to calculate the expectation of some operator e.g. position, position squared or the energy in the the ground state, we can utilise equation \ref{eq:SpecialEXP2} and calculate the expectation of the corresponding function on the statistical system under the canonical distribution.  In practice the high dimensional integral in \ref{eq:SpecialEXP2} is not possible to compute analytically so we use Monte Carlo methods which we develop in the next chapter.
+        So, in order to calculate the expectation of some operator e.g. position, position squared or the energy in the the ground state, we can utilise equation \ref{eq:SpecialEXP2} and calculate the expectation of the corresponding function on the statistical system under the canonical distribution.  In practice the high dimensional integral in equation \ref{eq:SpecialEXP2} is not possible to compute analytically, so we use Monte Carlo methods which we develop in the next chapter.
 
         Due to divergences in the kinetic term of the expectation of the action $\langle S_{E} \rangle$ of $\mathcal{O}\left(1/a\right) $\cite{creutz_freedman_1981} that occur in the calculation for the ground state energy given by:
         \begin{align}
@@ -350,54 +351,74 @@ I wish to extend my deep appreciation and gratitude to Dr. Roger Horsely and Dr.
                   & = \lim_{\tau_b-\tau_a \rightarrow \infty} \frac{-1}{\tau_b-\tau_a} \frac{\partial}{\partial\left(\hbar^{-1}\right)}\ln{Z} \\
                   & = \lim_{\tau_b-\tau_a \rightarrow \infty} \frac{-1}{\tau_b-\tau_a} \frac{\partial}{\partial\left(\hbar^{-1}\right)}\ln \int^{+\infty}_{-\infty}\prod_{i=0}^{N-1}dx_i \exp{\left(-\frac{1}{\hbar}S_{E}\left(\bm{x}\right)\right)},
         \end{align}
-        in the discrete theory, we need an alternative method for calculating the lowest lying energy eigenvalues in our system as $a\rightarrow 0$. Rather than use the \textit{point splitting} fix given in \cite{feynman_hibbs_1965} we will follow the method used in \cite{creutz_freedman_1981}, \cite{rodgers_raes} and \cite{slapik_serenone} and utilise the quantum \textit{virial theorem} which relates the expectation value of kinetic energy to that of the potential for stationary states as:
+        in the discrete theory, we need an alternative method for calculating the lowest lying energy eigenvalues in our system as $a\rightarrow 0$. Rather than use the \textit{point splitting} fix given in \cite{feynman_hibbs_1965}, we will follow the method used in \cite{creutz_freedman_1981}, \cite{rodgers_raes} and \cite{slapik_serenone} and utilise the quantum \textit{virial theorem}, which relates the expectation value of kinetic energy to that of the potential for stationary states as:
         \begin{equation}
             \label{eq:VirialTheorem}
-            2\bra{n} \hat{T} \ket{n} = \bra{n} \hat{x} \hat{V}'\left(\hat{x}\right) \ket{n}
+            2\bra{n} \hat{T} \ket{n} = \bra{n} \hat{x} \hat{V}'\left(\hat{x}\right) \ket{n},
         \end{equation}
-         the derivation of which can be found in \cite{binney_skinner_2015} and \cite{fock_1930}. Using equations \ref{eq:SpecialEXP2} and \label{eq:LargeLatticeExpectation} we then have that the lowest lying energy eigenstates can be calculated as:
+         the derivation of which can be found in \cite{binney_skinner_2015} and \cite{fock_1930}. Using equations \ref{eq:SpecialEXP2} and \ref{eq:LargeLatticeExpectation2} we then have that the lowest lying energy eigenstates can be calculated as:
          \begin{align}
             E_0  & = \bra{0}\hat{H}\ket{0} \\
                  & = \bra{0}\hat{T}+\hat{V}\ket{0}\\
                  & = \bra{0}\frac{1}{2}\hat{x}\hat{V}'\left(\hat{x}\right)+\hat{V}\left(\hat{x}\right)\ket{0}\\
                  & = \langle \frac{1}{2}xV'\left(x\right) +  V\left(x\right) \rangle
          \end{align}
-         for a large enough lattice. It should be noted that the virial theorem as stated in equation \ref{eq:VirialTheorem} is a continuum result and its applicability to the discrete case may not be valid, so correction terms may be needed. Indeed, we found that when calculating the first excited state energy via the naive method of computing $E_1 = \Delta E + E_0$ where the energy gap $\Delta E = E_1 - E_0$ was computed via the correlation function which is a result from discrete theory, and $E_0$ via the virial theorem, a continuum result, there was a discrepancy in the case of the harmonic oscillator with the analytic result for $E_1$ which can be computed exactly.
-        
+         for a large enough lattice. It should be noted that the virial theorem as stated in equation \ref{eq:VirialTheorem} is a continuum result, and its applicability to the discrete case may not be valid without correction terms. Indeed, we found that when calculating the first excited state energy of the harmonic oscillator via the naive method of computing $E_1 = \Delta E + E_0$ where the energy gap $\Delta E = E_1 - E_0$ was computed via the correlation function as below, which is a result from discrete theory, and $E_0$ via the virial theorem, a continuum result, there was a discrepancy in the case of the harmonic oscillator with the analytic result for $E_1$ which can be computed exactly.
+
+         To calculate the first excited state energy eigenvalues we first need to introduce the connected two point correlation function:
+         \begin{equation}
+            \label{eq:2pointCorrelation}
+            \Gamma^{\left(2\right)}_{c}\left(\tau\right) = \braket{\hat{x}\left(0\right)\hat{x}\left(\tau\right)} - \braket{\hat{x}\left(0\right)}\braket{\hat{x}\left(\tau\right)},
+        \end{equation}
+        then for a large enough lattice:
+        \begin{align}
+            \label{eq:GammaLargeLattice1}\Gamma^{\left(2\right)}_{c}\left(\tau\right) & = \bra{0}\hat{x}\left(0\right)\hat{x}\left(\tau\right)\ket{0} - \bra{0}\hat{x}\left(0\right)\ket{0}\bra{0}\hat{x}\left(\tau\right)\ket{0} \\
+            \label{eq:GammaLargeLattice2}& = \sum_{n\neq0}|\bra{0}\hat{x}\ket{n}|^2e^{-\left(E_n-E_0\right)\tau/\hbar}
+        \end{align}
+        where in the first equality we have used equation \ref{eq:LargeLatticeExpectation2}, and in the second we have first inserted a complete set of energy eigenstates $\hat{1}=\sum_n \ket{n}\bra{n}$ between the position operators in the first term, then transformed from the Heisenberg picture to the Schr\"{o}dinger picture using the standard result that $\hat{x}\left(\tau\right)=\hat{U}^{\dagger}\left(\tau,\tau_0\right)\hat{x}\hat{U}\left(\tau,\tau_0\right)$ where in imaginary time the unitary operator $\hat{U}^{\dagger}\left(\tau,\tau_0\right)=e^{-\left(\tau-\tau_0\right)\hat{H}/\hbar}$. Then for large enough values of $\tau$, only the first term in the sum contributes and upon normalisation we find that:
+        \begin{equation}
+            \label{eq:GammaNorm}
+            \frac{\Gamma^{\left(2\right)}_{c}\left(\tau+\Delta\tau\right)}{\Gamma^{\left(2\right)}_{c}\left(\tau\right)} = e^{-\left(E_1-E_0\right)\Delta\tau/\hbar}.
+        \end{equation}
+        The value of the first excited state is then given by:
+        \begin{equation}
+            E_1 = E_0 - \frac{\hbar}{\Delta\tau}\ln\left(\frac{\Gamma^{\left(2\right)}_{c}\left(\tau+\Delta\tau\right)}{\Gamma^{\left(2\right)}_{c}\left(\tau\right)}\right). 
+        \end{equation}
+
         It is interesting to note that in quantum mechanics, due to the uncertainty principle $\Delta x\Delta p \geq \frac{\hbar}{2}$, $\hbar$ provides a measure of quantum fluctuations in our system. As $\hbar \rightarrow 0$ we recover classical physics and in this limit the only path in the path integral that contributes to the transition amplitude is the classical one. On the other hand, in statistical mechanics $T$ provides a measure of statistical fluctuations in our system, and in the limit that $T \rightarrow 0$ these fluctuations go to zero. Hence taking the limit that $\hbar \rightarrow 0$ and $T \rightarrow 0$ we see statistical mechanics on a (real) crystal lattice is equivalent quantum mechanics in imaginary time.
 
 
 
 \section{Methods}
     \subsection{Monte Carlo Methods}
-    Monte Carlo methods provide a way of numerically evaluating integrals where the error is independent of the dimensionality of the integral. For the purposes of our work we will be interested in estimating expectation values of functions (which are the observables of our statistical system) $A\left(X\right)$ of some d-dimensional random variable $X$ under some probability distribution with density function $f\left(\bm{x}\right)$:
+    Monte Carlo methods provide a way of numerically evaluating integrals where the error is independent of the dimensionality of the integral. For the purposes of our work, we will be interested in estimating expectation values of functions (which are the observables of our statistical system) $A\left(X\right)$ of some $d$-dimensional random variable $X$ under some probability distribution with density function $f\left(\bm{x}\right)$:
     \begin{equation}
         \label{eq:expectation}
-        \langle A\left(X\right) \rangle = \int \prod_{i=1}^{d}{dx_i}f\left(\bm{x}\right)A\left(\bm{x}\right),
+        \langle A\left(X\right) \rangle = \int \prod_{i=1}^{d}{dx_i}f\left(\bm{x}\right)A\left(\bm{x}\right).
     \end{equation}
-    since this takes the form of the path integral we wish to calculate, where $\bm{x}$ correspond to the configurations on the lattice, $f\left(\bm{x}\right)$ the canonical distribution and $A\left(\bm{x}\right)$ some function on the lattice such as mean position. In order to estimate the integral we approximate the expectation as a sample mean on some finite set of $M$ samples of $X$ as (we will refer to this as the \textit{Monte Carlo estimate}):
+    Equation \ref{eq:expectation} takes the form of the path integral we wish to calculate, where $\bm{x}$ correspond to the configurations on the lattice, $f\left(\bm{x}\right)$ the canonical distribution and $A\left(\bm{x}\right)$ some function on the lattice such as mean position. In order to estimate the integral we approximate the expectation as a sample mean on some finite set of $M$ samples of $X$ as (we will refer to this as the \textit{Monte Carlo estimate}):
     \begin{equation}
         \label{eq:montecarloestimate}
         \langle A\left(X\right)\rangle \approx \frac{1}{M} \sum_{n=1}^{M}A\left(\bm{x}_n\right).
     \end{equation}
     It can be shown that the error in equation \ref{eq:montecarloestimate} is always $\mathcal{O}\left(1/\sqrt{M}\right)$ independent of the dimension of the integral, and that the Monte Carlo method wins over quadrature methods (traditional numerical integration schemes) in terms of computational cost vs. accuracy for $d>3$ \cite{gattringer_lang_2013}.
-    It is now just a question of how to choose the samples $\bm{x}_n$ to get a expectation value with a small error. From the form of equation \ref{eq:expectation} drawing uniform samples from the support of $f$ is clearly unwise, since this would give equal weight to contributions to our approximation of the expectation value for samples that are very unlikely to be realised by the random variable $X$ under its distribution, as those which are very likely to be realised. We therefore choose to draw samples according to the distribution of $X$, this is known as \textit{importance sampling}. In order to draw samples according to a probability distribution we use a \textit{Markov chain} which for our purposes can be defined as a sequence of random variables (samples) for which the probability of the next random variable in the sequence $\bm{x}'$ taking on a particular value depends only on the value of the current random variable $\bm{x}$, we will denote this probability by $P\left(\bm{x}\rightarrow \bm{x}'\right)$. By starting from some arbitrary state (which in our simulation is a configuration) through the stochastic sequence of configurations we will eventually end up sampling from the desired equilibrium distribution with density function $f\left(\bm{x}\right)$. This idea of a \textit{Markov Chain Monte Carlo} method was first introduced by Metropolis et al. in \cite{metropolis_rosenbluth_rosenbluth_teller_teller_1953} via the Metropolis algorithm. Hybrid Monte Carlo is a method for constructing such a Markov chain and it is discussed in the next section. 
+    It is now just a question of how to choose the samples $\bm{x}_n$ to get a expectation value with a small error. From the form of equation \ref{eq:expectation} drawing uniform samples from the support of $f$ is clearly unwise, since this would give equal weight to contributions to our approximation of the expectation value for samples that are very unlikely to be realised by the random variable $X$ under its distribution, as those which are very likely to be realised. We therefore choose to draw samples according to the distribution of $X$, this is known as \textit{importance sampling}. In order to draw samples according to a probability distribution we use a \textit{Markov chain}, which for our purposes can be defined as a sequence of random variables (samples), for which the probability of the next random variable in the sequence $\bm{x}'$ taking on a particular value depends only on the value of the current random variable $\bm{x}$; we will denote this probability by $P\left(\bm{x}\rightarrow \bm{x}'\right)$. By starting from some arbitrary state (which in our simulation is a configuration) through the stochastic sequence of configurations we will eventually end up sampling from the desired equilibrium distribution with density function $f\left(\bm{x}\right)$. This idea of a \textit{Markov Chain Monte Carlo} method was first introduced by Metropolis et al. in \cite{metropolis_rosenbluth_rosenbluth_teller_teller_1953} via the Metropolis algorithm. Hybrid Monte Carlo is a method for constructing such a Markov chain, and it is discussed in the next section. 
 
-    A Markov chain will converge on a distribution with density function $P\left(\bm{x}\right)$ provided the chain is ergodic and obeys detailed balance. Ergodicity is the condition that any sample that can be realised under the probability distribution can be reached through the Markov chain and the detailed balance condition is given by: 
+    A Markov chain will converge on a distribution with density function $P\left(\bm{x}\right)$ provided the chain is ergodic and obeys detailed balance. Ergodicity is the condition that any sample that can be realised under the probability distribution can be reached through the Markov chain, and the detailed balance condition is given by: 
     \begin{equation}
         \label{eq:detailedbalance}
         P\left(\bm{x}\right)P\left(\bm{x}\rightarrow \bm{x}'\right)=P\left(\bm{x}'\right)P\left(\bm{x}'\rightarrow \bm{x}\right).
     \end{equation}
     During an actual simulation, one only starts to calculate the values of observables via equation \ref{eq:montecarloestimate} after an equilibration period, this is due to the fact that initially samples will not be drawn according to the correct probability distribution and it is only once the Markov chain has converged that they will. 
 
-    We may consider our Monte Carlo simulation as consisting of three main stages. First to start the simulation we provide an initial configuration to begin the chain. We then have to perform a sufficient number of updates in the chain such that we are drawing from the correct distribution, which in our case is the canonical distribution for our statistical system. Once we are at equilibrium we may compute the values of any observables on any configuration and use them to calculate the Monte Carlo estimate via equation \ref{eq:montecarloestimate}. In order to provide an initial lattice configuration we found that after some experimentation, a reasonable method was to provide a so called \textit{hot start} by uniformly distributing the position values of the lattice sites on the interval $\left[-1,1\right]$. To determine when and if samples are being drawn from the equilibrium distribution one can observe the evolution of some set of observables, for example position, and see when these values begin to converge. This method has potential issues in that there are the possibilities of \textit{metastable states} \cite{sokal_1997} for which it may seem as if the system has reached equilibrium, when in fact it is sampling from region of the configuration space for which it is metastable, i.e. it will remain sampling from this region for a long period of time but will not remain indefinitely. This issue will arise for the case of the anharmonic oscillator, where the possibility of the particle getting ``stuck'' in one well can lead to Monte Carlo estimates on $\langle x \rangle$ being non-zero for a symmetric double well about zero. However, in this case we are able to identify when this metastability has occurred, since by symmetry we know the true answer $\langle x \rangle = 0$. Once we have achieved equilibrium we are able to evaluate observables via the configurations, however due to the possibility of correlations between samples in the Markov chain this is not entirely trivial; the analysis of recorded data is discussed at the end of this chapter.
+    We may consider our Monte Carlo simulation as consisting of three main stages. First to start the simulation we provide an initial configuration to begin the chain. Second, we have to perform a sufficient number of updates in the chain such that we are drawing from the correct distribution, which in our case is the canonical distribution for our statistical system. Once we are at equilibrium we may compute the values of any observables on any configuration and use them to calculate the Monte Carlo estimate via equation \ref{eq:montecarloestimate}, this is the third stage. In order to provide an initial lattice configuration, we found that after some experimentation, a reasonable method was to provide a so called \textit{hot start}, by uniformly distributing the position values of the lattice sites on the interval $\left[-1,1\right]$. To determine when and if samples are being drawn from the equilibrium distribution, one can observe the evolution of some set of observables, for example position, and see when these values begin to converge. This method has potential issues in that there are the possibilities of \textit{metastable states} \cite{sokal_1997}, for which it may seem as if the system has reached equilibrium, when in fact it is sampling from region of the configuration space for which it is metastable, i.e. it will remain sampling from this region for a long period of time, but will not remain indefinitely. This issue will arise for the case of the anharmonic oscillator, where the possibility lattice variables getting stuck in one well can lead to Monte Carlo estimates on $\langle x \rangle$ being non-zero for a symmetric double well about zero. However, in this case we are able to identify when this metastability has occurred, since by symmetry we know the true answer, $\langle x \rangle = 0$. Once we have achieved equilibrium we are able to evaluate observables via the configurations, however due to the possibility of correlations between samples in the Markov chain this is not entirely trivial; the analysis of recorded data is discussed at the end of this chapter.
 
 
 
     \subsection{Hybrid Monte Carlo}
         \subsubsection{Hamiltonian Dynamics}
             \label{sec:HamiltonianDynamics}
-            Due to the fundamental importance of Hamiltonian dynamics in the HMC algorithm, in this section we provide a quick review of Hamilton's equations and explain the numerical method used to integrate these equations, so that they may be used in computational simulations.
+            Due to the fundamental importance of Hamiltonian dynamics in the HMC algorithm, in this section we provide a quick review of Hamilton's equations, and explain the numerical method used to integrate these equations, so that they may be used in computational simulations.
 
             Hamiltonian Dynamics enables us to solve the time evolution of a system of canonical coordinates $\left(\bm{q},\bm{p}\right)$ where the $d$-dimensional $\bm{q}=\left(q_1,q_2,\dots,q_d\right)$ and $\bm{p}=\left(p_1,p_2,\dots,p_d\right)$ vectors are called \textit{position} and \textit{momentum} respectively. The system is then characterised by a Hamiltonian function $H\left(\bm{q},\bm{p}\right)$ on the $2d$-dimensional \textit{phase space} occupied by the $\left(\bm{q},\bm{p}\right)$ vectors. \textbf{Hamilton's equations}:
             \begin{align}
@@ -549,7 +570,7 @@ I wish to extend my deep appreciation and gratitude to Dr. Roger Horsely and Dr.
                                      & = \prod_{i=1}^d\frac{1}{\sqrt{2\pi}} \exp{\left(-\frac{p_i^2}{2}\right)} \\
                                      & = \prod_{i=1}^dP\left(p_i\right)
             \end{align}
-            where each $P\left(p_i\right)$ is the density function of a Gaussian distribution of mean $0$ and variance $1$. So the $d$ momentum variables are independent with each component $p_i$ of $\bm{p}$ drawn from a Gaussian $\mathcal{N}{\left(0,1\right)}$, so we draw $\bm{p}$ from a multivariate Gaussian distribution of mean $\bm{0}$ and covariance $I_{d\times d}$. In this step $\bm{q}$ is not changed, and $\bm{p}$ gets drawn from the it's correct conditional distribution given $\bm{q}$ which is it's marginal distribution by the above independence, so the canonical joint distribution is left invariant.
+            where each $P\left(p_i\right)$ is the density function of a Gaussian distribution of mean $0$ and variance $1$. So each $p_i$ is independent and drawn from a Gaussian $\mathcal{N}{\left(0,1\right)}$, so we draw $\bm{p}$ from a multivariate Gaussian distribution of mean $\bm{0}$ and covariance $I_{d\times d}$. The canonical joint distribution is left invariant in this step; we do not modify $\bm{q}$, and $\bm{p}$ is drawn from its correct conditional distribution given $\bm{q}$ which is it's marginal distribution by the above independence \cite{neal_2011}.
 
             In step \ref{en:HMCStep2} we evolve the variables $\left(\bm{q},\bm{p}\right)$ by integrating Hamilton's equations, this is often referred to as the \textit{molecular dynamics} and we will define the map that carries out this evolution as $\mathcal{H}:\left(\bm{q},\bm{p}\right)\rightarrow\left(\bm{q}',\bm{p}'\right)$. In order to implement this in a computer simulation we use the leapfrog method described in section \ref{sec:HamiltonianDynamics}, although in general any numerical integration scheme that is exactly area preserving and reversible is valid \cite{kennedy_pendleton_2001}. We have a choice of the number of time steps $l$ and their size $\epsilon$; it is common practice in HMC to choose $\epsilon$ and $l$ such that $l\epsilon=1$. At the end of the trajectory, negating the momentum variables makes the Metropolis proposal symmetric, which is needed for detailed balance to hold. However, because the choice of kinetic energy in equation \ref{eq:HMCQuadraticKineticEnergy} is quadratic in $\bm{p}$ so that the HMC Hamiltonian is symmetric in $\bm{p}$ and the momentum is replaced anyway in the next iteration, there is no need for the negation in a simulation. We can define a mapping for the momentum flip as $\mathcal{F}:\left(\bm{q}',\bm{p}'\right)\rightarrow\left(\bm{q}',-\bm{p}'\right)$ so that the mapping that gives the proposed update is $\mathcal{F}\circ \mathcal{H} : \left(\bm{q},\bm{p}\right)\rightarrow\left(\bm{q}',-\bm{p}'\right)$. Since $\mathcal{H}$ preserves volume, and trivially negating momenta with $\mathcal{F}$ also preserves volume the mapping $\mathcal{F}\circ \mathcal{H}$ will preserve volume. We accept or reject the proposed state with a probability given by:
             \begin{equation}
@@ -602,7 +623,7 @@ I wish to extend my deep appreciation and gratitude to Dr. Roger Horsely and Dr.
             The results of our simulation will ultimately be average values with accompanying statistical errors for several measured observables. Because Monte Carlo simulations generate samples using a Markov chain, subsequent samples in the chain can be correlated, in which case naive error estimates can be wrong. In what follows we will briefly explore this issue and explain our method for dealing with this problem in the simulation.
 
             \paragraph{Uncorrelated Data}
-            If via our HMC simulation we have generated configurations at equilibrium and calculated the values of $x_1,\dots,x_n$ of some observable (e.g. the ground state energy, or position expectation in the ground state) on each configuration, then since the Markov chain is a sequence of random variables, each sample $x_i$ is the realisation of some random variable $X_i$. The lattice configurations and therefore the samples that are functions of those configurations are generated at equilibrium according to the canonical distribution, so these random variables have the same expectation value and variance:
+            If via our HMC simulation we have generated configurations at equilibrium and calculated the values of $x_1,\dots,x_n$ of some observable (e.g. the ground state energy, or position expectation in the ground state) on each configuration, then since the Markov chain is a sequence of random variables, each sample $x_i$ is the realisation of some random variable $X_i$. The lattice configurations and therefore the samples that are functions of those configurations are generated at equilibrium according to the canonical distribution, and therefore have an identical expectation value and variance:
             \begin{align}
                 \langle X_i \rangle & = \langle X \rangle, \\
                 \sigma^2_{X_i} & = \langle \left(X_i-\langle X_i\rangle\right)^2 \rangle = \sigma_X^2
@@ -674,7 +695,7 @@ I wish to extend my deep appreciation and gratitude to Dr. Roger Horsely and Dr.
             
 \section{Results and Discussion}
     \subsection{Quantum Oscillators}
-    In section \ref{sec:QuantumMechanics} we showed that by discretising the path integral and performing a Wick rotation into imaginary time, the path integral of quantum mechanics is a partition function. Working now in units where $\hbar=T=k_B=1$ we have a statistical system with the canonical distribution and density function:
+    In section \ref{sec:QuantumMechanics} we showed that by discretising the path integral and performing a Wick rotation into imaginary time, the path integral of quantum mechanics is a partition function on a periodic lattice of $N$ sites at spacing $a$. Working now in units where $\hbar=T=k_B=1$ we have a statistical system with the canonical distribution and density function:
     \begin{equation}
         \label{eq:BoltzmannDistributionPathIntegral}
         P\left(\bm{x}\right) = \frac{1}{Z}\exp{\left(-S_E\left(\bm{x}\right)\right)}.
@@ -692,7 +713,7 @@ I wish to extend my deep appreciation and gratitude to Dr. Roger Horsely and Dr.
         \label{eq:HMCQuantumMechanicalHamiltonian2} & = \sum_{i=0}^{N-1} \frac{p_i^2}{2} + S_E\left(\bm{q}\right) \\
         \label{eq:HMCQuantumMechanicalHamiltonian3}& = \sum_{i=0}^{N-1} \frac{p_i^2}{2} + \sum_{i=0}^{N-1} a \left[\frac{1}{2}m\left(\frac{q_{i+1}-q_{i}}{a}\right)^2 + V\left(q_i\right)\right],
     \end{align} 
-    we can then use this Hamiltonian to generate samples with the HMC algorithm for any $1$-dimensional quantum mechanical system, by specifying the potential $V\left(x\right)$. Once we reach equilibrium, we can compute the value of any functions (observables) on the configurations which via the Monte Carlo estimate of equation \ref{eq:montecarloestimate}, gives an approximation of the true expectation value under the canonical distribution and we know that these statistical expectations correspond to quantum expectation values in the ground state for a large enough lattice.  With the choice of kinetic energy given in equation \ref{eq:HMCQuadraticKineticEnergy} and $U\left(\bm{q}\right) \equiv S_E\left(\bm{x}\right)$, this leads to the approximate solutions to Hamilton's equations in leapfrog implementation for $l$ steps of size $\epsilon$ taking the form:
+    we can then use this Hamiltonian to generate samples $\bm{x}_i$ with the HMC algorithm for any $1$-dimensional quantum mechanical system, by specifying the potential $V\left(x\right)$. Once we reach equilibrium, we can compute the value of any functions (observables) we like on the configurations, such as position moments, or correlation functions, which via the Monte Carlo estimate of equation \ref{eq:montecarloestimate}, gives an approximation of the true expectation value under the canonical distribution. We know that these statistical expectations correspond to quantum expectation values in the ground state for a large enough lattice, so to pick out the ground state $Na$ should be reasonably large and to approximate the continuum result $a$ should be taken to be small.  With the choice of kinetic energy given in equation \ref{eq:HMCQuadraticKineticEnergy} and $U\left(\bm{q}\right) \equiv S_E\left(\bm{x}\right)$, this leads to the approximate solutions to Hamilton's equations in leapfrog implementation for $l$ steps of size $\epsilon$ taking the form:
             \begin{enumerate}
                 \item Half step in momentum:
                 \begin{equation}
@@ -851,25 +872,24 @@ I wish to extend my deep appreciation and gratitude to Dr. Roger Horsely and Dr.
                 \end{equation}
                 when $n=0$.
 
-                To calculate the energy gap between the first and ground state \todo{get help with this, I do not know why this is true} we use:
+                To calculate the first excited state energy we use the correlation functions as described in section \ref{sec:QuantumMechanics}. In the statistical lattice system equation \ref{eq:GammaNorm} becomes:
                 \begin{equation}
-                    \label{eq:FirstExcitedStateHarmonicOscillator}
-                    \Delta E\left(\delta \tau\right) = -\frac{1}{\delta \tau} \ln C\left(\delta \tau\right),
+                    \frac{\langle x_{0}x_{j} \rangle}{\langle x_{0}x_{0} \rangle} = e^{-\left(E_1-E_0\right)ja}
                 \end{equation}
-                where:
-                \begin{equation}
-                    \label{eq:CorrelationFunction}
-                    C\left(\delta\tau\right) = \frac{\sum_{i=0}^{N-1} x_{i}x_{i+\delta\tau}}{\sum_{i=0}^{N-1}x_i^2}
-                \end{equation}
-                is the \textit{correlation function}. In equation \ref{eq:CorrelationFunction} we have utilized the periodic boundary conditions of the lattice and calculated the correlation at each lattice site then averaged over them to increase the statistics.\todo{Is this okay?} For an derivation of equation \ref{eq:FirstExcitedStateHarmonicOscillator} see appendix \todo{Insert reference to appendix.}
-                Figures \ref{} and \ref{} show the energy gap and correlation function respectively on an HMC simulation of the harmonic oscillator.
+                where $j$ indexes a lattice site and $a$ is the lattice spacing. To increase statistics for the correlation function as calculated on any lattice configuration we may utilise periodic boundary conditions and take $x_0x_j = \sum_{n=0}^{N-1}x_nx_{n+j}$. The correlation function is shown in figure \ref{fig:HarmonicCorrelationFunction} and by fitting a log-linear plot as in figure \ref{fig:LogHarmonicCorrelationFunction} for an appropriate range we can measure the gradient and hence calculate $\Delta E = E_1 - E_0$. Statistical fluctuations occur in the correlation function for larger values of $j$ so it is important to fit the function in the range for which it is linear. In fact, for the harmonic oscillator through the ladder operators $\hat{a}$ and $\hat{a}^{\dagger}$ and the identity $\hat{x} \sim \hat{a} + \hat{a}^{\dagger}$, the only non-vanishing term in the sum in equation \ref{eq:GammaLargeLattice2} will be when $n=1$ and so it is valid to fit the correlation function for small values of $j$. To calculate $E_1$ we simply subtracted the ground state energy, as calculated via the virial theorem above, from the energy gap $\Delta E$. Values for $E_1$ at a range of lattice spacings are shown in figure \ref{fig:HarmonicFirstExcitedState}. Although the values tend towards the continuum result for small lattice spacings, clearly there is a serious divergence from the discrete theory at larger lattice spacings. This divergence is likely due to the theoretical result we are using, that states that for the discrete lattice, at spacing $a$ the harmonic oscillator energy eigenvalues are given by:
+                \begin{align}
+                    \label{eq:AlteredEigenValues}
+                    E_n  & = \left(n+\frac{1}{2}\right)\omega, \\
+                    \omega & = \mu\sqrt{1+\frac{a^2\mu^2}{4}}.
+                \end{align} 
+                Equation \ref{eq:AlteredEigenValues} clearly has no dependence on the lattice size $N$, whereas our calculation of $E_1$ has an explicit dependence on $N$ through the virial theorem we used to calculate $E_0$ and equation \ref{eq:XSquaredExpectation2}. At this point we suggest reserving investigations into the resolution of these results for future work.
                 \begin{figure}
                     \centering
                     \begin{subfigure}[b]{0.4\textwidth}
                         \begin{tikzpicture}[scale=0.7]
                             \begin{axis}[
                                 legend style={font=\tiny},
-                                xlabel= {Lattice Site},
+                                xlabel= {Lattice Site $j$},
                                 ylabel style ={rotate=0},
                                 ylabel= {Correlation Function},
                                 enlargelimits=true,
@@ -881,7 +901,7 @@ I wish to extend my deep appreciation and gratitude to Dr. Roger Horsely and Dr.
                                         y explicit]
                                     table[x index=0, 
                                         y index=1, 
-                                        y error index=2]{DataForReport/HarmonicCorrelationFunction.dat};
+                                        y error index=2]{DataForReport/HarmonicCorrelationFunction3.dat};
                             \end{axis}
                         \end{tikzpicture}
                         \caption{Correlation function.}
@@ -889,11 +909,11 @@ I wish to extend my deep appreciation and gratitude to Dr. Roger Horsely and Dr.
                     \end{subfigure}
                     \begin{subfigure}[b]{0.4\textwidth}
                         \begin{tikzpicture}[scale=0.7]
-                            \begin{axis}[
+                            \begin{semilogyaxis}[
                                 legend style={font=\tiny},
-                                xlabel= {Lattice Time},
+                                xlabel= {Lattice Site $j$},
                                 ylabel style ={rotate=0},
-                                ylabel= {Energy Gap},
+                                ylabel= {Correlation Function},
                                 enlargelimits=true,
                                         ]
                                 \addplot[only marks, 
@@ -903,22 +923,22 @@ I wish to extend my deep appreciation and gratitude to Dr. Roger Horsely and Dr.
                                         y explicit]
                                     table[x index=0, 
                                         y index=1, 
-                                        y error index=2]{DataForReport/HarmonicCorrelationFunction.dat};
-                            \end{axis}
+                                        y error index=2]{DataForReport/HarmonicCorrelationFunction3.dat};
+                            \end{semilogyaxis}
                         \end{tikzpicture}
-                        \caption{Energy gap}
-                        \label{fig:HarmonicEnergyGap.}
+                        \caption{Semi-log plot of correlation function.}
+                        \label{fig:LogHarmonicCorrelationFunction}
                     \end{subfigure}
-                    \caption{Energy gap and correlation function for the harmonic oscillator with $a=1$, $\mu=1$ and $m=1$.}
+                    \caption{Correlation between lattice site variables as function of their separation $j$ for the harmonic oscillator with $m=1$, $\mu=1$ on a $N=1000$ site lattice at spacing $a=1$.}
                     \label{fig:HarmonicEnergyGapAndCorrelatioFunction}
                 \end{figure}
-                For small values of $\delta \tau$ we can see that $\Delta E \approx 1$ which is what we expect from equation \ref{eq:ContinuumEnergyLevels}. \todo{Why doesn't it stay constant?} By averaging over the values for which $\Delta E \approx 1$ we can estimate the the first excited energies by subtracting the estimated ground state energy for various values of $\mu^2$. These have been plotted in figure \ref{} alongside the ground state energies for a selection of lattice spacings along with the results from the discrete and continuous theory.\todo{Make data for the plot and include the plot}
+               
                 \begin{figure}
                 \centering
                 \begin{tikzpicture}[scale=1.5]
                             \begin{axis}[
                                 legend style={font=\tiny},
-                                legend style={at={(0.03,0.5)},anchor=west},
+                                legend style={at={(0.03,1)},anchor=west},
                                 xlabel= {Lattice Spacing $a$},
                                 ylabel style ={rotate=0},
                                 ylabel= {Energy},
@@ -1075,7 +1095,58 @@ I wish to extend my deep appreciation and gratitude to Dr. Roger Horsely and Dr.
                     \label{eq:VirialTheoremAnharmonicOsillator}
                     E_0=3\lambda\braket{x^4}-4\lambda f^2\braket{x^2}+\lambda f^4.
                 \end{equation}
-                To calculate the first excited state we. The results of the HMC simulation of the anharmonic oscillator for the ground and first excited states are shown in \ref{fig:AnharmonicEnergies} for a range of values of $f^2$. Since there is no analytic solution to the anharmonic oscillator, the continuum values in figure \ref{fig:AnharmonicEnergies} are from \cite{blankenbecler_degrand_sugar_1980} where approximations of the exact energy eigenvalues are given. Our results follow the same pattern as those given in \cite{blankenbecler_degrand_sugar_1980}, however since we are working with finite lattice spacings we should expect some divergence. The deviation from the approximated exact values for larger values of $f^2$ at the chosen lattice spacing matches the deviation given in \cite{rodgers_raes} where the Metropolis algorithm is used for the same calculations.
+                To calculate the first excited state we also follow the same method as we did for the harmonic oscillator in fitting the correlation function. Since the ladder operators do not exist with the same raising and lowering functionality for the anharmonic oscillator, it is important to fit the correlation function for larger $j$ separations for which the log-linear plot of the correlation function becomes linear, but before the statistical noise.
+                \begin{figure}
+                    \centering
+                    \begin{subfigure}[b]{0.4\textwidth}
+                        \begin{tikzpicture}[scale=0.7]
+                            \begin{axis}[
+                                legend style={font=\tiny},
+                                xlabel= {Lattice Site $j$},
+                                ylabel style ={rotate=0},
+                                ylabel= {Correlation Function},
+                                enlargelimits=true,
+                                        ]
+                                \addplot[only marks, 
+                                       mark=x,color=black]
+                                    plot [error bars/.cd, 
+                                        y dir = both, 
+                                        y explicit]
+                                    table[x index=0, 
+                                        y index=1, 
+                                        y error index=2]{DataForReport/AnharmonicCorrelationFunction.dat};
+                            \end{axis}
+                        \end{tikzpicture}
+                        \caption{Correlation function.}
+                        \label{fig:AnharmonicCorrelationFunction}
+                    \end{subfigure}
+                    \begin{subfigure}[b]{0.4\textwidth}
+                        \begin{tikzpicture}[scale=0.7]
+                            \begin{semilogyaxis}[
+                                legend style={font=\tiny},
+                                xlabel= {Lattice Site $j$},
+                                ylabel style ={rotate=0},
+                                ylabel= {Correlation Function},
+                                enlargelimits=true,
+                                        ]
+                                \addplot[only marks, 
+                                       mark=x,color=black]
+                                    plot [error bars/.cd, 
+                                        y dir = both, 
+                                        y explicit]
+                                    table[x index=0, 
+                                        y index=1, 
+                                        y error index=2]{DataForReport/AnharmonicCorrelationFunction.dat};
+                            \end{semilogyaxis}
+                        \end{tikzpicture}
+                        \caption{Semi-log plot of correlation function.}
+                        \label{fig:LogAnHarmonicCorrelationFunction}
+                    \end{subfigure}
+                    \caption{Correlation between lattice site variables as function of their separation $j$ for the anharmonic oscillator with $m=1$, $\lambda=1$, $f^2=1$ on a $N=1000$ site lattice at spacing $a=1$.}
+                    \label{fig:AnharmonicEnergyGapAndCorrelatioFunction}
+                \end{figure}
+
+                The results of the HMC simulation of the anharmonic oscillator for the ground and first excited states are shown in \ref{fig:AnharmonicEnergies} for a range of values of $f^2$. Since there is no analytic solution to the anharmonic oscillator, the continuum values in figure \ref{fig:AnharmonicEnergies} are from \cite{blankenbecler_degrand_sugar_1980} where approximations of the exact energy eigenvalues are given. Our results follow the same pattern as those given in \cite{blankenbecler_degrand_sugar_1980}, however since we are working with finite lattice spacings we should expect some divergence. The deviation from the approximated exact values for larger values of $f^2$ at the chosen lattice spacing matches the deviation given in \cite{rodgers_raes} where the Metropolis algorithm is used for the same calculations.
                 \begin{figure}
                     \centering
                     \begin{tikzpicture}[scale=1.5]
@@ -1723,7 +1794,7 @@ A possible solution to the issue of $\Delta H_{HMC}$ always being too large on t
             \label{eq:PathIntegralAsTrace}
             Z = \text{Tr}\left(\hat{T}^N\right).
         \end{equation}
-        Here we take the trace over the physical Hilbert space, so that for any operator $\hat{A}$ in the Schr{\"o}dinger eigenbasis, the trace is:
+        Here we take the trace, so that for any operator $\hat{A}$ in the Schr{\"o}dinger eigenbasis, the trace is:
         \begin{equation}
             \label{eq:Trace}
             \text{Tr}\left(\hat{A}\right) = \int_{-\infty}^{\infty}dx\bra{x}\hat{A}\ket{x},
@@ -1953,6 +2024,7 @@ A possible solution to the issue of $\Delta H_{HMC}$ always being too large on t
         \end{align}
 
 \section{Simulation Code}
+    \label{ap:simulation code}
     In order to save space only the main method has been included from the simulation written in C++, this gives an idea of the structure of the program and how it works. For the entire simulation, along with various utilities such as Makefiles please see \url{https://github.com/FranklandJack/HMC-Oscillator} where the interested reader may pull the repository and run the simulation themselves as well as view the rest of the project files.
     \lstinputlisting[language=C++]{../HMC-Oscillator/src/main.cpp}
 
